@@ -1,0 +1,694 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: development@kvalitetitsit.dk
+  description: API description for DNS API.
+  title: DNS API
+  version: 1.0.0
+servers:
+- url: "{protocol}://{environment}:{port}"
+  variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
+    environment:
+      default: localhost
+      enum:
+      - localhost
+    port:
+      default: "8080"
+      enum:
+      - "8080"
+tags:
+- description: API for DNS records
+  name: Records
+paths:
+  /domains:
+    get:
+      description: Get all DNS records
+      parameters:
+      - description: Number of items to skip
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          example: 0
+          minimum: 0
+          type: integer
+        style: form
+      - description: Number of items to return
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          example: 20
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Domain"
+                type: array
+          description: Ok
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/basic_error"
+          description: "Bad Request. This could be because: * One of the required\
+            \ parameters/properties are missing or is empty <br> * Length of input\
+            \ is exceeding maximum length <br> (See a possible detailed error message\
+            \ in the in the response.)"
+      summary: Get all DNS records
+      tags:
+      - Domains
+    post:
+      description: Add domain.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Domain"
+        description: The new domain.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Domain"
+          description: Ok
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/basic_error"
+          description: "Bad Request. This could be because: * One of the required\
+            \ parameters/properties are missing or is empty <br> * Length of input\
+            \ is exceeding maximum length <br> (See a possible detailed error message\
+            \ in the in the response.)"
+      summary: Add domain.
+      tags:
+      - Domains
+  /domains/{domain_id}:
+    delete:
+      description: Deletes the domain and all associated records.
+      parameters:
+      - description: The UUID of the domain
+        explode: false
+        in: path
+        name: domain_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Domain"
+          description: Ok
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/basic_error"
+          description: Requested resource not found.
+      summary: Deletes the domain and all associated records.
+      tags:
+      - Domains
+    get:
+      description: Gets the domain associated with the specified UUID.
+      parameters:
+      - description: The UUID of the domain
+        explode: false
+        in: path
+        name: domain_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Domain"
+          description: Ok
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/basic_error"
+          description: Requested resource not found.
+      summary: Gets the domain associated with the specified UUID.
+      tags:
+      - Domains
+  /domains/{domain_id}/records:
+    get:
+      description: Retrieves all records within the given domain.
+      parameters:
+      - description: Fully qualifies domain name
+        explode: false
+        in: path
+        name: domain_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - description: Fully qualifies domain name
+        explode: true
+        in: query
+        name: fqdn
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Number of items to skip
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          example: 0
+          minimum: 0
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          example: 20
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: type
+        required: false
+        schema:
+          $ref: "#/components/schemas/DnsRecordType"
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecordCollection"
+          description: Ok
+      summary: Retrieves all records within the given domain.
+      tags:
+      - Records
+    post:
+      description: Add record to domain.
+      parameters:
+      - description: the UUID of the domain
+        explode: false
+        in: path
+        name: domain_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecordCollection"
+        description: The new organisation.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecordCollection"
+          description: Ok
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/basic_error"
+          description: "Bad Request. This could be because: * One of the required\
+            \ parameters/properties are missing or is empty <br> * Length of input\
+            \ is exceeding maximum length <br> (See a possible detailed error message\
+            \ in the in the response.)"
+      summary: Add record to domain.
+      tags:
+      - Records
+  /domains/{domain_id}/records/{record_id}:
+    delete:
+      description: Deletes the dns record with the fully qualified domain name.
+      parameters:
+      - description: Fully qualifies domain name
+        explode: false
+        in: path
+        name: domain_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - description: Fully qualifies domain name
+        explode: false
+        in: path
+        name: record_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Record"
+          description: Ok
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/basic_error"
+          description: "Bad Request. This could be because: * One of the required\
+            \ parameters/properties are missing or is empty <br> * Length of input\
+            \ is exceeding maximum length <br> (See a possible detailed error message\
+            \ in the in the response.)"
+      summary: Deletes the dns record with the fully qualified domain name.
+      tags:
+      - Records
+    get:
+      description: Get DNS record with the fully qualified domain name.
+      parameters:
+      - description: the UUID of the domain
+        explode: false
+        in: path
+        name: domain_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - description: the UUID of the record
+        explode: false
+        in: path
+        name: record_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Record"
+          description: Ok
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/basic_error"
+          description: "Bad Request. This could be because: * One of the required\
+            \ parameters/properties are missing or is empty <br> * Length of input\
+            \ is exceeding maximum length <br> (See a possible detailed error message\
+            \ in the in the response.)"
+      summary: Get DNS record with the fully qualified domain name.
+      tags:
+      - Records
+components:
+  responses:
+    "204":
+      description: No Content
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/basic_error"
+      description: "Bad Request. This could be because: * One of the required parameters/properties\
+        \ are missing or is empty <br> * Length of input is exceeding maximum length\
+        \ <br> (See a possible detailed error message in the in the response.)"
+    "403":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/basic_error"
+      description: "Forbidden. This could be because: <br> * The requested information\
+        \ does not belong the organisation of the user <br> * The calling user does\
+        \ not have the required roles"
+    "404":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/basic_error"
+      description: Requested resource not found.
+    "409":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/basic_error"
+      description: Resource in conflict.
+  schemas:
+    RecordCollection:
+      example:
+        records:
+        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          type: type
+          ttl: 3600
+        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          type: type
+          ttl: 3600
+      properties:
+        records:
+          items:
+            $ref: "#/components/schemas/Record"
+          type: array
+      required:
+      - records
+      type: object
+    Record:
+      description: Polymorphic DNS record type resolved through the `type` discriminator.
+      discriminator:
+        mapping:
+          A: "#/components/schemas/ARecord"
+          AAAA: "#/components/schemas/AAAARecord"
+          CNAME: "#/components/schemas/CNAMERecord"
+          MX: "#/components/schemas/MXRecord"
+          TXT: "#/components/schemas/TXTRecord"
+          NS: "#/components/schemas/NSRecord"
+          SOA: "#/components/schemas/SOARecord"
+          SRV: "#/components/schemas/SRVRecord"
+          PTR: "#/components/schemas/PTRRecord"
+          CAA: "#/components/schemas/CAARecord"
+        propertyName: type
+      example:
+        id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+        type: type
+        ttl: 3600
+      oneOf:
+      - $ref: "#/components/schemas/ARecord"
+      - $ref: "#/components/schemas/AAAARecord"
+      - $ref: "#/components/schemas/CNAMERecord"
+      - $ref: "#/components/schemas/MXRecord"
+      - $ref: "#/components/schemas/TXTRecord"
+      - $ref: "#/components/schemas/NSRecord"
+      - $ref: "#/components/schemas/SOARecord"
+      - $ref: "#/components/schemas/SRVRecord"
+      - $ref: "#/components/schemas/PTRRecord"
+      - $ref: "#/components/schemas/CAARecord"
+      properties:
+        id:
+          description: UUID v4 associated with the DNS record.
+          example: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          format: uuid
+          type: string
+        ttl:
+          description: DNS Time To Live in seconds.
+          example: 3600
+          minimum: 0
+          type: integer
+        type:
+          description: DNS record type discriminator.
+          type: string
+      required:
+      - type
+      type: object
+    ARecord:
+      description: DNS A record mapping a hostname to an IPv4 address.
+      properties:
+        host:
+          description: the host associated with the ipv4.
+          example: example.com.
+          type: string
+        ipv4:
+          description: IPv4 address assigned to the hostname.
+          example: 192.168.1.10
+          format: ipv4
+          type: string
+      required:
+      - host
+      - ipv4
+    AAAARecord:
+      description: DNS AAAA record mapping a hostname to an IPv6 address.
+      properties:
+        host:
+          description: the host associated with the ipv4.
+          example: example.com.
+          type: string
+        ipv6:
+          description: IPv6 address assigned to the hostname.
+          example: 2001:db8::10
+          format: ipv6
+          type: string
+      required:
+      - host
+      - ipv6
+    CNAMERecord:
+      description: DNS CNAME record mapping an alias hostname to a canonical hostname.
+      properties:
+        canonicalName:
+          description: Canonical hostname target.
+          example: server.example.com
+          type: string
+      required:
+      - canonicalName
+    MXRecord:
+      description: DNS MX record defining the mail servers responsible for handling
+        email delivery for a domain.
+      properties:
+        priority:
+          description: Mail server priority where lower values are preferred.
+          example: 10
+          minimum: 0
+          type: integer
+        exchange:
+          description: Mail server hostname.
+          example: mail.example.com
+          type: string
+      required:
+      - exchange
+      - priority
+    TXTRecord:
+      description: "DNS TXT record used for arbitrary text-based metadata such as\
+        \ SPF, DKIM, and domain verification."
+      properties:
+        value:
+          description: TXT record value.
+          example: v=spf1 include:_spf.example.com ~all
+          type: string
+      required:
+      - value
+    NSRecord:
+      description: DNS NS record delegating authority for a DNS zone to an authoritative
+        nameserver.
+      properties:
+        nameserver:
+          description: Authoritative nameserver hostname.
+          example: ns1.example.com
+          type: string
+      required:
+      - nameserver
+    SOARecord:
+      description: DNS SOA record containing administrative and timing information
+        for a DNS zone.
+      properties:
+        mName:
+          description: Primary master nameserver for the zone.
+          example: ns1.example.com
+          type: string
+        rName:
+          description: Responsible party email (encoded format).
+          example: hostmaster.example.com
+          type: string
+        serial:
+          example: 2026050101
+          type: integer
+        refresh:
+          example: 7200
+          type: integer
+        retry:
+          example: 3600
+          type: integer
+        expire:
+          example: 1209600
+          type: integer
+        minimum:
+          example: 3600
+          type: integer
+      required:
+      - expire
+      - mName
+      - minimum
+      - rName
+      - refresh
+      - retry
+      - serial
+    SRVRecord:
+      description: DNS SRV record defining the hostname and port for a specific service.
+      properties:
+        priority:
+          description: Service priority where lower values are preferred.
+          example: 10
+          minimum: 0
+          type: integer
+        weight:
+          description: Relative weight for load balancing between services with the
+            same priority.
+          example: 5
+          minimum: 0
+          type: integer
+        port:
+          description: Network port exposed by the target service.
+          example: 443
+          maximum: 65535
+          minimum: 1
+          type: integer
+        target:
+          description: Target hostname providing the service.
+          example: sip.example.com
+          type: string
+      required:
+      - port
+      - priority
+      - target
+      - weight
+    PTRRecord:
+      description: DNS PTR record used for reverse DNS lookups from IP addresses to
+        hostnames.
+      properties:
+        pointer:
+          description: Reverse DNS hostname target.
+          example: server.example.com
+          type: string
+      required:
+      - pointer
+    CAARecord:
+      description: DNS CAA record restricting which certificate authorities may issue
+        TLS certificates for a domain.
+      properties:
+        flags:
+          description: Flags controlling record interpretation.
+          example: 0
+          maximum: 255
+          minimum: 0
+          type: integer
+        tag:
+          description: CAA property tag defining the authorization behavior.
+          enum:
+          - issue
+          - issuewild
+          - iodef
+          example: issue
+          type: string
+        value:
+          description: Certificate authority authorization value.
+          example: letsencrypt.org
+          type: string
+      required:
+      - flags
+      - tag
+      - value
+    Domain:
+      description: DNS domain containing metadata and associated DNS records.
+      example:
+        records:
+        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          type: type
+          ttl: 3600
+        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          type: type
+          ttl: 3600
+        name: mail.portal
+        id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+      properties:
+        id:
+          description: UUID v4 associated with the domain.
+          example: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          format: uuid
+          type: string
+        name:
+          description: Domain name.
+          example: mail.portal
+          type: string
+        records:
+          description: Collection of DNS records associated with the domain.
+          items:
+            $ref: "#/components/schemas/Record"
+          type: array
+      required:
+      - name
+      type: object
+    basic_error:
+      description: Standard API error response returned when a request fails.
+      example:
+        path: path
+        error_code: 0
+        status_text: status_text
+        error: error
+        status: 6
+        timestamp: 2000-01-23T04:56:07.000+00:00
+      properties:
+        error_code:
+          description: Application-specific error code.
+          type: integer
+        error:
+          description: Human-readable error message.
+          type: string
+        path:
+          description: Request path that caused the error.
+          type: string
+        status:
+          description: HTTP status code.
+          type: integer
+        status_text:
+          description: HTTP status text.
+          type: string
+        timestamp:
+          description: Timestamp when the error occurred.
+          format: date-time
+          type: string
+      required:
+      - error
+      - error_code
+      - path
+      - status
+      - status_text
+      - timestamp
+      type: object
+    DnsRecordType:
+      description: |
+        Supported DNS record types: * `A` - IPv4 address record mapping a domain to a 32-bit IPv4 address. * `AAAA` - IPv6 address record mapping a domain to a 128-bit IPv6 address. * `CNAME` - Canonical name record mapping an alias to the canonical hostname. * `MX` - Mail exchanger record defining the mail servers responsible for a domain. * `TXT` - Text record used for metadata, SPF policies, and domain verification. * `NS` - Nameserver record delegating a DNS zone to authoritative nameservers. * `SOA` - Start of authority record containing zone administration and timing information. * `SRV` - Service locator record defining hostname and port information for a service. * `PTR` - Pointer record used for reverse DNS lookups from IP address to hostname. * `CAA` - Certificate authority authorization record restricting certificate issuance.
+      enum:
+      - A
+      - AAAA
+      - CNAME
+      - MX
+      - TXT
+      - NS
+      - SOA
+      - SRV
+      - PTR
+      - CAA
+      example: A
+      type: string
