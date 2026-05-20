@@ -111,7 +111,7 @@ import (
 
 func main() {
 	domainId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | the UUID of the domain
-	recordCollection := *openapiclient.NewRecordCollection([]openapiclient.Record{openapiclient.Record{AAAARecord: openapiclient.NewAAAARecord("example.com.", "2001:db8::10")}}) // RecordCollection | The new organisation.
+	recordCollection := *openapiclient.NewRecordCollection([]openapiclient.Record{*openapiclient.NewRecord("TXT")}) // RecordCollection | The new organisation.
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)

@@ -22,6 +22,7 @@ var _ MappedNullable = &AAAARecord{}
 
 // AAAARecord DNS AAAA record mapping a hostname to an IPv6 address.
 type AAAARecord struct {
+	Record
 	// the host associated with the ipv4.
 	Host string `json:"host"`
 	// IPv6 address assigned to the hostname.
@@ -34,8 +35,9 @@ type _AAAARecord AAAARecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAAAARecord(host string, ipv6 string) *AAAARecord {
+func NewAAAARecord(host string, ipv6 string, type_ string) *AAAARecord {
 	this := AAAARecord{}
+	this.Type = type_
 	this.Host = host
 	this.Ipv6 = ipv6
 	return &this
@@ -107,6 +109,14 @@ func (o AAAARecord) MarshalJSON() ([]byte, error) {
 
 func (o AAAARecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	serializedRecord, errRecord := json.Marshal(o.Record)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
+	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
 	toSerialize["host"] = o.Host
 	toSerialize["ipv6"] = o.Ipv6
 	return toSerialize, nil
@@ -119,6 +129,7 @@ func (o *AAAARecord) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"host",
 		"ipv6",
+		"type",
 	}
 
 	allProperties := make(map[string]interface{})

@@ -22,6 +22,7 @@ var _ MappedNullable = &ARecord{}
 
 // ARecord DNS A record mapping a hostname to an IPv4 address.
 type ARecord struct {
+	Record
 	// the host associated with the ipv4.
 	Host string `json:"host"`
 	// IPv4 address assigned to the hostname.
@@ -34,8 +35,9 @@ type _ARecord ARecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewARecord(host string, ipv4 string) *ARecord {
+func NewARecord(host string, ipv4 string, type_ string) *ARecord {
 	this := ARecord{}
+	this.Type = type_
 	this.Host = host
 	this.Ipv4 = ipv4
 	return &this
@@ -107,6 +109,14 @@ func (o ARecord) MarshalJSON() ([]byte, error) {
 
 func (o ARecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	serializedRecord, errRecord := json.Marshal(o.Record)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
+	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
 	toSerialize["host"] = o.Host
 	toSerialize["ipv4"] = o.Ipv4
 	return toSerialize, nil
@@ -119,6 +129,7 @@ func (o *ARecord) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"host",
 		"ipv4",
+		"type",
 	}
 
 	allProperties := make(map[string]interface{})

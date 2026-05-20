@@ -22,6 +22,7 @@ var _ MappedNullable = &CNAMERecord{}
 
 // CNAMERecord DNS CNAME record mapping an alias hostname to a canonical hostname.
 type CNAMERecord struct {
+	Record
 	// Canonical hostname target.
 	CanonicalName string `json:"canonicalName"`
 }
@@ -32,8 +33,9 @@ type _CNAMERecord CNAMERecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCNAMERecord(canonicalName string) *CNAMERecord {
+func NewCNAMERecord(canonicalName string, type_ string) *CNAMERecord {
 	this := CNAMERecord{}
+	this.Type = type_
 	this.CanonicalName = canonicalName
 	return &this
 }
@@ -80,6 +82,14 @@ func (o CNAMERecord) MarshalJSON() ([]byte, error) {
 
 func (o CNAMERecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	serializedRecord, errRecord := json.Marshal(o.Record)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
+	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
 	toSerialize["canonicalName"] = o.CanonicalName
 	return toSerialize, nil
 }
@@ -90,6 +100,7 @@ func (o *CNAMERecord) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"canonicalName",
+		"type",
 	}
 
 	allProperties := make(map[string]interface{})

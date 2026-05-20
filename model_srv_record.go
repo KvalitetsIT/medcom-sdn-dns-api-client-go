@@ -22,6 +22,7 @@ var _ MappedNullable = &SRVRecord{}
 
 // SRVRecord DNS SRV record defining the hostname and port for a specific service.
 type SRVRecord struct {
+	Record
 	// Service priority where lower values are preferred.
 	Priority int32 `json:"priority"`
 	// Relative weight for load balancing between services with the same priority.
@@ -38,8 +39,9 @@ type _SRVRecord SRVRecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSRVRecord(priority int32, weight int32, port int32, target string) *SRVRecord {
+func NewSRVRecord(priority int32, weight int32, port int32, target string, type_ string) *SRVRecord {
 	this := SRVRecord{}
+	this.Type = type_
 	this.Priority = priority
 	this.Weight = weight
 	this.Port = port
@@ -161,6 +163,14 @@ func (o SRVRecord) MarshalJSON() ([]byte, error) {
 
 func (o SRVRecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	serializedRecord, errRecord := json.Marshal(o.Record)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
+	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
 	toSerialize["priority"] = o.Priority
 	toSerialize["weight"] = o.Weight
 	toSerialize["port"] = o.Port
@@ -177,6 +187,7 @@ func (o *SRVRecord) UnmarshalJSON(data []byte) (err error) {
 		"weight",
 		"port",
 		"target",
+		"type",
 	}
 
 	allProperties := make(map[string]interface{})

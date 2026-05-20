@@ -22,6 +22,7 @@ var _ MappedNullable = &MXRecord{}
 
 // MXRecord DNS MX record defining the mail servers responsible for handling email delivery for a domain.
 type MXRecord struct {
+	Record
 	// Mail server priority where lower values are preferred.
 	Priority int32 `json:"priority"`
 	// Mail server hostname.
@@ -34,8 +35,9 @@ type _MXRecord MXRecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewMXRecord(priority int32, exchange string) *MXRecord {
+func NewMXRecord(priority int32, exchange string, type_ string) *MXRecord {
 	this := MXRecord{}
+	this.Type = type_
 	this.Priority = priority
 	this.Exchange = exchange
 	return &this
@@ -107,6 +109,14 @@ func (o MXRecord) MarshalJSON() ([]byte, error) {
 
 func (o MXRecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	serializedRecord, errRecord := json.Marshal(o.Record)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
+	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
 	toSerialize["priority"] = o.Priority
 	toSerialize["exchange"] = o.Exchange
 	return toSerialize, nil
@@ -119,6 +129,7 @@ func (o *MXRecord) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"priority",
 		"exchange",
+		"type",
 	}
 
 	allProperties := make(map[string]interface{})

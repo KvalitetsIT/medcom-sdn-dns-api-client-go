@@ -13,428 +13,186 @@ package dnsclient
 
 import (
 	"encoding/json"
+	"bytes"
 	"fmt"
-	"gopkg.in/validator.v2"
 )
 
-// Record - Polymorphic DNS record type resolved through the `type` discriminator.
+// checks if the Record type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &Record{}
+
+// Record Base DNS record properties.
 type Record struct {
-	AAAARecord *AAAARecord
-	ARecord *ARecord
-	CAARecord *CAARecord
-	CNAMERecord *CNAMERecord
-	MXRecord *MXRecord
-	NSRecord *NSRecord
-	PTRRecord *PTRRecord
-	SOARecord *SOARecord
-	SRVRecord *SRVRecord
-	TXTRecord *TXTRecord
+	// UUID v4 associated with the DNS record.
+	Id *string `json:"id,omitempty"`
+	// DNS Time To Live in seconds.
+	Ttl *int32 `json:"ttl,omitempty"`
+	// DNS record type discriminator.
+	Type string `json:"type"`
 }
 
-// AAAARecordAsRecord is a convenience function that returns AAAARecord wrapped in Record
-func AAAARecordAsRecord(v *AAAARecord) Record {
-	return Record{
-		AAAARecord: v,
+type _Record Record
+
+// NewRecord instantiates a new Record object
+// This constructor will assign default values to properties that have it defined,
+// and makes sure properties required by API are set, but the set of arguments
+// will change when the set of required properties is changed
+func NewRecord(type_ string) *Record {
+	this := Record{}
+	this.Type = type_
+	return &this
+}
+
+// NewRecordWithDefaults instantiates a new Record object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewRecordWithDefaults() *Record {
+	this := Record{}
+	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *Record) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
 	}
+	return *o.Id
 }
 
-// ARecordAsRecord is a convenience function that returns ARecord wrapped in Record
-func ARecordAsRecord(v *ARecord) Record {
-	return Record{
-		ARecord: v,
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Record) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
 	}
+	return o.Id, true
 }
 
-// CAARecordAsRecord is a convenience function that returns CAARecord wrapped in Record
-func CAARecordAsRecord(v *CAARecord) Record {
-	return Record{
-		CAARecord: v,
+// HasId returns a boolean if a field has been set.
+func (o *Record) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
 	}
+
+	return false
 }
 
-// CNAMERecordAsRecord is a convenience function that returns CNAMERecord wrapped in Record
-func CNAMERecordAsRecord(v *CNAMERecord) Record {
-	return Record{
-		CNAMERecord: v,
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *Record) SetId(v string) {
+	o.Id = &v
+}
+
+// GetTtl returns the Ttl field value if set, zero value otherwise.
+func (o *Record) GetTtl() int32 {
+	if o == nil || IsNil(o.Ttl) {
+		var ret int32
+		return ret
 	}
+	return *o.Ttl
 }
 
-// MXRecordAsRecord is a convenience function that returns MXRecord wrapped in Record
-func MXRecordAsRecord(v *MXRecord) Record {
-	return Record{
-		MXRecord: v,
+// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Record) GetTtlOk() (*int32, bool) {
+	if o == nil || IsNil(o.Ttl) {
+		return nil, false
 	}
+	return o.Ttl, true
 }
 
-// NSRecordAsRecord is a convenience function that returns NSRecord wrapped in Record
-func NSRecordAsRecord(v *NSRecord) Record {
-	return Record{
-		NSRecord: v,
+// HasTtl returns a boolean if a field has been set.
+func (o *Record) HasTtl() bool {
+	if o != nil && !IsNil(o.Ttl) {
+		return true
 	}
+
+	return false
 }
 
-// PTRRecordAsRecord is a convenience function that returns PTRRecord wrapped in Record
-func PTRRecordAsRecord(v *PTRRecord) Record {
-	return Record{
-		PTRRecord: v,
+// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
+func (o *Record) SetTtl(v int32) {
+	o.Ttl = &v
+}
+
+// GetType returns the Type field value
+func (o *Record) GetType() string {
+	if o == nil {
+		var ret string
+		return ret
 	}
+
+	return o.Type
 }
 
-// SOARecordAsRecord is a convenience function that returns SOARecord wrapped in Record
-func SOARecordAsRecord(v *SOARecord) Record {
-	return Record{
-		SOARecord: v,
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *Record) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
 	}
+	return &o.Type, true
 }
 
-// SRVRecordAsRecord is a convenience function that returns SRVRecord wrapped in Record
-func SRVRecordAsRecord(v *SRVRecord) Record {
-	return Record{
-		SRVRecord: v,
+// SetType sets field value
+func (o *Record) SetType(v string) {
+	o.Type = v
+}
+
+func (o Record) MarshalJSON() ([]byte, error) {
+	toSerialize,err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
 	}
+	return json.Marshal(toSerialize)
 }
 
-// TXTRecordAsRecord is a convenience function that returns TXTRecord wrapped in Record
-func TXTRecordAsRecord(v *TXTRecord) Record {
-	return Record{
-		TXTRecord: v,
+func (o Record) ToMap() (map[string]interface{}, error) {
+	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
 	}
+	if !IsNil(o.Ttl) {
+		toSerialize["ttl"] = o.Ttl
+	}
+	toSerialize["type"] = o.Type
+	return toSerialize, nil
 }
 
+func (o *Record) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"type",
+	}
 
-// Unmarshal JSON data into one of the pointers in the struct
-func (dst *Record) UnmarshalJSON(data []byte) error {
-	var err error
-	match := 0
-	// try to unmarshal data into AAAARecord
-	err = newStrictDecoder(data).Decode(&dst.AAAARecord)
-	if err == nil {
-		jsonAAAARecord, _ := json.Marshal(dst.AAAARecord)
-		if string(jsonAAAARecord) == "{}" { // empty struct
-			dst.AAAARecord = nil
-		} else {
-			if err = validator.Validate(dst.AAAARecord); err != nil {
-				dst.AAAARecord = nil
-			} else {
-				match++
-			}
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
-	} else {
-		dst.AAAARecord = nil
 	}
 
-	// try to unmarshal data into ARecord
-	err = newStrictDecoder(data).Decode(&dst.ARecord)
-	if err == nil {
-		jsonARecord, _ := json.Marshal(dst.ARecord)
-		if string(jsonARecord) == "{}" { // empty struct
-			dst.ARecord = nil
-		} else {
-			if err = validator.Validate(dst.ARecord); err != nil {
-				dst.ARecord = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.ARecord = nil
+	varRecord := _Record{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varRecord)
+
+	if err != nil {
+		return err
 	}
 
-	// try to unmarshal data into CAARecord
-	err = newStrictDecoder(data).Decode(&dst.CAARecord)
-	if err == nil {
-		jsonCAARecord, _ := json.Marshal(dst.CAARecord)
-		if string(jsonCAARecord) == "{}" { // empty struct
-			dst.CAARecord = nil
-		} else {
-			if err = validator.Validate(dst.CAARecord); err != nil {
-				dst.CAARecord = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.CAARecord = nil
-	}
+	*o = Record(varRecord)
 
-	// try to unmarshal data into CNAMERecord
-	err = newStrictDecoder(data).Decode(&dst.CNAMERecord)
-	if err == nil {
-		jsonCNAMERecord, _ := json.Marshal(dst.CNAMERecord)
-		if string(jsonCNAMERecord) == "{}" { // empty struct
-			dst.CNAMERecord = nil
-		} else {
-			if err = validator.Validate(dst.CNAMERecord); err != nil {
-				dst.CNAMERecord = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.CNAMERecord = nil
-	}
-
-	// try to unmarshal data into MXRecord
-	err = newStrictDecoder(data).Decode(&dst.MXRecord)
-	if err == nil {
-		jsonMXRecord, _ := json.Marshal(dst.MXRecord)
-		if string(jsonMXRecord) == "{}" { // empty struct
-			dst.MXRecord = nil
-		} else {
-			if err = validator.Validate(dst.MXRecord); err != nil {
-				dst.MXRecord = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.MXRecord = nil
-	}
-
-	// try to unmarshal data into NSRecord
-	err = newStrictDecoder(data).Decode(&dst.NSRecord)
-	if err == nil {
-		jsonNSRecord, _ := json.Marshal(dst.NSRecord)
-		if string(jsonNSRecord) == "{}" { // empty struct
-			dst.NSRecord = nil
-		} else {
-			if err = validator.Validate(dst.NSRecord); err != nil {
-				dst.NSRecord = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.NSRecord = nil
-	}
-
-	// try to unmarshal data into PTRRecord
-	err = newStrictDecoder(data).Decode(&dst.PTRRecord)
-	if err == nil {
-		jsonPTRRecord, _ := json.Marshal(dst.PTRRecord)
-		if string(jsonPTRRecord) == "{}" { // empty struct
-			dst.PTRRecord = nil
-		} else {
-			if err = validator.Validate(dst.PTRRecord); err != nil {
-				dst.PTRRecord = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.PTRRecord = nil
-	}
-
-	// try to unmarshal data into SOARecord
-	err = newStrictDecoder(data).Decode(&dst.SOARecord)
-	if err == nil {
-		jsonSOARecord, _ := json.Marshal(dst.SOARecord)
-		if string(jsonSOARecord) == "{}" { // empty struct
-			dst.SOARecord = nil
-		} else {
-			if err = validator.Validate(dst.SOARecord); err != nil {
-				dst.SOARecord = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.SOARecord = nil
-	}
-
-	// try to unmarshal data into SRVRecord
-	err = newStrictDecoder(data).Decode(&dst.SRVRecord)
-	if err == nil {
-		jsonSRVRecord, _ := json.Marshal(dst.SRVRecord)
-		if string(jsonSRVRecord) == "{}" { // empty struct
-			dst.SRVRecord = nil
-		} else {
-			if err = validator.Validate(dst.SRVRecord); err != nil {
-				dst.SRVRecord = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.SRVRecord = nil
-	}
-
-	// try to unmarshal data into TXTRecord
-	err = newStrictDecoder(data).Decode(&dst.TXTRecord)
-	if err == nil {
-		jsonTXTRecord, _ := json.Marshal(dst.TXTRecord)
-		if string(jsonTXTRecord) == "{}" { // empty struct
-			dst.TXTRecord = nil
-		} else {
-			if err = validator.Validate(dst.TXTRecord); err != nil {
-				dst.TXTRecord = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.TXTRecord = nil
-	}
-
-	if match > 1 { // more than 1 match
-		// reset to nil
-		dst.AAAARecord = nil
-		dst.ARecord = nil
-		dst.CAARecord = nil
-		dst.CNAMERecord = nil
-		dst.MXRecord = nil
-		dst.NSRecord = nil
-		dst.PTRRecord = nil
-		dst.SOARecord = nil
-		dst.SRVRecord = nil
-		dst.TXTRecord = nil
-
-		return fmt.Errorf("data matches more than one schema in oneOf(Record)")
-	} else if match == 1 {
-		return nil // exactly one match
-	} else { // no match
-		return fmt.Errorf("data failed to match schemas in oneOf(Record)")
-	}
-}
-
-// Marshal data from the first non-nil pointers in the struct to JSON
-func (src Record) MarshalJSON() ([]byte, error) {
-	if src.AAAARecord != nil {
-		return json.Marshal(&src.AAAARecord)
-	}
-
-	if src.ARecord != nil {
-		return json.Marshal(&src.ARecord)
-	}
-
-	if src.CAARecord != nil {
-		return json.Marshal(&src.CAARecord)
-	}
-
-	if src.CNAMERecord != nil {
-		return json.Marshal(&src.CNAMERecord)
-	}
-
-	if src.MXRecord != nil {
-		return json.Marshal(&src.MXRecord)
-	}
-
-	if src.NSRecord != nil {
-		return json.Marshal(&src.NSRecord)
-	}
-
-	if src.PTRRecord != nil {
-		return json.Marshal(&src.PTRRecord)
-	}
-
-	if src.SOARecord != nil {
-		return json.Marshal(&src.SOARecord)
-	}
-
-	if src.SRVRecord != nil {
-		return json.Marshal(&src.SRVRecord)
-	}
-
-	if src.TXTRecord != nil {
-		return json.Marshal(&src.TXTRecord)
-	}
-
-	return nil, nil // no data in oneOf schemas
-}
-
-// Get the actual instance
-func (obj *Record) GetActualInstance() (interface{}) {
-	if obj == nil {
-		return nil
-	}
-	if obj.AAAARecord != nil {
-		return obj.AAAARecord
-	}
-
-	if obj.ARecord != nil {
-		return obj.ARecord
-	}
-
-	if obj.CAARecord != nil {
-		return obj.CAARecord
-	}
-
-	if obj.CNAMERecord != nil {
-		return obj.CNAMERecord
-	}
-
-	if obj.MXRecord != nil {
-		return obj.MXRecord
-	}
-
-	if obj.NSRecord != nil {
-		return obj.NSRecord
-	}
-
-	if obj.PTRRecord != nil {
-		return obj.PTRRecord
-	}
-
-	if obj.SOARecord != nil {
-		return obj.SOARecord
-	}
-
-	if obj.SRVRecord != nil {
-		return obj.SRVRecord
-	}
-
-	if obj.TXTRecord != nil {
-		return obj.TXTRecord
-	}
-
-	// all schemas are nil
-	return nil
-}
-
-// Get the actual instance value
-func (obj Record) GetActualInstanceValue() (interface{}) {
-	if obj.AAAARecord != nil {
-		return *obj.AAAARecord
-	}
-
-	if obj.ARecord != nil {
-		return *obj.ARecord
-	}
-
-	if obj.CAARecord != nil {
-		return *obj.CAARecord
-	}
-
-	if obj.CNAMERecord != nil {
-		return *obj.CNAMERecord
-	}
-
-	if obj.MXRecord != nil {
-		return *obj.MXRecord
-	}
-
-	if obj.NSRecord != nil {
-		return *obj.NSRecord
-	}
-
-	if obj.PTRRecord != nil {
-		return *obj.PTRRecord
-	}
-
-	if obj.SOARecord != nil {
-		return *obj.SOARecord
-	}
-
-	if obj.SRVRecord != nil {
-		return *obj.SRVRecord
-	}
-
-	if obj.TXTRecord != nil {
-		return *obj.TXTRecord
-	}
-
-	// all schemas are nil
-	return nil
+	return err
 }
 
 type NullableRecord struct {

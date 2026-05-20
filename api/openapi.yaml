@@ -374,10 +374,10 @@ components:
       example:
         records:
         - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
-          type: type
+          type: TXT
           ttl: 3600
         - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
-          type: type
+          type: TXT
           ttl: 3600
       properties:
         records:
@@ -388,7 +388,7 @@ components:
       - records
       type: object
     Record:
-      description: Polymorphic DNS record type resolved through the `type` discriminator.
+      description: Base DNS record properties.
       discriminator:
         mapping:
           A: "#/components/schemas/ARecord"
@@ -404,19 +404,8 @@ components:
         propertyName: type
       example:
         id: 66101ef0-3e34-470d-92ea-53b89ad036e7
-        type: type
+        type: TXT
         ttl: 3600
-      oneOf:
-      - $ref: "#/components/schemas/ARecord"
-      - $ref: "#/components/schemas/AAAARecord"
-      - $ref: "#/components/schemas/CNAMERecord"
-      - $ref: "#/components/schemas/MXRecord"
-      - $ref: "#/components/schemas/TXTRecord"
-      - $ref: "#/components/schemas/NSRecord"
-      - $ref: "#/components/schemas/SOARecord"
-      - $ref: "#/components/schemas/SRVRecord"
-      - $ref: "#/components/schemas/PTRRecord"
-      - $ref: "#/components/schemas/CAARecord"
       properties:
         id:
           description: UUID v4 associated with the DNS record.
@@ -430,194 +419,225 @@ components:
           type: integer
         type:
           description: DNS record type discriminator.
+          example: TXT
           type: string
       required:
       - type
       type: object
     ARecord:
+      allOf:
+      - $ref: "#/components/schemas/Record"
+      - properties:
+          host:
+            description: the host associated with the ipv4.
+            example: example.com.
+            type: string
+          ipv4:
+            description: IPv4 address assigned to the hostname.
+            example: 192.168.1.10
+            format: ipv4
+            type: string
+        required:
+        - host
+        - ipv4
+        type: object
       description: DNS A record mapping a hostname to an IPv4 address.
-      properties:
-        host:
-          description: the host associated with the ipv4.
-          example: example.com.
-          type: string
-        ipv4:
-          description: IPv4 address assigned to the hostname.
-          example: 192.168.1.10
-          format: ipv4
-          type: string
-      required:
-      - host
-      - ipv4
     AAAARecord:
+      allOf:
+      - $ref: "#/components/schemas/Record"
+      - properties:
+          host:
+            description: the host associated with the ipv4.
+            example: example.com.
+            type: string
+          ipv6:
+            description: IPv6 address assigned to the hostname.
+            example: 2001:db8::10
+            format: ipv6
+            type: string
+        required:
+        - host
+        - ipv6
+        type: object
       description: DNS AAAA record mapping a hostname to an IPv6 address.
-      properties:
-        host:
-          description: the host associated with the ipv4.
-          example: example.com.
-          type: string
-        ipv6:
-          description: IPv6 address assigned to the hostname.
-          example: 2001:db8::10
-          format: ipv6
-          type: string
-      required:
-      - host
-      - ipv6
     CNAMERecord:
+      allOf:
+      - $ref: "#/components/schemas/Record"
+      - properties:
+          canonicalName:
+            description: Canonical hostname target.
+            example: server.example.com
+            type: string
+        required:
+        - canonicalName
+        type: object
       description: DNS CNAME record mapping an alias hostname to a canonical hostname.
-      properties:
-        canonicalName:
-          description: Canonical hostname target.
-          example: server.example.com
-          type: string
-      required:
-      - canonicalName
     MXRecord:
+      allOf:
+      - $ref: "#/components/schemas/Record"
+      - properties:
+          priority:
+            description: Mail server priority where lower values are preferred.
+            example: 10
+            minimum: 0
+            type: integer
+          exchange:
+            description: Mail server hostname.
+            example: mail.example.com
+            type: string
+        required:
+        - exchange
+        - priority
+        type: object
       description: DNS MX record defining the mail servers responsible for handling
         email delivery for a domain.
-      properties:
-        priority:
-          description: Mail server priority where lower values are preferred.
-          example: 10
-          minimum: 0
-          type: integer
-        exchange:
-          description: Mail server hostname.
-          example: mail.example.com
-          type: string
-      required:
-      - exchange
-      - priority
     TXTRecord:
+      allOf:
+      - $ref: "#/components/schemas/Record"
+      - properties:
+          value:
+            description: TXT record value.
+            example: v=spf1 include:_spf.example.com ~all
+            type: string
+        required:
+        - value
+        type: object
       description: "DNS TXT record used for arbitrary text-based metadata such as\
         \ SPF, DKIM, and domain verification."
-      properties:
-        value:
-          description: TXT record value.
-          example: v=spf1 include:_spf.example.com ~all
-          type: string
-      required:
-      - value
     NSRecord:
+      allOf:
+      - $ref: "#/components/schemas/Record"
+      - properties:
+          nameserver:
+            description: Authoritative nameserver hostname.
+            example: ns1.example.com
+            type: string
+        required:
+        - nameserver
+        type: object
       description: DNS NS record delegating authority for a DNS zone to an authoritative
         nameserver.
-      properties:
-        nameserver:
-          description: Authoritative nameserver hostname.
-          example: ns1.example.com
-          type: string
-      required:
-      - nameserver
     SOARecord:
+      allOf:
+      - $ref: "#/components/schemas/Record"
+      - properties:
+          mName:
+            description: Primary master nameserver for the zone.
+            example: ns1.example.com
+            type: string
+          rName:
+            description: Responsible party email (encoded format).
+            example: hostmaster.example.com
+            type: string
+          serial:
+            example: 2026050101
+            type: integer
+          refresh:
+            example: 7200
+            type: integer
+          retry:
+            example: 3600
+            type: integer
+          expire:
+            example: 1209600
+            type: integer
+          minimum:
+            example: 3600
+            type: integer
+        required:
+        - expire
+        - mName
+        - minimum
+        - rName
+        - refresh
+        - retry
+        - serial
+        type: object
       description: DNS SOA record containing administrative and timing information
         for a DNS zone.
-      properties:
-        mName:
-          description: Primary master nameserver for the zone.
-          example: ns1.example.com
-          type: string
-        rName:
-          description: Responsible party email (encoded format).
-          example: hostmaster.example.com
-          type: string
-        serial:
-          example: 2026050101
-          type: integer
-        refresh:
-          example: 7200
-          type: integer
-        retry:
-          example: 3600
-          type: integer
-        expire:
-          example: 1209600
-          type: integer
-        minimum:
-          example: 3600
-          type: integer
-      required:
-      - expire
-      - mName
-      - minimum
-      - rName
-      - refresh
-      - retry
-      - serial
     SRVRecord:
+      allOf:
+      - $ref: "#/components/schemas/Record"
+      - properties:
+          priority:
+            description: Service priority where lower values are preferred.
+            example: 10
+            minimum: 0
+            type: integer
+          weight:
+            description: Relative weight for load balancing between services with
+              the same priority.
+            example: 5
+            minimum: 0
+            type: integer
+          port:
+            description: Network port exposed by the target service.
+            example: 443
+            maximum: 65535
+            minimum: 1
+            type: integer
+          target:
+            description: Target hostname providing the service.
+            example: sip.example.com
+            type: string
+        required:
+        - port
+        - priority
+        - target
+        - weight
+        type: object
       description: DNS SRV record defining the hostname and port for a specific service.
-      properties:
-        priority:
-          description: Service priority where lower values are preferred.
-          example: 10
-          minimum: 0
-          type: integer
-        weight:
-          description: Relative weight for load balancing between services with the
-            same priority.
-          example: 5
-          minimum: 0
-          type: integer
-        port:
-          description: Network port exposed by the target service.
-          example: 443
-          maximum: 65535
-          minimum: 1
-          type: integer
-        target:
-          description: Target hostname providing the service.
-          example: sip.example.com
-          type: string
-      required:
-      - port
-      - priority
-      - target
-      - weight
     PTRRecord:
+      allOf:
+      - $ref: "#/components/schemas/Record"
+      - properties:
+          pointer:
+            description: Reverse DNS hostname target.
+            example: server.example.com
+            type: string
+        required:
+        - pointer
+        type: object
       description: DNS PTR record used for reverse DNS lookups from IP addresses to
         hostnames.
-      properties:
-        pointer:
-          description: Reverse DNS hostname target.
-          example: server.example.com
-          type: string
-      required:
-      - pointer
     CAARecord:
+      allOf:
+      - $ref: "#/components/schemas/Record"
+      - properties:
+          flags:
+            description: Flags controlling record interpretation.
+            example: 0
+            maximum: 255
+            minimum: 0
+            type: integer
+          tag:
+            description: CAA property tag defining the authorization behavior.
+            enum:
+            - issue
+            - issuewild
+            - iodef
+            example: issue
+            type: string
+          value:
+            description: Certificate authority authorization value.
+            example: letsencrypt.org
+            type: string
+        required:
+        - flags
+        - tag
+        - value
+        type: object
       description: DNS CAA record restricting which certificate authorities may issue
         TLS certificates for a domain.
-      properties:
-        flags:
-          description: Flags controlling record interpretation.
-          example: 0
-          maximum: 255
-          minimum: 0
-          type: integer
-        tag:
-          description: CAA property tag defining the authorization behavior.
-          enum:
-          - issue
-          - issuewild
-          - iodef
-          example: issue
-          type: string
-        value:
-          description: Certificate authority authorization value.
-          example: letsencrypt.org
-          type: string
-      required:
-      - flags
-      - tag
-      - value
     Domain:
       description: DNS domain containing metadata and associated DNS records.
       example:
         records:
         - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
-          type: type
+          type: TXT
           ttl: 3600
         - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
-          type: type
+          type: TXT
           ttl: 3600
         name: mail.portal
         id: 66101ef0-3e34-470d-92ea-53b89ad036e7

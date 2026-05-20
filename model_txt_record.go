@@ -22,6 +22,7 @@ var _ MappedNullable = &TXTRecord{}
 
 // TXTRecord DNS TXT record used for arbitrary text-based metadata such as SPF, DKIM, and domain verification.
 type TXTRecord struct {
+	Record
 	// TXT record value.
 	Value string `json:"value"`
 }
@@ -32,8 +33,9 @@ type _TXTRecord TXTRecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTXTRecord(value string) *TXTRecord {
+func NewTXTRecord(value string, type_ string) *TXTRecord {
 	this := TXTRecord{}
+	this.Type = type_
 	this.Value = value
 	return &this
 }
@@ -80,6 +82,14 @@ func (o TXTRecord) MarshalJSON() ([]byte, error) {
 
 func (o TXTRecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	serializedRecord, errRecord := json.Marshal(o.Record)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
+	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
 	toSerialize["value"] = o.Value
 	return toSerialize, nil
 }
@@ -90,6 +100,7 @@ func (o *TXTRecord) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"value",
+		"type",
 	}
 
 	allProperties := make(map[string]interface{})

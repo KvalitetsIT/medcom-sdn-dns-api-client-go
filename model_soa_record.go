@@ -22,6 +22,7 @@ var _ MappedNullable = &SOARecord{}
 
 // SOARecord DNS SOA record containing administrative and timing information for a DNS zone.
 type SOARecord struct {
+	Record
 	// Primary master nameserver for the zone.
 	MName string `json:"mName"`
 	// Responsible party email (encoded format).
@@ -39,8 +40,9 @@ type _SOARecord SOARecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSOARecord(mName string, rName string, serial int32, refresh int32, retry int32, expire int32, minimum int32) *SOARecord {
+func NewSOARecord(mName string, rName string, serial int32, refresh int32, retry int32, expire int32, minimum int32, type_ string) *SOARecord {
 	this := SOARecord{}
+	this.Type = type_
 	this.MName = mName
 	this.RName = rName
 	this.Serial = serial
@@ -237,6 +239,14 @@ func (o SOARecord) MarshalJSON() ([]byte, error) {
 
 func (o SOARecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	serializedRecord, errRecord := json.Marshal(o.Record)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
+	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
 	toSerialize["mName"] = o.MName
 	toSerialize["rName"] = o.RName
 	toSerialize["serial"] = o.Serial
@@ -259,6 +269,7 @@ func (o *SOARecord) UnmarshalJSON(data []byte) (err error) {
 		"retry",
 		"expire",
 		"minimum",
+		"type",
 	}
 
 	allProperties := make(map[string]interface{})

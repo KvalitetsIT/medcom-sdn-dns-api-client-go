@@ -22,6 +22,7 @@ var _ MappedNullable = &PTRRecord{}
 
 // PTRRecord DNS PTR record used for reverse DNS lookups from IP addresses to hostnames.
 type PTRRecord struct {
+	Record
 	// Reverse DNS hostname target.
 	Pointer string `json:"pointer"`
 }
@@ -32,8 +33,9 @@ type _PTRRecord PTRRecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPTRRecord(pointer string) *PTRRecord {
+func NewPTRRecord(pointer string, type_ string) *PTRRecord {
 	this := PTRRecord{}
+	this.Type = type_
 	this.Pointer = pointer
 	return &this
 }
@@ -80,6 +82,14 @@ func (o PTRRecord) MarshalJSON() ([]byte, error) {
 
 func (o PTRRecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	serializedRecord, errRecord := json.Marshal(o.Record)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
+	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
 	toSerialize["pointer"] = o.Pointer
 	return toSerialize, nil
 }
@@ -90,6 +100,7 @@ func (o *PTRRecord) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"pointer",
+		"type",
 	}
 
 	allProperties := make(map[string]interface{})

@@ -22,6 +22,7 @@ var _ MappedNullable = &CAARecord{}
 
 // CAARecord DNS CAA record restricting which certificate authorities may issue TLS certificates for a domain.
 type CAARecord struct {
+	Record
 	// Flags controlling record interpretation.
 	Flags int32 `json:"flags"`
 	// CAA property tag defining the authorization behavior.
@@ -36,8 +37,9 @@ type _CAARecord CAARecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCAARecord(flags int32, tag string, value string) *CAARecord {
+func NewCAARecord(flags int32, tag string, value string, type_ string) *CAARecord {
 	this := CAARecord{}
+	this.Type = type_
 	this.Flags = flags
 	this.Tag = tag
 	this.Value = value
@@ -134,6 +136,14 @@ func (o CAARecord) MarshalJSON() ([]byte, error) {
 
 func (o CAARecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	serializedRecord, errRecord := json.Marshal(o.Record)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
+	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
 	toSerialize["flags"] = o.Flags
 	toSerialize["tag"] = o.Tag
 	toSerialize["value"] = o.Value
@@ -148,6 +158,7 @@ func (o *CAARecord) UnmarshalJSON(data []byte) (err error) {
 		"flags",
 		"tag",
 		"value",
+		"type",
 	}
 
 	allProperties := make(map[string]interface{})

@@ -22,6 +22,7 @@ var _ MappedNullable = &NSRecord{}
 
 // NSRecord DNS NS record delegating authority for a DNS zone to an authoritative nameserver.
 type NSRecord struct {
+	Record
 	// Authoritative nameserver hostname.
 	Nameserver string `json:"nameserver"`
 }
@@ -32,8 +33,9 @@ type _NSRecord NSRecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNSRecord(nameserver string) *NSRecord {
+func NewNSRecord(nameserver string, type_ string) *NSRecord {
 	this := NSRecord{}
+	this.Type = type_
 	this.Nameserver = nameserver
 	return &this
 }
@@ -80,6 +82,14 @@ func (o NSRecord) MarshalJSON() ([]byte, error) {
 
 func (o NSRecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	serializedRecord, errRecord := json.Marshal(o.Record)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
+	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
+	if errRecord != nil {
+		return map[string]interface{}{}, errRecord
+	}
 	toSerialize["nameserver"] = o.Nameserver
 	return toSerialize, nil
 }
@@ -90,6 +100,7 @@ func (o *NSRecord) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"nameserver",
+		"type",
 	}
 
 	allProperties := make(map[string]interface{})
