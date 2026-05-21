@@ -25,7 +25,7 @@ var _ MappedNullable = &CNAMERecord{}
 type CNAMERecord struct {
 	Record
 	// Alias hostname
-	Host *string `json:"host,omitempty"`
+	Host string `json:"host"`
 	// Canonical hostname target.
 	CanonicalName string `json:"canonicalName"`
 	AdditionalProperties map[string]interface{}
@@ -37,9 +37,10 @@ type _CNAMERecord CNAMERecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCNAMERecord(canonicalName string, type_ string) *CNAMERecord {
+func NewCNAMERecord(host string, canonicalName string, type_ string) *CNAMERecord {
 	this := CNAMERecord{}
 	this.Type = type_
+	this.Host = host
 	this.CanonicalName = canonicalName
 	return &this
 }
@@ -52,36 +53,28 @@ func NewCNAMERecordWithDefaults() *CNAMERecord {
 	return &this
 }
 
-// GetHost returns the Host field value if set, zero value otherwise.
+// GetHost returns the Host field value
 func (o *CNAMERecord) GetHost() string {
-	if o == nil || IsNil(o.Host) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Host
+
+	return o.Host
 }
 
-// GetHostOk returns a tuple with the Host field value if set, nil otherwise
+// GetHostOk returns a tuple with the Host field value
 // and a boolean to check if the value has been set.
 func (o *CNAMERecord) GetHostOk() (*string, bool) {
-	if o == nil || IsNil(o.Host) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Host, true
+	return &o.Host, true
 }
 
-// HasHost returns a boolean if a field has been set.
-func (o *CNAMERecord) HasHost() bool {
-	if o != nil && !IsNil(o.Host) {
-		return true
-	}
-
-	return false
-}
-
-// SetHost gets a reference to the given string and assigns it to the Host field.
+// SetHost sets field value
 func (o *CNAMERecord) SetHost(v string) {
-	o.Host = &v
+	o.Host = v
 }
 
 // GetCanonicalName returns the CanonicalName field value
@@ -126,9 +119,7 @@ func (o CNAMERecord) ToMap() (map[string]interface{}, error) {
 	if errRecord != nil {
 		return map[string]interface{}{}, errRecord
 	}
-	if !IsNil(o.Host) {
-		toSerialize["host"] = o.Host
-	}
+	toSerialize["host"] = o.Host
 	toSerialize["canonicalName"] = o.CanonicalName
 
 	for key, value := range o.AdditionalProperties {
@@ -143,6 +134,7 @@ func (o *CNAMERecord) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"host",
 		"canonicalName",
 		"type",
 	}
@@ -163,7 +155,7 @@ func (o *CNAMERecord) UnmarshalJSON(data []byte) (err error) {
 
 	type CNAMERecordWithoutEmbeddedStruct struct {
 		// Alias hostname
-		Host *string `json:"host,omitempty"`
+		Host string `json:"host"`
 		// Canonical hostname target.
 		CanonicalName string `json:"canonicalName"`
 	}

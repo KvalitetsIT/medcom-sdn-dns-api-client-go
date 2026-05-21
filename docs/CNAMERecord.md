@@ -4,14 +4,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Host** | Pointer to **string** | Alias hostname | [optional] 
+**Host** | **string** | Alias hostname | 
 **CanonicalName** | **string** | Canonical hostname target. | 
 
 ## Methods
 
 ### NewCNAMERecord
 
-`func NewCNAMERecord(canonicalName string, ) *CNAMERecord`
+`func NewCNAMERecord(host string, canonicalName string, ) *CNAMERecord`
 
 NewCNAMERecord instantiates a new CNAMERecord object
 This constructor will assign default values to properties that have it defined,
@@ -45,11 +45,6 @@ and a boolean to check if the value has been set.
 
 SetHost sets Host field to given value.
 
-### HasHost
-
-`func (o *CNAMERecord) HasHost() bool`
-
-HasHost returns a boolean if a field has been set.
 
 ### GetCanonicalName
 

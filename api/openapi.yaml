@@ -474,6 +474,7 @@ components:
             type: string
         required:
         - canonicalName
+        - host
         type: object
       description: DNS CNAME record mapping an alias hostname to a canonical hostname.
     MXRecord:
