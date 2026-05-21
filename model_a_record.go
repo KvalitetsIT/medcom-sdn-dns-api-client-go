@@ -13,8 +13,9 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
 // checks if the ARecord type satisfies the MappedNullable interface at compile time
@@ -27,6 +28,7 @@ type ARecord struct {
 	Host string `json:"host"`
 	// IPv4 address assigned to the hostname.
 	Ipv4 string `json:"ipv4"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _ARecord ARecord
@@ -119,6 +121,11 @@ func (o ARecord) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["host"] = o.Host
 	toSerialize["ipv4"] = o.Ipv4
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -146,17 +153,60 @@ func (o *ARecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varARecord := _ARecord{}
+	type ARecordWithoutEmbeddedStruct struct {
+		// the host associated with the ipv4.
+		Host string `json:"host"`
+		// IPv4 address assigned to the hostname.
+		Ipv4 string `json:"ipv4"`
+	}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varARecord)
+	varARecordWithoutEmbeddedStruct := ARecordWithoutEmbeddedStruct{}
 
-	if err != nil {
+	err = json.Unmarshal(data, &varARecordWithoutEmbeddedStruct)
+	if err == nil {
+		varARecord := _ARecord{}
+		varARecord.Host = varARecordWithoutEmbeddedStruct.Host
+		varARecord.Ipv4 = varARecordWithoutEmbeddedStruct.Ipv4
+		*o = ARecord(varARecord)
+	} else {
 		return err
 	}
 
-	*o = ARecord(varARecord)
+	varARecord := _ARecord{}
+
+	err = json.Unmarshal(data, &varARecord)
+	if err == nil {
+		o.Record = varARecord.Record
+	} else {
+		return err
+	}
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "host")
+		delete(additionalProperties, "ipv4")
+
+		// remove fields from embedded structs
+		reflectRecord := reflect.ValueOf(o.Record)
+		for i := 0; i < reflectRecord.Type().NumField(); i++ {
+			t := reflectRecord.Type().Field(i)
+
+			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
+				fieldName := ""
+				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
+					fieldName = jsonTag[:commaIdx]
+				} else {
+					fieldName = jsonTag
+				}
+				if fieldName != "AdditionalProperties" {
+					delete(additionalProperties, fieldName)
+				}
+			}
+		}
+
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

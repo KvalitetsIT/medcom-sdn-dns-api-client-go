@@ -13,8 +13,9 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
 // checks if the AAAARecord type satisfies the MappedNullable interface at compile time
@@ -27,6 +28,7 @@ type AAAARecord struct {
 	Host string `json:"host"`
 	// IPv6 address assigned to the hostname.
 	Ipv6 string `json:"ipv6"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AAAARecord AAAARecord
@@ -119,6 +121,11 @@ func (o AAAARecord) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["host"] = o.Host
 	toSerialize["ipv6"] = o.Ipv6
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -146,17 +153,60 @@ func (o *AAAARecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varAAAARecord := _AAAARecord{}
+	type AAAARecordWithoutEmbeddedStruct struct {
+		// the host associated with the ipv4.
+		Host string `json:"host"`
+		// IPv6 address assigned to the hostname.
+		Ipv6 string `json:"ipv6"`
+	}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAAAARecord)
+	varAAAARecordWithoutEmbeddedStruct := AAAARecordWithoutEmbeddedStruct{}
 
-	if err != nil {
+	err = json.Unmarshal(data, &varAAAARecordWithoutEmbeddedStruct)
+	if err == nil {
+		varAAAARecord := _AAAARecord{}
+		varAAAARecord.Host = varAAAARecordWithoutEmbeddedStruct.Host
+		varAAAARecord.Ipv6 = varAAAARecordWithoutEmbeddedStruct.Ipv6
+		*o = AAAARecord(varAAAARecord)
+	} else {
 		return err
 	}
 
-	*o = AAAARecord(varAAAARecord)
+	varAAAARecord := _AAAARecord{}
+
+	err = json.Unmarshal(data, &varAAAARecord)
+	if err == nil {
+		o.Record = varAAAARecord.Record
+	} else {
+		return err
+	}
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "host")
+		delete(additionalProperties, "ipv6")
+
+		// remove fields from embedded structs
+		reflectRecord := reflect.ValueOf(o.Record)
+		for i := 0; i < reflectRecord.Type().NumField(); i++ {
+			t := reflectRecord.Type().Field(i)
+
+			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
+				fieldName := ""
+				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
+					fieldName = jsonTag[:commaIdx]
+				} else {
+					fieldName = jsonTag
+				}
+				if fieldName != "AdditionalProperties" {
+					delete(additionalProperties, fieldName)
+				}
+			}
+		}
+
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

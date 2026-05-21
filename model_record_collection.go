@@ -13,7 +13,6 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &RecordCollection{}
 // RecordCollection struct for RecordCollection
 type RecordCollection struct {
 	Records []Record `json:"records"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _RecordCollection RecordCollection
@@ -80,6 +80,11 @@ func (o RecordCollection) MarshalJSON() ([]byte, error) {
 func (o RecordCollection) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["records"] = o.Records
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -107,15 +112,20 @@ func (o *RecordCollection) UnmarshalJSON(data []byte) (err error) {
 
 	varRecordCollection := _RecordCollection{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRecordCollection)
+	err = json.Unmarshal(data, &varRecordCollection)
 
 	if err != nil {
 		return err
 	}
 
 	*o = RecordCollection(varRecordCollection)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "records")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

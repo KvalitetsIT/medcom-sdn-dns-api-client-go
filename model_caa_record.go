@@ -13,8 +13,9 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
 // checks if the CAARecord type satisfies the MappedNullable interface at compile time
@@ -29,6 +30,7 @@ type CAARecord struct {
 	Tag string `json:"tag"`
 	// Certificate authority authorization value.
 	Value string `json:"value"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _CAARecord CAARecord
@@ -147,6 +149,11 @@ func (o CAARecord) ToMap() (map[string]interface{}, error) {
 	toSerialize["flags"] = o.Flags
 	toSerialize["tag"] = o.Tag
 	toSerialize["value"] = o.Value
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -175,17 +182,64 @@ func (o *CAARecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varCAARecord := _CAARecord{}
+	type CAARecordWithoutEmbeddedStruct struct {
+		// Flags controlling record interpretation.
+		Flags int32 `json:"flags"`
+		// CAA property tag defining the authorization behavior.
+		Tag string `json:"tag"`
+		// Certificate authority authorization value.
+		Value string `json:"value"`
+	}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCAARecord)
+	varCAARecordWithoutEmbeddedStruct := CAARecordWithoutEmbeddedStruct{}
 
-	if err != nil {
+	err = json.Unmarshal(data, &varCAARecordWithoutEmbeddedStruct)
+	if err == nil {
+		varCAARecord := _CAARecord{}
+		varCAARecord.Flags = varCAARecordWithoutEmbeddedStruct.Flags
+		varCAARecord.Tag = varCAARecordWithoutEmbeddedStruct.Tag
+		varCAARecord.Value = varCAARecordWithoutEmbeddedStruct.Value
+		*o = CAARecord(varCAARecord)
+	} else {
 		return err
 	}
 
-	*o = CAARecord(varCAARecord)
+	varCAARecord := _CAARecord{}
+
+	err = json.Unmarshal(data, &varCAARecord)
+	if err == nil {
+		o.Record = varCAARecord.Record
+	} else {
+		return err
+	}
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "flags")
+		delete(additionalProperties, "tag")
+		delete(additionalProperties, "value")
+
+		// remove fields from embedded structs
+		reflectRecord := reflect.ValueOf(o.Record)
+		for i := 0; i < reflectRecord.Type().NumField(); i++ {
+			t := reflectRecord.Type().Field(i)
+
+			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
+				fieldName := ""
+				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
+					fieldName = jsonTag[:commaIdx]
+				} else {
+					fieldName = jsonTag
+				}
+				if fieldName != "AdditionalProperties" {
+					delete(additionalProperties, fieldName)
+				}
+			}
+		}
+
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

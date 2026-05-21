@@ -4,6 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**Host** | Pointer to **string** | Alias hostname | [optional] 
 **CanonicalName** | **string** | Canonical hostname target. | 
 
 ## Methods
@@ -24,6 +25,31 @@ will change when the set of required properties is changed
 NewCNAMERecordWithDefaults instantiates a new CNAMERecord object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
+
+### GetHost
+
+`func (o *CNAMERecord) GetHost() string`
+
+GetHost returns the Host field if non-nil, zero value otherwise.
+
+### GetHostOk
+
+`func (o *CNAMERecord) GetHostOk() (*string, bool)`
+
+GetHostOk returns a tuple with the Host field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetHost
+
+`func (o *CNAMERecord) SetHost(v string)`
+
+SetHost sets Host field to given value.
+
+### HasHost
+
+`func (o *CNAMERecord) HasHost() bool`
+
+HasHost returns a boolean if a field has been set.
 
 ### GetCanonicalName
 

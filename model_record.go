@@ -13,7 +13,6 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type Record struct {
 	Ttl *int32 `json:"ttl,omitempty"`
 	// DNS record type discriminator.
 	Type string `json:"type"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Record Record
@@ -155,6 +155,11 @@ func (o Record) ToMap() (map[string]interface{}, error) {
 		toSerialize["ttl"] = o.Ttl
 	}
 	toSerialize["type"] = o.Type
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -182,15 +187,22 @@ func (o *Record) UnmarshalJSON(data []byte) (err error) {
 
 	varRecord := _Record{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRecord)
+	err = json.Unmarshal(data, &varRecord)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Record(varRecord)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "type")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

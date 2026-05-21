@@ -13,8 +13,9 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
 // checks if the CNAMERecord type satisfies the MappedNullable interface at compile time
@@ -23,8 +24,11 @@ var _ MappedNullable = &CNAMERecord{}
 // CNAMERecord DNS CNAME record mapping an alias hostname to a canonical hostname.
 type CNAMERecord struct {
 	Record
+	// Alias hostname
+	Host *string `json:"host,omitempty"`
 	// Canonical hostname target.
 	CanonicalName string `json:"canonicalName"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _CNAMERecord CNAMERecord
@@ -46,6 +50,38 @@ func NewCNAMERecord(canonicalName string, type_ string) *CNAMERecord {
 func NewCNAMERecordWithDefaults() *CNAMERecord {
 	this := CNAMERecord{}
 	return &this
+}
+
+// GetHost returns the Host field value if set, zero value otherwise.
+func (o *CNAMERecord) GetHost() string {
+	if o == nil || IsNil(o.Host) {
+		var ret string
+		return ret
+	}
+	return *o.Host
+}
+
+// GetHostOk returns a tuple with the Host field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CNAMERecord) GetHostOk() (*string, bool) {
+	if o == nil || IsNil(o.Host) {
+		return nil, false
+	}
+	return o.Host, true
+}
+
+// HasHost returns a boolean if a field has been set.
+func (o *CNAMERecord) HasHost() bool {
+	if o != nil && !IsNil(o.Host) {
+		return true
+	}
+
+	return false
+}
+
+// SetHost gets a reference to the given string and assigns it to the Host field.
+func (o *CNAMERecord) SetHost(v string) {
+	o.Host = &v
 }
 
 // GetCanonicalName returns the CanonicalName field value
@@ -90,7 +126,15 @@ func (o CNAMERecord) ToMap() (map[string]interface{}, error) {
 	if errRecord != nil {
 		return map[string]interface{}{}, errRecord
 	}
+	if !IsNil(o.Host) {
+		toSerialize["host"] = o.Host
+	}
 	toSerialize["canonicalName"] = o.CanonicalName
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -117,17 +161,60 @@ func (o *CNAMERecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varCNAMERecord := _CNAMERecord{}
+	type CNAMERecordWithoutEmbeddedStruct struct {
+		// Alias hostname
+		Host *string `json:"host,omitempty"`
+		// Canonical hostname target.
+		CanonicalName string `json:"canonicalName"`
+	}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCNAMERecord)
+	varCNAMERecordWithoutEmbeddedStruct := CNAMERecordWithoutEmbeddedStruct{}
 
-	if err != nil {
+	err = json.Unmarshal(data, &varCNAMERecordWithoutEmbeddedStruct)
+	if err == nil {
+		varCNAMERecord := _CNAMERecord{}
+		varCNAMERecord.Host = varCNAMERecordWithoutEmbeddedStruct.Host
+		varCNAMERecord.CanonicalName = varCNAMERecordWithoutEmbeddedStruct.CanonicalName
+		*o = CNAMERecord(varCNAMERecord)
+	} else {
 		return err
 	}
 
-	*o = CNAMERecord(varCNAMERecord)
+	varCNAMERecord := _CNAMERecord{}
+
+	err = json.Unmarshal(data, &varCNAMERecord)
+	if err == nil {
+		o.Record = varCNAMERecord.Record
+	} else {
+		return err
+	}
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "host")
+		delete(additionalProperties, "canonicalName")
+
+		// remove fields from embedded structs
+		reflectRecord := reflect.ValueOf(o.Record)
+		for i := 0; i < reflectRecord.Type().NumField(); i++ {
+			t := reflectRecord.Type().Field(i)
+
+			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
+				fieldName := ""
+				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
+					fieldName = jsonTag[:commaIdx]
+				} else {
+					fieldName = jsonTag
+				}
+				if fieldName != "AdditionalProperties" {
+					delete(additionalProperties, fieldName)
+				}
+			}
+		}
+
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

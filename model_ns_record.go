@@ -13,8 +13,9 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
 // checks if the NSRecord type satisfies the MappedNullable interface at compile time
@@ -25,6 +26,7 @@ type NSRecord struct {
 	Record
 	// Authoritative nameserver hostname.
 	Nameserver string `json:"nameserver"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _NSRecord NSRecord
@@ -91,6 +93,11 @@ func (o NSRecord) ToMap() (map[string]interface{}, error) {
 		return map[string]interface{}{}, errRecord
 	}
 	toSerialize["nameserver"] = o.Nameserver
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -117,17 +124,56 @@ func (o *NSRecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varNSRecord := _NSRecord{}
+	type NSRecordWithoutEmbeddedStruct struct {
+		// Authoritative nameserver hostname.
+		Nameserver string `json:"nameserver"`
+	}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varNSRecord)
+	varNSRecordWithoutEmbeddedStruct := NSRecordWithoutEmbeddedStruct{}
 
-	if err != nil {
+	err = json.Unmarshal(data, &varNSRecordWithoutEmbeddedStruct)
+	if err == nil {
+		varNSRecord := _NSRecord{}
+		varNSRecord.Nameserver = varNSRecordWithoutEmbeddedStruct.Nameserver
+		*o = NSRecord(varNSRecord)
+	} else {
 		return err
 	}
 
-	*o = NSRecord(varNSRecord)
+	varNSRecord := _NSRecord{}
+
+	err = json.Unmarshal(data, &varNSRecord)
+	if err == nil {
+		o.Record = varNSRecord.Record
+	} else {
+		return err
+	}
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "nameserver")
+
+		// remove fields from embedded structs
+		reflectRecord := reflect.ValueOf(o.Record)
+		for i := 0; i < reflectRecord.Type().NumField(); i++ {
+			t := reflectRecord.Type().Field(i)
+
+			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
+				fieldName := ""
+				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
+					fieldName = jsonTag[:commaIdx]
+				} else {
+					fieldName = jsonTag
+				}
+				if fieldName != "AdditionalProperties" {
+					delete(additionalProperties, fieldName)
+				}
+			}
+		}
+
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -464,6 +464,10 @@ components:
       allOf:
       - $ref: "#/components/schemas/Record"
       - properties:
+          host:
+            description: Alias hostname
+            example: example.com
+            type: string
           canonicalName:
             description: Canonical hostname target.
             example: server.example.com

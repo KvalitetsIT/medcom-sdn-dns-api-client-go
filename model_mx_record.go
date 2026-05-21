@@ -13,8 +13,9 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
 // checks if the MXRecord type satisfies the MappedNullable interface at compile time
@@ -27,6 +28,7 @@ type MXRecord struct {
 	Priority int32 `json:"priority"`
 	// Mail server hostname.
 	Exchange string `json:"exchange"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _MXRecord MXRecord
@@ -119,6 +121,11 @@ func (o MXRecord) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["priority"] = o.Priority
 	toSerialize["exchange"] = o.Exchange
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -146,17 +153,60 @@ func (o *MXRecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varMXRecord := _MXRecord{}
+	type MXRecordWithoutEmbeddedStruct struct {
+		// Mail server priority where lower values are preferred.
+		Priority int32 `json:"priority"`
+		// Mail server hostname.
+		Exchange string `json:"exchange"`
+	}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varMXRecord)
+	varMXRecordWithoutEmbeddedStruct := MXRecordWithoutEmbeddedStruct{}
 
-	if err != nil {
+	err = json.Unmarshal(data, &varMXRecordWithoutEmbeddedStruct)
+	if err == nil {
+		varMXRecord := _MXRecord{}
+		varMXRecord.Priority = varMXRecordWithoutEmbeddedStruct.Priority
+		varMXRecord.Exchange = varMXRecordWithoutEmbeddedStruct.Exchange
+		*o = MXRecord(varMXRecord)
+	} else {
 		return err
 	}
 
-	*o = MXRecord(varMXRecord)
+	varMXRecord := _MXRecord{}
+
+	err = json.Unmarshal(data, &varMXRecord)
+	if err == nil {
+		o.Record = varMXRecord.Record
+	} else {
+		return err
+	}
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "priority")
+		delete(additionalProperties, "exchange")
+
+		// remove fields from embedded structs
+		reflectRecord := reflect.ValueOf(o.Record)
+		for i := 0; i < reflectRecord.Type().NumField(); i++ {
+			t := reflectRecord.Type().Field(i)
+
+			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
+				fieldName := ""
+				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
+					fieldName = jsonTag[:commaIdx]
+				} else {
+					fieldName = jsonTag
+				}
+				if fieldName != "AdditionalProperties" {
+					delete(additionalProperties, fieldName)
+				}
+			}
+		}
+
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

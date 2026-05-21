@@ -13,8 +13,9 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
 // checks if the SOARecord type satisfies the MappedNullable interface at compile time
@@ -32,6 +33,7 @@ type SOARecord struct {
 	Retry int32 `json:"retry"`
 	Expire int32 `json:"expire"`
 	Minimum int32 `json:"minimum"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _SOARecord SOARecord
@@ -254,6 +256,11 @@ func (o SOARecord) ToMap() (map[string]interface{}, error) {
 	toSerialize["retry"] = o.Retry
 	toSerialize["expire"] = o.Expire
 	toSerialize["minimum"] = o.Minimum
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -286,17 +293,75 @@ func (o *SOARecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varSOARecord := _SOARecord{}
+	type SOARecordWithoutEmbeddedStruct struct {
+		// Primary master nameserver for the zone.
+		MName string `json:"mName"`
+		// Responsible party email (encoded format).
+		RName string `json:"rName"`
+		Serial int32 `json:"serial"`
+		Refresh int32 `json:"refresh"`
+		Retry int32 `json:"retry"`
+		Expire int32 `json:"expire"`
+		Minimum int32 `json:"minimum"`
+	}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varSOARecord)
+	varSOARecordWithoutEmbeddedStruct := SOARecordWithoutEmbeddedStruct{}
 
-	if err != nil {
+	err = json.Unmarshal(data, &varSOARecordWithoutEmbeddedStruct)
+	if err == nil {
+		varSOARecord := _SOARecord{}
+		varSOARecord.MName = varSOARecordWithoutEmbeddedStruct.MName
+		varSOARecord.RName = varSOARecordWithoutEmbeddedStruct.RName
+		varSOARecord.Serial = varSOARecordWithoutEmbeddedStruct.Serial
+		varSOARecord.Refresh = varSOARecordWithoutEmbeddedStruct.Refresh
+		varSOARecord.Retry = varSOARecordWithoutEmbeddedStruct.Retry
+		varSOARecord.Expire = varSOARecordWithoutEmbeddedStruct.Expire
+		varSOARecord.Minimum = varSOARecordWithoutEmbeddedStruct.Minimum
+		*o = SOARecord(varSOARecord)
+	} else {
 		return err
 	}
 
-	*o = SOARecord(varSOARecord)
+	varSOARecord := _SOARecord{}
+
+	err = json.Unmarshal(data, &varSOARecord)
+	if err == nil {
+		o.Record = varSOARecord.Record
+	} else {
+		return err
+	}
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "mName")
+		delete(additionalProperties, "rName")
+		delete(additionalProperties, "serial")
+		delete(additionalProperties, "refresh")
+		delete(additionalProperties, "retry")
+		delete(additionalProperties, "expire")
+		delete(additionalProperties, "minimum")
+
+		// remove fields from embedded structs
+		reflectRecord := reflect.ValueOf(o.Record)
+		for i := 0; i < reflectRecord.Type().NumField(); i++ {
+			t := reflectRecord.Type().Field(i)
+
+			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
+				fieldName := ""
+				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
+					fieldName = jsonTag[:commaIdx]
+				} else {
+					fieldName = jsonTag
+				}
+				if fieldName != "AdditionalProperties" {
+					delete(additionalProperties, fieldName)
+				}
+			}
+		}
+
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

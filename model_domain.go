@@ -13,7 +13,6 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type Domain struct {
 	Name string `json:"name"`
 	// Collection of DNS records associated with the domain.
 	Records []Record `json:"records,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _Domain Domain
@@ -155,6 +155,11 @@ func (o Domain) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Records) {
 		toSerialize["records"] = o.Records
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -182,15 +187,22 @@ func (o *Domain) UnmarshalJSON(data []byte) (err error) {
 
 	varDomain := _Domain{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varDomain)
+	err = json.Unmarshal(data, &varDomain)
 
 	if err != nil {
 		return err
 	}
 
 	*o = Domain(varDomain)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "records")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

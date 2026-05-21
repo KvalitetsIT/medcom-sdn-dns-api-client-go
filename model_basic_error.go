@@ -14,7 +14,6 @@ package dnsclient
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -35,6 +34,7 @@ type BasicError struct {
 	StatusText string `json:"status_text"`
 	// Timestamp when the error occurred.
 	Timestamp time.Time `json:"timestamp"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _BasicError BasicError
@@ -222,6 +222,11 @@ func (o BasicError) ToMap() (map[string]interface{}, error) {
 	toSerialize["status"] = o.Status
 	toSerialize["status_text"] = o.StatusText
 	toSerialize["timestamp"] = o.Timestamp
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -254,15 +259,25 @@ func (o *BasicError) UnmarshalJSON(data []byte) (err error) {
 
 	varBasicError := _BasicError{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varBasicError)
+	err = json.Unmarshal(data, &varBasicError)
 
 	if err != nil {
 		return err
 	}
 
 	*o = BasicError(varBasicError)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "error_code")
+		delete(additionalProperties, "error")
+		delete(additionalProperties, "path")
+		delete(additionalProperties, "status")
+		delete(additionalProperties, "status_text")
+		delete(additionalProperties, "timestamp")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

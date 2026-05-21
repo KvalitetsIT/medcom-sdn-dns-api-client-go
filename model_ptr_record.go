@@ -13,8 +13,9 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
 // checks if the PTRRecord type satisfies the MappedNullable interface at compile time
@@ -25,6 +26,7 @@ type PTRRecord struct {
 	Record
 	// Reverse DNS hostname target.
 	Pointer string `json:"pointer"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PTRRecord PTRRecord
@@ -91,6 +93,11 @@ func (o PTRRecord) ToMap() (map[string]interface{}, error) {
 		return map[string]interface{}{}, errRecord
 	}
 	toSerialize["pointer"] = o.Pointer
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -117,17 +124,56 @@ func (o *PTRRecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varPTRRecord := _PTRRecord{}
+	type PTRRecordWithoutEmbeddedStruct struct {
+		// Reverse DNS hostname target.
+		Pointer string `json:"pointer"`
+	}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPTRRecord)
+	varPTRRecordWithoutEmbeddedStruct := PTRRecordWithoutEmbeddedStruct{}
 
-	if err != nil {
+	err = json.Unmarshal(data, &varPTRRecordWithoutEmbeddedStruct)
+	if err == nil {
+		varPTRRecord := _PTRRecord{}
+		varPTRRecord.Pointer = varPTRRecordWithoutEmbeddedStruct.Pointer
+		*o = PTRRecord(varPTRRecord)
+	} else {
 		return err
 	}
 
-	*o = PTRRecord(varPTRRecord)
+	varPTRRecord := _PTRRecord{}
+
+	err = json.Unmarshal(data, &varPTRRecord)
+	if err == nil {
+		o.Record = varPTRRecord.Record
+	} else {
+		return err
+	}
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "pointer")
+
+		// remove fields from embedded structs
+		reflectRecord := reflect.ValueOf(o.Record)
+		for i := 0; i < reflectRecord.Type().NumField(); i++ {
+			t := reflectRecord.Type().Field(i)
+
+			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
+				fieldName := ""
+				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
+					fieldName = jsonTag[:commaIdx]
+				} else {
+					fieldName = jsonTag
+				}
+				if fieldName != "AdditionalProperties" {
+					delete(additionalProperties, fieldName)
+				}
+			}
+		}
+
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -13,8 +13,9 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
 // checks if the SRVRecord type satisfies the MappedNullable interface at compile time
@@ -31,6 +32,7 @@ type SRVRecord struct {
 	Port int32 `json:"port"`
 	// Target hostname providing the service.
 	Target string `json:"target"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _SRVRecord SRVRecord
@@ -175,6 +177,11 @@ func (o SRVRecord) ToMap() (map[string]interface{}, error) {
 	toSerialize["weight"] = o.Weight
 	toSerialize["port"] = o.Port
 	toSerialize["target"] = o.Target
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -204,17 +211,68 @@ func (o *SRVRecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varSRVRecord := _SRVRecord{}
+	type SRVRecordWithoutEmbeddedStruct struct {
+		// Service priority where lower values are preferred.
+		Priority int32 `json:"priority"`
+		// Relative weight for load balancing between services with the same priority.
+		Weight int32 `json:"weight"`
+		// Network port exposed by the target service.
+		Port int32 `json:"port"`
+		// Target hostname providing the service.
+		Target string `json:"target"`
+	}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varSRVRecord)
+	varSRVRecordWithoutEmbeddedStruct := SRVRecordWithoutEmbeddedStruct{}
 
-	if err != nil {
+	err = json.Unmarshal(data, &varSRVRecordWithoutEmbeddedStruct)
+	if err == nil {
+		varSRVRecord := _SRVRecord{}
+		varSRVRecord.Priority = varSRVRecordWithoutEmbeddedStruct.Priority
+		varSRVRecord.Weight = varSRVRecordWithoutEmbeddedStruct.Weight
+		varSRVRecord.Port = varSRVRecordWithoutEmbeddedStruct.Port
+		varSRVRecord.Target = varSRVRecordWithoutEmbeddedStruct.Target
+		*o = SRVRecord(varSRVRecord)
+	} else {
 		return err
 	}
 
-	*o = SRVRecord(varSRVRecord)
+	varSRVRecord := _SRVRecord{}
+
+	err = json.Unmarshal(data, &varSRVRecord)
+	if err == nil {
+		o.Record = varSRVRecord.Record
+	} else {
+		return err
+	}
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "priority")
+		delete(additionalProperties, "weight")
+		delete(additionalProperties, "port")
+		delete(additionalProperties, "target")
+
+		// remove fields from embedded structs
+		reflectRecord := reflect.ValueOf(o.Record)
+		for i := 0; i < reflectRecord.Type().NumField(); i++ {
+			t := reflectRecord.Type().Field(i)
+
+			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
+				fieldName := ""
+				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
+					fieldName = jsonTag[:commaIdx]
+				} else {
+					fieldName = jsonTag
+				}
+				if fieldName != "AdditionalProperties" {
+					delete(additionalProperties, fieldName)
+				}
+			}
+		}
+
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

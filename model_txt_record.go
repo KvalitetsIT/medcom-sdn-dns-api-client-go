@@ -13,8 +13,9 @@ package dnsclient
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
 // checks if the TXTRecord type satisfies the MappedNullable interface at compile time
@@ -25,6 +26,7 @@ type TXTRecord struct {
 	Record
 	// TXT record value.
 	Value string `json:"value"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _TXTRecord TXTRecord
@@ -91,6 +93,11 @@ func (o TXTRecord) ToMap() (map[string]interface{}, error) {
 		return map[string]interface{}{}, errRecord
 	}
 	toSerialize["value"] = o.Value
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -117,17 +124,56 @@ func (o *TXTRecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varTXTRecord := _TXTRecord{}
+	type TXTRecordWithoutEmbeddedStruct struct {
+		// TXT record value.
+		Value string `json:"value"`
+	}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varTXTRecord)
+	varTXTRecordWithoutEmbeddedStruct := TXTRecordWithoutEmbeddedStruct{}
 
-	if err != nil {
+	err = json.Unmarshal(data, &varTXTRecordWithoutEmbeddedStruct)
+	if err == nil {
+		varTXTRecord := _TXTRecord{}
+		varTXTRecord.Value = varTXTRecordWithoutEmbeddedStruct.Value
+		*o = TXTRecord(varTXTRecord)
+	} else {
 		return err
 	}
 
-	*o = TXTRecord(varTXTRecord)
+	varTXTRecord := _TXTRecord{}
+
+	err = json.Unmarshal(data, &varTXTRecord)
+	if err == nil {
+		o.Record = varTXTRecord.Record
+	} else {
+		return err
+	}
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "value")
+
+		// remove fields from embedded structs
+		reflectRecord := reflect.ValueOf(o.Record)
+		for i := 0; i < reflectRecord.Type().NumField(); i++ {
+			t := reflectRecord.Type().Field(i)
+
+			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
+				fieldName := ""
+				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
+					fieldName = jsonTag[:commaIdx]
+				} else {
+					fieldName = jsonTag
+				}
+				if fieldName != "AdditionalProperties" {
+					delete(additionalProperties, fieldName)
+				}
+			}
+		}
+
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }
