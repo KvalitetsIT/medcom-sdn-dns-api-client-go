@@ -25,152 +25,10 @@ tags:
 - description: API for DNS records
   name: Records
 paths:
-  /domains:
+  /records:
     get:
-      description: Get all DNS records
+      description: Retrieves all records.
       parameters:
-      - description: Number of items to skip
-        explode: true
-        in: query
-        name: offset
-        required: false
-        schema:
-          default: 0
-          example: 0
-          minimum: 0
-          type: integer
-        style: form
-      - description: Number of items to return
-        explode: true
-        in: query
-        name: limit
-        required: false
-        schema:
-          default: 20
-          example: 20
-          maximum: 100
-          minimum: 1
-          type: integer
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: "#/components/schemas/Domain"
-                type: array
-          description: Ok
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/basic_error"
-          description: "Bad Request. This could be because: * One of the required\
-            \ parameters/properties are missing or is empty <br> * Length of input\
-            \ is exceeding maximum length <br> (See a possible detailed error message\
-            \ in the in the response.)"
-      summary: Get all DNS records
-      tags:
-      - Domains
-    post:
-      description: Add domain.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Domain"
-        description: The new domain.
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Domain"
-          description: Ok
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/basic_error"
-          description: "Bad Request. This could be because: * One of the required\
-            \ parameters/properties are missing or is empty <br> * Length of input\
-            \ is exceeding maximum length <br> (See a possible detailed error message\
-            \ in the in the response.)"
-      summary: Add domain.
-      tags:
-      - Domains
-  /domains/{domain_id}:
-    delete:
-      description: Deletes the domain and all associated records.
-      parameters:
-      - description: The UUID of the domain
-        explode: false
-        in: path
-        name: domain_id
-        required: true
-        schema:
-          format: uuid
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Domain"
-          description: Ok
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/basic_error"
-          description: Requested resource not found.
-      summary: Deletes the domain and all associated records.
-      tags:
-      - Domains
-    get:
-      description: Gets the domain associated with the specified UUID.
-      parameters:
-      - description: The UUID of the domain
-        explode: false
-        in: path
-        name: domain_id
-        required: true
-        schema:
-          format: uuid
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Domain"
-          description: Ok
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/basic_error"
-          description: Requested resource not found.
-      summary: Gets the domain associated with the specified UUID.
-      tags:
-      - Domains
-  /domains/{domain_id}/records:
-    get:
-      description: Retrieves all records within the given domain.
-      parameters:
-      - description: Fully qualifies domain name
-        explode: false
-        in: path
-        name: domain_id
-        required: true
-        schema:
-          format: uuid
-          type: string
-        style: simple
       - description: Fully qualifies domain name
         explode: true
         in: query
@@ -215,21 +73,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/RecordCollection"
           description: Ok
-      summary: Retrieves all records within the given domain.
+      summary: Retrieves all records.
       tags:
       - Records
     post:
-      description: Add record to domain.
-      parameters:
-      - description: the UUID of the domain
-        explode: false
-        in: path
-        name: domain_id
-        required: true
-        schema:
-          format: uuid
-          type: string
-        style: simple
+      description: Add record.
       requestBody:
         content:
           application/json:
@@ -253,22 +101,13 @@ paths:
             \ parameters/properties are missing or is empty <br> * Length of input\
             \ is exceeding maximum length <br> (See a possible detailed error message\
             \ in the in the response.)"
-      summary: Add record to domain.
+      summary: Add record.
       tags:
       - Records
-  /domains/{domain_id}/records/{record_id}:
+  /records/{record_id}:
     delete:
-      description: Deletes the dns record with the fully qualified domain name.
+      description: Deletes the dns record.
       parameters:
-      - description: Fully qualifies domain name
-        explode: false
-        in: path
-        name: domain_id
-        required: true
-        schema:
-          format: uuid
-          type: string
-        style: simple
       - description: Fully qualifies domain name
         explode: false
         in: path
@@ -294,21 +133,12 @@ paths:
             \ parameters/properties are missing or is empty <br> * Length of input\
             \ is exceeding maximum length <br> (See a possible detailed error message\
             \ in the in the response.)"
-      summary: Deletes the dns record with the fully qualified domain name.
+      summary: Deletes the dns record.
       tags:
       - Records
     get:
-      description: Get DNS record with the fully qualified domain name.
+      description: Get DNS record.
       parameters:
-      - description: the UUID of the domain
-        explode: false
-        in: path
-        name: domain_id
-        required: true
-        schema:
-          format: uuid
-          type: string
-        style: simple
       - description: the UUID of the record
         explode: false
         in: path
@@ -334,7 +164,7 @@ paths:
             \ parameters/properties are missing or is empty <br> * Length of input\
             \ is exceeding maximum length <br> (See a possible detailed error message\
             \ in the in the response.)"
-      summary: Get DNS record with the fully qualified domain name.
+      summary: Get DNS record.
       tags:
       - Records
 components:
@@ -634,36 +464,6 @@ components:
         type: object
       description: DNS CAA record restricting which certificate authorities may issue
         TLS certificates for a domain.
-    Domain:
-      description: DNS domain containing metadata and associated DNS records.
-      example:
-        records:
-        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
-          type: TXT
-          ttl: 3600
-        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
-          type: TXT
-          ttl: 3600
-        name: mail.portal
-        id: 66101ef0-3e34-470d-92ea-53b89ad036e7
-      properties:
-        id:
-          description: UUID v4 associated with the domain.
-          example: 66101ef0-3e34-470d-92ea-53b89ad036e7
-          format: uuid
-          type: string
-        name:
-          description: Domain name.
-          example: mail.portal
-          type: string
-        records:
-          description: Collection of DNS records associated with the domain.
-          items:
-            $ref: "#/components/schemas/Record"
-          type: array
-      required:
-      - name
-      type: object
     basic_error:
       description: Standard API error response returned when a request fails.
       example:

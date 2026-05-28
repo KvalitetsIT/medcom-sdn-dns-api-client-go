@@ -71,14 +71,10 @@ All URIs are relative to *http://localhost:8080*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DomainsAPI* | [**DomainsDomainIdDelete**](docs/DomainsAPI.md#domainsdomainiddelete) | **Delete** /domains/{domain_id} | Deletes the domain and all associated records.
-*DomainsAPI* | [**DomainsDomainIdGet**](docs/DomainsAPI.md#domainsdomainidget) | **Get** /domains/{domain_id} | Gets the domain associated with the specified UUID.
-*DomainsAPI* | [**DomainsGet**](docs/DomainsAPI.md#domainsget) | **Get** /domains | Get all DNS records
-*DomainsAPI* | [**DomainsPost**](docs/DomainsAPI.md#domainspost) | **Post** /domains | Add domain.
-*RecordsAPI* | [**DomainsDomainIdRecordsGet**](docs/RecordsAPI.md#domainsdomainidrecordsget) | **Get** /domains/{domain_id}/records | Retrieves all records within the given domain.
-*RecordsAPI* | [**DomainsDomainIdRecordsPost**](docs/RecordsAPI.md#domainsdomainidrecordspost) | **Post** /domains/{domain_id}/records | Add record to domain.
-*RecordsAPI* | [**DomainsDomainIdRecordsRecordIdDelete**](docs/RecordsAPI.md#domainsdomainidrecordsrecordiddelete) | **Delete** /domains/{domain_id}/records/{record_id} | Deletes the dns record with the fully qualified domain name.
-*RecordsAPI* | [**DomainsDomainIdRecordsRecordIdGet**](docs/RecordsAPI.md#domainsdomainidrecordsrecordidget) | **Get** /domains/{domain_id}/records/{record_id} | Get DNS record with the fully qualified domain name.
+*RecordsAPI* | [**RecordsGet**](docs/RecordsAPI.md#recordsget) | **Get** /records | Retrieves all records.
+*RecordsAPI* | [**RecordsPost**](docs/RecordsAPI.md#recordspost) | **Post** /records | Add record.
+*RecordsAPI* | [**RecordsRecordIdDelete**](docs/RecordsAPI.md#recordsrecordiddelete) | **Delete** /records/{record_id} | Deletes the dns record.
+*RecordsAPI* | [**RecordsRecordIdGet**](docs/RecordsAPI.md#recordsrecordidget) | **Get** /records/{record_id} | Get DNS record.
 
 
 ## Documentation For Models
@@ -89,7 +85,6 @@ Class | Method | HTTP request | Description
  - [CAARecord](docs/CAARecord.md)
  - [CNAMERecord](docs/CNAMERecord.md)
  - [DnsRecordType](docs/DnsRecordType.md)
- - [Domain](docs/Domain.md)
  - [MXRecord](docs/MXRecord.md)
  - [NSRecord](docs/NSRecord.md)
  - [PTRRecord](docs/PTRRecord.md)

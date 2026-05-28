@@ -4,18 +4,18 @@ All URIs are relative to *http://localhost:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**DomainsDomainIdRecordsGet**](RecordsAPI.md#DomainsDomainIdRecordsGet) | **Get** /domains/{domain_id}/records | Retrieves all records within the given domain.
-[**DomainsDomainIdRecordsPost**](RecordsAPI.md#DomainsDomainIdRecordsPost) | **Post** /domains/{domain_id}/records | Add record to domain.
-[**DomainsDomainIdRecordsRecordIdDelete**](RecordsAPI.md#DomainsDomainIdRecordsRecordIdDelete) | **Delete** /domains/{domain_id}/records/{record_id} | Deletes the dns record with the fully qualified domain name.
-[**DomainsDomainIdRecordsRecordIdGet**](RecordsAPI.md#DomainsDomainIdRecordsRecordIdGet) | **Get** /domains/{domain_id}/records/{record_id} | Get DNS record with the fully qualified domain name.
+[**RecordsGet**](RecordsAPI.md#RecordsGet) | **Get** /records | Retrieves all records.
+[**RecordsPost**](RecordsAPI.md#RecordsPost) | **Post** /records | Add record.
+[**RecordsRecordIdDelete**](RecordsAPI.md#RecordsRecordIdDelete) | **Delete** /records/{record_id} | Deletes the dns record.
+[**RecordsRecordIdGet**](RecordsAPI.md#RecordsRecordIdGet) | **Get** /records/{record_id} | Get DNS record.
 
 
 
-## DomainsDomainIdRecordsGet
+## RecordsGet
 
-> RecordCollection DomainsDomainIdRecordsGet(ctx, domainId).Fqdn(fqdn).Offset(offset).Limit(limit).Type_(type_).Execute()
+> RecordCollection RecordsGet(ctx).Fqdn(fqdn).Offset(offset).Limit(limit).Type_(type_).Execute()
 
-Retrieves all records within the given domain.
+Retrieves all records.
 
 
 
@@ -32,7 +32,6 @@ import (
 )
 
 func main() {
-	domainId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | Fully qualifies domain name
 	fqdn := "fqdn_example" // string | Fully qualifies domain name (optional)
 	offset := int32(0) // int32 | Number of items to skip (optional) (default to 0)
 	limit := int32(20) // int32 |  (optional) (default to 20)
@@ -40,32 +39,27 @@ func main() {
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.RecordsAPI.DomainsDomainIdRecordsGet(context.Background(), domainId).Fqdn(fqdn).Offset(offset).Limit(limit).Type_(type_).Execute()
+	resp, r, err := apiClient.RecordsAPI.RecordsGet(context.Background()).Fqdn(fqdn).Offset(offset).Limit(limit).Type_(type_).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.DomainsDomainIdRecordsGet``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `DomainsDomainIdRecordsGet`: RecordCollection
-	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.DomainsDomainIdRecordsGet`: %v\n", resp)
+	// response from `RecordsGet`: RecordCollection
+	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.RecordsGet`: %v\n", resp)
 }
 ```
 
 ### Path Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**domainId** | **string** | Fully qualifies domain name | 
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiDomainsDomainIdRecordsGetRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiRecordsGetRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
-
  **fqdn** | **string** | Fully qualifies domain name | 
  **offset** | **int32** | Number of items to skip | [default to 0]
  **limit** | **int32** |  | [default to 20]
@@ -89,11 +83,11 @@ No authorization required
 [[Back to README]](../README.md)
 
 
-## DomainsDomainIdRecordsPost
+## RecordsPost
 
-> RecordCollection DomainsDomainIdRecordsPost(ctx, domainId).RecordCollection(recordCollection).Execute()
+> RecordCollection RecordsPost(ctx).RecordCollection(recordCollection).Execute()
 
-Add record to domain.
+Add record.
 
 
 
@@ -110,37 +104,31 @@ import (
 )
 
 func main() {
-	domainId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | the UUID of the domain
 	recordCollection := *openapiclient.NewRecordCollection([]openapiclient.Record{*openapiclient.NewRecord("TXT")}) // RecordCollection | The new organisation.
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.RecordsAPI.DomainsDomainIdRecordsPost(context.Background(), domainId).RecordCollection(recordCollection).Execute()
+	resp, r, err := apiClient.RecordsAPI.RecordsPost(context.Background()).RecordCollection(recordCollection).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.DomainsDomainIdRecordsPost``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsPost``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `DomainsDomainIdRecordsPost`: RecordCollection
-	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.DomainsDomainIdRecordsPost`: %v\n", resp)
+	// response from `RecordsPost`: RecordCollection
+	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.RecordsPost`: %v\n", resp)
 }
 ```
 
 ### Path Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**domainId** | **string** | the UUID of the domain | 
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiDomainsDomainIdRecordsPostRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiRecordsPostRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
-
  **recordCollection** | [**RecordCollection**](RecordCollection.md) | The new organisation. | 
 
 ### Return type
@@ -161,11 +149,11 @@ No authorization required
 [[Back to README]](../README.md)
 
 
-## DomainsDomainIdRecordsRecordIdDelete
+## RecordsRecordIdDelete
 
-> Record DomainsDomainIdRecordsRecordIdDelete(ctx, domainId, recordId).Execute()
+> Record RecordsRecordIdDelete(ctx, recordId).Execute()
 
-Deletes the dns record with the fully qualified domain name.
+Deletes the dns record.
 
 
 
@@ -182,18 +170,17 @@ import (
 )
 
 func main() {
-	domainId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | Fully qualifies domain name
 	recordId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | Fully qualifies domain name
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.RecordsAPI.DomainsDomainIdRecordsRecordIdDelete(context.Background(), domainId, recordId).Execute()
+	resp, r, err := apiClient.RecordsAPI.RecordsRecordIdDelete(context.Background(), recordId).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.DomainsDomainIdRecordsRecordIdDelete``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsRecordIdDelete``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `DomainsDomainIdRecordsRecordIdDelete`: Record
-	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.DomainsDomainIdRecordsRecordIdDelete`: %v\n", resp)
+	// response from `RecordsRecordIdDelete`: Record
+	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.RecordsRecordIdDelete`: %v\n", resp)
 }
 ```
 
@@ -203,17 +190,15 @@ func main() {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**domainId** | **string** | Fully qualifies domain name | 
 **recordId** | **string** | Fully qualifies domain name | 
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiDomainsDomainIdRecordsRecordIdDeleteRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiRecordsRecordIdDeleteRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
-
 
 
 ### Return type
@@ -234,11 +219,11 @@ No authorization required
 [[Back to README]](../README.md)
 
 
-## DomainsDomainIdRecordsRecordIdGet
+## RecordsRecordIdGet
 
-> Record DomainsDomainIdRecordsRecordIdGet(ctx, domainId, recordId).Execute()
+> Record RecordsRecordIdGet(ctx, recordId).Execute()
 
-Get DNS record with the fully qualified domain name.
+Get DNS record.
 
 
 
@@ -255,18 +240,17 @@ import (
 )
 
 func main() {
-	domainId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | the UUID of the domain
 	recordId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | the UUID of the record
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.RecordsAPI.DomainsDomainIdRecordsRecordIdGet(context.Background(), domainId, recordId).Execute()
+	resp, r, err := apiClient.RecordsAPI.RecordsRecordIdGet(context.Background(), recordId).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.DomainsDomainIdRecordsRecordIdGet``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsRecordIdGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `DomainsDomainIdRecordsRecordIdGet`: Record
-	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.DomainsDomainIdRecordsRecordIdGet`: %v\n", resp)
+	// response from `RecordsRecordIdGet`: Record
+	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.RecordsRecordIdGet`: %v\n", resp)
 }
 ```
 
@@ -276,17 +260,15 @@ func main() {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**domainId** | **string** | the UUID of the domain | 
 **recordId** | **string** | the UUID of the record | 
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiDomainsDomainIdRecordsRecordIdGetRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiRecordsRecordIdGetRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
-
 
 
 ### Return type

@@ -24,75 +24,70 @@ import (
 type RecordsAPI interface {
 
 	/*
-	DomainsDomainIdRecordsGet Retrieves all records within the given domain.
+	RecordsGet Retrieves all records.
 
-	Retrieves all records within the given domain.
+	Retrieves all records.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param domainId Fully qualifies domain name
-	@return ApiDomainsDomainIdRecordsGetRequest
+	@return ApiRecordsGetRequest
 	*/
-	DomainsDomainIdRecordsGet(ctx context.Context, domainId string) ApiDomainsDomainIdRecordsGetRequest
+	RecordsGet(ctx context.Context) ApiRecordsGetRequest
 
-	// DomainsDomainIdRecordsGetExecute executes the request
+	// RecordsGetExecute executes the request
 	//  @return RecordCollection
-	DomainsDomainIdRecordsGetExecute(r ApiDomainsDomainIdRecordsGetRequest) (*RecordCollection, *http.Response, error)
+	RecordsGetExecute(r ApiRecordsGetRequest) (*RecordCollection, *http.Response, error)
 
 	/*
-	DomainsDomainIdRecordsPost Add record to domain.
+	RecordsPost Add record.
 
-	Add record to domain.
+	Add record.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param domainId the UUID of the domain
-	@return ApiDomainsDomainIdRecordsPostRequest
+	@return ApiRecordsPostRequest
 	*/
-	DomainsDomainIdRecordsPost(ctx context.Context, domainId string) ApiDomainsDomainIdRecordsPostRequest
+	RecordsPost(ctx context.Context) ApiRecordsPostRequest
 
-	// DomainsDomainIdRecordsPostExecute executes the request
+	// RecordsPostExecute executes the request
 	//  @return RecordCollection
-	DomainsDomainIdRecordsPostExecute(r ApiDomainsDomainIdRecordsPostRequest) (*RecordCollection, *http.Response, error)
+	RecordsPostExecute(r ApiRecordsPostRequest) (*RecordCollection, *http.Response, error)
 
 	/*
-	DomainsDomainIdRecordsRecordIdDelete Deletes the dns record with the fully qualified domain name.
+	RecordsRecordIdDelete Deletes the dns record.
 
-	Deletes the dns record with the fully qualified domain name.
+	Deletes the dns record.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param domainId Fully qualifies domain name
 	@param recordId Fully qualifies domain name
-	@return ApiDomainsDomainIdRecordsRecordIdDeleteRequest
+	@return ApiRecordsRecordIdDeleteRequest
 	*/
-	DomainsDomainIdRecordsRecordIdDelete(ctx context.Context, domainId string, recordId string) ApiDomainsDomainIdRecordsRecordIdDeleteRequest
+	RecordsRecordIdDelete(ctx context.Context, recordId string) ApiRecordsRecordIdDeleteRequest
 
-	// DomainsDomainIdRecordsRecordIdDeleteExecute executes the request
+	// RecordsRecordIdDeleteExecute executes the request
 	//  @return Record
-	DomainsDomainIdRecordsRecordIdDeleteExecute(r ApiDomainsDomainIdRecordsRecordIdDeleteRequest) (*Record, *http.Response, error)
+	RecordsRecordIdDeleteExecute(r ApiRecordsRecordIdDeleteRequest) (*Record, *http.Response, error)
 
 	/*
-	DomainsDomainIdRecordsRecordIdGet Get DNS record with the fully qualified domain name.
+	RecordsRecordIdGet Get DNS record.
 
-	Get DNS record with the fully qualified domain name.
+	Get DNS record.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param domainId the UUID of the domain
 	@param recordId the UUID of the record
-	@return ApiDomainsDomainIdRecordsRecordIdGetRequest
+	@return ApiRecordsRecordIdGetRequest
 	*/
-	DomainsDomainIdRecordsRecordIdGet(ctx context.Context, domainId string, recordId string) ApiDomainsDomainIdRecordsRecordIdGetRequest
+	RecordsRecordIdGet(ctx context.Context, recordId string) ApiRecordsRecordIdGetRequest
 
-	// DomainsDomainIdRecordsRecordIdGetExecute executes the request
+	// RecordsRecordIdGetExecute executes the request
 	//  @return Record
-	DomainsDomainIdRecordsRecordIdGetExecute(r ApiDomainsDomainIdRecordsRecordIdGetRequest) (*Record, *http.Response, error)
+	RecordsRecordIdGetExecute(r ApiRecordsRecordIdGetRequest) (*Record, *http.Response, error)
 }
 
 // RecordsAPIService RecordsAPI service
 type RecordsAPIService service
 
-type ApiDomainsDomainIdRecordsGetRequest struct {
+type ApiRecordsGetRequest struct {
 	ctx context.Context
 	ApiService RecordsAPI
-	domainId string
 	fqdn *string
 	offset *int32
 	limit *int32
@@ -100,51 +95,49 @@ type ApiDomainsDomainIdRecordsGetRequest struct {
 }
 
 // Fully qualifies domain name
-func (r ApiDomainsDomainIdRecordsGetRequest) Fqdn(fqdn string) ApiDomainsDomainIdRecordsGetRequest {
+func (r ApiRecordsGetRequest) Fqdn(fqdn string) ApiRecordsGetRequest {
 	r.fqdn = &fqdn
 	return r
 }
 
 // Number of items to skip
-func (r ApiDomainsDomainIdRecordsGetRequest) Offset(offset int32) ApiDomainsDomainIdRecordsGetRequest {
+func (r ApiRecordsGetRequest) Offset(offset int32) ApiRecordsGetRequest {
 	r.offset = &offset
 	return r
 }
 
-func (r ApiDomainsDomainIdRecordsGetRequest) Limit(limit int32) ApiDomainsDomainIdRecordsGetRequest {
+func (r ApiRecordsGetRequest) Limit(limit int32) ApiRecordsGetRequest {
 	r.limit = &limit
 	return r
 }
 
-func (r ApiDomainsDomainIdRecordsGetRequest) Type_(type_ DnsRecordType) ApiDomainsDomainIdRecordsGetRequest {
+func (r ApiRecordsGetRequest) Type_(type_ DnsRecordType) ApiRecordsGetRequest {
 	r.type_ = &type_
 	return r
 }
 
-func (r ApiDomainsDomainIdRecordsGetRequest) Execute() (*RecordCollection, *http.Response, error) {
-	return r.ApiService.DomainsDomainIdRecordsGetExecute(r)
+func (r ApiRecordsGetRequest) Execute() (*RecordCollection, *http.Response, error) {
+	return r.ApiService.RecordsGetExecute(r)
 }
 
 /*
-DomainsDomainIdRecordsGet Retrieves all records within the given domain.
+RecordsGet Retrieves all records.
 
-Retrieves all records within the given domain.
+Retrieves all records.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param domainId Fully qualifies domain name
- @return ApiDomainsDomainIdRecordsGetRequest
+ @return ApiRecordsGetRequest
 */
-func (a *RecordsAPIService) DomainsDomainIdRecordsGet(ctx context.Context, domainId string) ApiDomainsDomainIdRecordsGetRequest {
-	return ApiDomainsDomainIdRecordsGetRequest{
+func (a *RecordsAPIService) RecordsGet(ctx context.Context) ApiRecordsGetRequest {
+	return ApiRecordsGetRequest{
 		ApiService: a,
 		ctx: ctx,
-		domainId: domainId,
 	}
 }
 
 // Execute executes the request
 //  @return RecordCollection
-func (a *RecordsAPIService) DomainsDomainIdRecordsGetExecute(r ApiDomainsDomainIdRecordsGetRequest) (*RecordCollection, *http.Response, error) {
+func (a *RecordsAPIService) RecordsGetExecute(r ApiRecordsGetRequest) (*RecordCollection, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -152,13 +145,12 @@ func (a *RecordsAPIService) DomainsDomainIdRecordsGetExecute(r ApiDomainsDomainI
 		localVarReturnValue  *RecordCollection
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.DomainsDomainIdRecordsGet")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.RecordsGet")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/domains/{domain_id}/records"
-	localVarPath = strings.Replace(localVarPath, "{"+"domain_id"+"}", url.PathEscape(parameterValueToString(r.domainId, "domainId")), -1)
+	localVarPath := localBasePath + "/records"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -238,43 +230,40 @@ func (a *RecordsAPIService) DomainsDomainIdRecordsGetExecute(r ApiDomainsDomainI
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiDomainsDomainIdRecordsPostRequest struct {
+type ApiRecordsPostRequest struct {
 	ctx context.Context
 	ApiService RecordsAPI
-	domainId string
 	recordCollection *RecordCollection
 }
 
 // The new organisation.
-func (r ApiDomainsDomainIdRecordsPostRequest) RecordCollection(recordCollection RecordCollection) ApiDomainsDomainIdRecordsPostRequest {
+func (r ApiRecordsPostRequest) RecordCollection(recordCollection RecordCollection) ApiRecordsPostRequest {
 	r.recordCollection = &recordCollection
 	return r
 }
 
-func (r ApiDomainsDomainIdRecordsPostRequest) Execute() (*RecordCollection, *http.Response, error) {
-	return r.ApiService.DomainsDomainIdRecordsPostExecute(r)
+func (r ApiRecordsPostRequest) Execute() (*RecordCollection, *http.Response, error) {
+	return r.ApiService.RecordsPostExecute(r)
 }
 
 /*
-DomainsDomainIdRecordsPost Add record to domain.
+RecordsPost Add record.
 
-Add record to domain.
+Add record.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param domainId the UUID of the domain
- @return ApiDomainsDomainIdRecordsPostRequest
+ @return ApiRecordsPostRequest
 */
-func (a *RecordsAPIService) DomainsDomainIdRecordsPost(ctx context.Context, domainId string) ApiDomainsDomainIdRecordsPostRequest {
-	return ApiDomainsDomainIdRecordsPostRequest{
+func (a *RecordsAPIService) RecordsPost(ctx context.Context) ApiRecordsPostRequest {
+	return ApiRecordsPostRequest{
 		ApiService: a,
 		ctx: ctx,
-		domainId: domainId,
 	}
 }
 
 // Execute executes the request
 //  @return RecordCollection
-func (a *RecordsAPIService) DomainsDomainIdRecordsPostExecute(r ApiDomainsDomainIdRecordsPostRequest) (*RecordCollection, *http.Response, error) {
+func (a *RecordsAPIService) RecordsPostExecute(r ApiRecordsPostRequest) (*RecordCollection, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
@@ -282,13 +271,12 @@ func (a *RecordsAPIService) DomainsDomainIdRecordsPostExecute(r ApiDomainsDomain
 		localVarReturnValue  *RecordCollection
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.DomainsDomainIdRecordsPost")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.RecordsPost")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/domains/{domain_id}/records"
-	localVarPath = strings.Replace(localVarPath, "{"+"domain_id"+"}", url.PathEscape(parameterValueToString(r.domainId, "domainId")), -1)
+	localVarPath := localBasePath + "/records"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -363,39 +351,36 @@ func (a *RecordsAPIService) DomainsDomainIdRecordsPostExecute(r ApiDomainsDomain
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiDomainsDomainIdRecordsRecordIdDeleteRequest struct {
+type ApiRecordsRecordIdDeleteRequest struct {
 	ctx context.Context
 	ApiService RecordsAPI
-	domainId string
 	recordId string
 }
 
-func (r ApiDomainsDomainIdRecordsRecordIdDeleteRequest) Execute() (*Record, *http.Response, error) {
-	return r.ApiService.DomainsDomainIdRecordsRecordIdDeleteExecute(r)
+func (r ApiRecordsRecordIdDeleteRequest) Execute() (*Record, *http.Response, error) {
+	return r.ApiService.RecordsRecordIdDeleteExecute(r)
 }
 
 /*
-DomainsDomainIdRecordsRecordIdDelete Deletes the dns record with the fully qualified domain name.
+RecordsRecordIdDelete Deletes the dns record.
 
-Deletes the dns record with the fully qualified domain name.
+Deletes the dns record.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param domainId Fully qualifies domain name
  @param recordId Fully qualifies domain name
- @return ApiDomainsDomainIdRecordsRecordIdDeleteRequest
+ @return ApiRecordsRecordIdDeleteRequest
 */
-func (a *RecordsAPIService) DomainsDomainIdRecordsRecordIdDelete(ctx context.Context, domainId string, recordId string) ApiDomainsDomainIdRecordsRecordIdDeleteRequest {
-	return ApiDomainsDomainIdRecordsRecordIdDeleteRequest{
+func (a *RecordsAPIService) RecordsRecordIdDelete(ctx context.Context, recordId string) ApiRecordsRecordIdDeleteRequest {
+	return ApiRecordsRecordIdDeleteRequest{
 		ApiService: a,
 		ctx: ctx,
-		domainId: domainId,
 		recordId: recordId,
 	}
 }
 
 // Execute executes the request
 //  @return Record
-func (a *RecordsAPIService) DomainsDomainIdRecordsRecordIdDeleteExecute(r ApiDomainsDomainIdRecordsRecordIdDeleteRequest) (*Record, *http.Response, error) {
+func (a *RecordsAPIService) RecordsRecordIdDeleteExecute(r ApiRecordsRecordIdDeleteRequest) (*Record, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
@@ -403,13 +388,12 @@ func (a *RecordsAPIService) DomainsDomainIdRecordsRecordIdDeleteExecute(r ApiDom
 		localVarReturnValue  *Record
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.DomainsDomainIdRecordsRecordIdDelete")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.RecordsRecordIdDelete")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/domains/{domain_id}/records/{record_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"domain_id"+"}", url.PathEscape(parameterValueToString(r.domainId, "domainId")), -1)
+	localVarPath := localBasePath + "/records/{record_id}"
 	localVarPath = strings.Replace(localVarPath, "{"+"record_id"+"}", url.PathEscape(parameterValueToString(r.recordId, "recordId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -480,39 +464,36 @@ func (a *RecordsAPIService) DomainsDomainIdRecordsRecordIdDeleteExecute(r ApiDom
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiDomainsDomainIdRecordsRecordIdGetRequest struct {
+type ApiRecordsRecordIdGetRequest struct {
 	ctx context.Context
 	ApiService RecordsAPI
-	domainId string
 	recordId string
 }
 
-func (r ApiDomainsDomainIdRecordsRecordIdGetRequest) Execute() (*Record, *http.Response, error) {
-	return r.ApiService.DomainsDomainIdRecordsRecordIdGetExecute(r)
+func (r ApiRecordsRecordIdGetRequest) Execute() (*Record, *http.Response, error) {
+	return r.ApiService.RecordsRecordIdGetExecute(r)
 }
 
 /*
-DomainsDomainIdRecordsRecordIdGet Get DNS record with the fully qualified domain name.
+RecordsRecordIdGet Get DNS record.
 
-Get DNS record with the fully qualified domain name.
+Get DNS record.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param domainId the UUID of the domain
  @param recordId the UUID of the record
- @return ApiDomainsDomainIdRecordsRecordIdGetRequest
+ @return ApiRecordsRecordIdGetRequest
 */
-func (a *RecordsAPIService) DomainsDomainIdRecordsRecordIdGet(ctx context.Context, domainId string, recordId string) ApiDomainsDomainIdRecordsRecordIdGetRequest {
-	return ApiDomainsDomainIdRecordsRecordIdGetRequest{
+func (a *RecordsAPIService) RecordsRecordIdGet(ctx context.Context, recordId string) ApiRecordsRecordIdGetRequest {
+	return ApiRecordsRecordIdGetRequest{
 		ApiService: a,
 		ctx: ctx,
-		domainId: domainId,
 		recordId: recordId,
 	}
 }
 
 // Execute executes the request
 //  @return Record
-func (a *RecordsAPIService) DomainsDomainIdRecordsRecordIdGetExecute(r ApiDomainsDomainIdRecordsRecordIdGetRequest) (*Record, *http.Response, error) {
+func (a *RecordsAPIService) RecordsRecordIdGetExecute(r ApiRecordsRecordIdGetRequest) (*Record, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -520,13 +501,12 @@ func (a *RecordsAPIService) DomainsDomainIdRecordsRecordIdGetExecute(r ApiDomain
 		localVarReturnValue  *Record
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.DomainsDomainIdRecordsRecordIdGet")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.RecordsRecordIdGet")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/domains/{domain_id}/records/{record_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"domain_id"+"}", url.PathEscape(parameterValueToString(r.domainId, "domainId")), -1)
+	localVarPath := localBasePath + "/records/{record_id}"
 	localVarPath = strings.Replace(localVarPath, "{"+"record_id"+"}", url.PathEscape(parameterValueToString(r.recordId, "recordId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
