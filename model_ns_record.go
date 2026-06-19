@@ -14,8 +14,6 @@ package dnsclient
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
-	"strings"
 )
 
 // checks if the NSRecord type satisfies the MappedNullable interface at compile time
@@ -23,7 +21,14 @@ var _ MappedNullable = &NSRecord{}
 
 // NSRecord DNS NS record delegating authority for a DNS zone to an authoritative nameserver.
 type NSRecord struct {
-	Record
+	// UUID v4 associated with the DNS record.
+	Id *string `json:"id,omitempty"`
+	// DNS Time To Live in seconds.
+	Ttl *int32 `json:"ttl,omitempty"`
+	// DNS record type discriminator.
+	Type string `json:"type"`
+	// key/name.
+	Name string `json:"name"`
 	// Authoritative nameserver hostname.
 	Nameserver string `json:"nameserver"`
 	AdditionalProperties map[string]interface{}
@@ -35,9 +40,10 @@ type _NSRecord NSRecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNSRecord(nameserver string, type_ string) *NSRecord {
+func NewNSRecord(type_ string, name string, nameserver string) *NSRecord {
 	this := NSRecord{}
 	this.Type = type_
+	this.Name = name
 	this.Nameserver = nameserver
 	return &this
 }
@@ -48,6 +54,118 @@ func NewNSRecord(nameserver string, type_ string) *NSRecord {
 func NewNSRecordWithDefaults() *NSRecord {
 	this := NSRecord{}
 	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *NSRecord) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NSRecord) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *NSRecord) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *NSRecord) SetId(v string) {
+	o.Id = &v
+}
+
+// GetTtl returns the Ttl field value if set, zero value otherwise.
+func (o *NSRecord) GetTtl() int32 {
+	if o == nil || IsNil(o.Ttl) {
+		var ret int32
+		return ret
+	}
+	return *o.Ttl
+}
+
+// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NSRecord) GetTtlOk() (*int32, bool) {
+	if o == nil || IsNil(o.Ttl) {
+		return nil, false
+	}
+	return o.Ttl, true
+}
+
+// HasTtl returns a boolean if a field has been set.
+func (o *NSRecord) HasTtl() bool {
+	if o != nil && !IsNil(o.Ttl) {
+		return true
+	}
+
+	return false
+}
+
+// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
+func (o *NSRecord) SetTtl(v int32) {
+	o.Ttl = &v
+}
+
+// GetType returns the Type field value
+func (o *NSRecord) GetType() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *NSRecord) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *NSRecord) SetType(v string) {
+	o.Type = v
+}
+
+// GetName returns the Name field value
+func (o *NSRecord) GetName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+func (o *NSRecord) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Name, true
+}
+
+// SetName sets field value
+func (o *NSRecord) SetName(v string) {
+	o.Name = v
 }
 
 // GetNameserver returns the Nameserver field value
@@ -84,14 +202,14 @@ func (o NSRecord) MarshalJSON() ([]byte, error) {
 
 func (o NSRecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	serializedRecord, errRecord := json.Marshal(o.Record)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
 	}
-	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Ttl) {
+		toSerialize["ttl"] = o.Ttl
 	}
+	toSerialize["type"] = o.Type
+	toSerialize["name"] = o.Name
 	toSerialize["nameserver"] = o.Nameserver
 
 	for key, value := range o.AdditionalProperties {
@@ -106,8 +224,9 @@ func (o *NSRecord) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"nameserver",
 		"type",
+		"name",
+		"nameserver",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -124,54 +243,24 @@ func (o *NSRecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	type NSRecordWithoutEmbeddedStruct struct {
-		// Authoritative nameserver hostname.
-		Nameserver string `json:"nameserver"`
-	}
-
-	varNSRecordWithoutEmbeddedStruct := NSRecordWithoutEmbeddedStruct{}
-
-	err = json.Unmarshal(data, &varNSRecordWithoutEmbeddedStruct)
-	if err == nil {
-		varNSRecord := _NSRecord{}
-		varNSRecord.Nameserver = varNSRecordWithoutEmbeddedStruct.Nameserver
-		*o = NSRecord(varNSRecord)
-	} else {
-		return err
-	}
-
 	varNSRecord := _NSRecord{}
 
 	err = json.Unmarshal(data, &varNSRecord)
-	if err == nil {
-		o.Record = varNSRecord.Record
-	} else {
+
+	if err != nil {
 		return err
 	}
+
+	*o = NSRecord(varNSRecord)
 
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "type")
+		delete(additionalProperties, "name")
 		delete(additionalProperties, "nameserver")
-
-		// remove fields from embedded structs
-		reflectRecord := reflect.ValueOf(o.Record)
-		for i := 0; i < reflectRecord.Type().NumField(); i++ {
-			t := reflectRecord.Type().Field(i)
-
-			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
-				fieldName := ""
-				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
-					fieldName = jsonTag[:commaIdx]
-				} else {
-					fieldName = jsonTag
-				}
-				if fieldName != "AdditionalProperties" {
-					delete(additionalProperties, fieldName)
-				}
-			}
-		}
-
 		o.AdditionalProperties = additionalProperties
 	}
 

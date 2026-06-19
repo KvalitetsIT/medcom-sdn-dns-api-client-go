@@ -14,8 +14,6 @@ package dnsclient
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
-	"strings"
 )
 
 // checks if the CNAMERecord type satisfies the MappedNullable interface at compile time
@@ -23,7 +21,12 @@ var _ MappedNullable = &CNAMERecord{}
 
 // CNAMERecord DNS CNAME record mapping an alias hostname to a canonical hostname.
 type CNAMERecord struct {
-	Record
+	// UUID v4 associated with the DNS record.
+	Id *string `json:"id,omitempty"`
+	// DNS Time To Live in seconds.
+	Ttl *int32 `json:"ttl,omitempty"`
+	// DNS record type discriminator.
+	Type string `json:"type"`
 	// Alias hostname
 	Host string `json:"host"`
 	// Canonical hostname target.
@@ -37,7 +40,7 @@ type _CNAMERecord CNAMERecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCNAMERecord(host string, canonicalName string, type_ string) *CNAMERecord {
+func NewCNAMERecord(type_ string, host string, canonicalName string) *CNAMERecord {
 	this := CNAMERecord{}
 	this.Type = type_
 	this.Host = host
@@ -51,6 +54,94 @@ func NewCNAMERecord(host string, canonicalName string, type_ string) *CNAMERecor
 func NewCNAMERecordWithDefaults() *CNAMERecord {
 	this := CNAMERecord{}
 	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *CNAMERecord) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CNAMERecord) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *CNAMERecord) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *CNAMERecord) SetId(v string) {
+	o.Id = &v
+}
+
+// GetTtl returns the Ttl field value if set, zero value otherwise.
+func (o *CNAMERecord) GetTtl() int32 {
+	if o == nil || IsNil(o.Ttl) {
+		var ret int32
+		return ret
+	}
+	return *o.Ttl
+}
+
+// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CNAMERecord) GetTtlOk() (*int32, bool) {
+	if o == nil || IsNil(o.Ttl) {
+		return nil, false
+	}
+	return o.Ttl, true
+}
+
+// HasTtl returns a boolean if a field has been set.
+func (o *CNAMERecord) HasTtl() bool {
+	if o != nil && !IsNil(o.Ttl) {
+		return true
+	}
+
+	return false
+}
+
+// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
+func (o *CNAMERecord) SetTtl(v int32) {
+	o.Ttl = &v
+}
+
+// GetType returns the Type field value
+func (o *CNAMERecord) GetType() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *CNAMERecord) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *CNAMERecord) SetType(v string) {
+	o.Type = v
 }
 
 // GetHost returns the Host field value
@@ -111,14 +202,13 @@ func (o CNAMERecord) MarshalJSON() ([]byte, error) {
 
 func (o CNAMERecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	serializedRecord, errRecord := json.Marshal(o.Record)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
 	}
-	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Ttl) {
+		toSerialize["ttl"] = o.Ttl
 	}
+	toSerialize["type"] = o.Type
 	toSerialize["host"] = o.Host
 	toSerialize["canonicalName"] = o.CanonicalName
 
@@ -134,9 +224,9 @@ func (o *CNAMERecord) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"type",
 		"host",
 		"canonicalName",
-		"type",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -153,58 +243,24 @@ func (o *CNAMERecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	type CNAMERecordWithoutEmbeddedStruct struct {
-		// Alias hostname
-		Host string `json:"host"`
-		// Canonical hostname target.
-		CanonicalName string `json:"canonicalName"`
-	}
-
-	varCNAMERecordWithoutEmbeddedStruct := CNAMERecordWithoutEmbeddedStruct{}
-
-	err = json.Unmarshal(data, &varCNAMERecordWithoutEmbeddedStruct)
-	if err == nil {
-		varCNAMERecord := _CNAMERecord{}
-		varCNAMERecord.Host = varCNAMERecordWithoutEmbeddedStruct.Host
-		varCNAMERecord.CanonicalName = varCNAMERecordWithoutEmbeddedStruct.CanonicalName
-		*o = CNAMERecord(varCNAMERecord)
-	} else {
-		return err
-	}
-
 	varCNAMERecord := _CNAMERecord{}
 
 	err = json.Unmarshal(data, &varCNAMERecord)
-	if err == nil {
-		o.Record = varCNAMERecord.Record
-	} else {
+
+	if err != nil {
 		return err
 	}
+
+	*o = CNAMERecord(varCNAMERecord)
 
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "type")
 		delete(additionalProperties, "host")
 		delete(additionalProperties, "canonicalName")
-
-		// remove fields from embedded structs
-		reflectRecord := reflect.ValueOf(o.Record)
-		for i := 0; i < reflectRecord.Type().NumField(); i++ {
-			t := reflectRecord.Type().Field(i)
-
-			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
-				fieldName := ""
-				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
-					fieldName = jsonTag[:commaIdx]
-				} else {
-					fieldName = jsonTag
-				}
-				if fieldName != "AdditionalProperties" {
-					delete(additionalProperties, fieldName)
-				}
-			}
-		}
-
 		o.AdditionalProperties = additionalProperties
 	}
 

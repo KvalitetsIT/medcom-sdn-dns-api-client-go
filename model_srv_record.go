@@ -14,8 +14,6 @@ package dnsclient
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
-	"strings"
 )
 
 // checks if the SRVRecord type satisfies the MappedNullable interface at compile time
@@ -23,7 +21,14 @@ var _ MappedNullable = &SRVRecord{}
 
 // SRVRecord DNS SRV record defining the hostname and port for a specific service.
 type SRVRecord struct {
-	Record
+	// UUID v4 associated with the DNS record.
+	Id *string `json:"id,omitempty"`
+	// DNS Time To Live in seconds.
+	Ttl *int32 `json:"ttl,omitempty"`
+	// DNS record type discriminator.
+	Type string `json:"type"`
+	// key/name.
+	Name string `json:"name"`
 	// Service priority where lower values are preferred.
 	Priority int32 `json:"priority"`
 	// Relative weight for load balancing between services with the same priority.
@@ -41,9 +46,10 @@ type _SRVRecord SRVRecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSRVRecord(priority int32, weight int32, port int32, target string, type_ string) *SRVRecord {
+func NewSRVRecord(type_ string, name string, priority int32, weight int32, port int32, target string) *SRVRecord {
 	this := SRVRecord{}
 	this.Type = type_
+	this.Name = name
 	this.Priority = priority
 	this.Weight = weight
 	this.Port = port
@@ -57,6 +63,118 @@ func NewSRVRecord(priority int32, weight int32, port int32, target string, type_
 func NewSRVRecordWithDefaults() *SRVRecord {
 	this := SRVRecord{}
 	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *SRVRecord) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SRVRecord) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *SRVRecord) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *SRVRecord) SetId(v string) {
+	o.Id = &v
+}
+
+// GetTtl returns the Ttl field value if set, zero value otherwise.
+func (o *SRVRecord) GetTtl() int32 {
+	if o == nil || IsNil(o.Ttl) {
+		var ret int32
+		return ret
+	}
+	return *o.Ttl
+}
+
+// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SRVRecord) GetTtlOk() (*int32, bool) {
+	if o == nil || IsNil(o.Ttl) {
+		return nil, false
+	}
+	return o.Ttl, true
+}
+
+// HasTtl returns a boolean if a field has been set.
+func (o *SRVRecord) HasTtl() bool {
+	if o != nil && !IsNil(o.Ttl) {
+		return true
+	}
+
+	return false
+}
+
+// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
+func (o *SRVRecord) SetTtl(v int32) {
+	o.Ttl = &v
+}
+
+// GetType returns the Type field value
+func (o *SRVRecord) GetType() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *SRVRecord) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *SRVRecord) SetType(v string) {
+	o.Type = v
+}
+
+// GetName returns the Name field value
+func (o *SRVRecord) GetName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+func (o *SRVRecord) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Name, true
+}
+
+// SetName sets field value
+func (o *SRVRecord) SetName(v string) {
+	o.Name = v
 }
 
 // GetPriority returns the Priority field value
@@ -165,14 +283,14 @@ func (o SRVRecord) MarshalJSON() ([]byte, error) {
 
 func (o SRVRecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	serializedRecord, errRecord := json.Marshal(o.Record)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
 	}
-	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Ttl) {
+		toSerialize["ttl"] = o.Ttl
 	}
+	toSerialize["type"] = o.Type
+	toSerialize["name"] = o.Name
 	toSerialize["priority"] = o.Priority
 	toSerialize["weight"] = o.Weight
 	toSerialize["port"] = o.Port
@@ -190,11 +308,12 @@ func (o *SRVRecord) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"type",
+		"name",
 		"priority",
 		"weight",
 		"port",
 		"target",
-		"type",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -211,66 +330,27 @@ func (o *SRVRecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	type SRVRecordWithoutEmbeddedStruct struct {
-		// Service priority where lower values are preferred.
-		Priority int32 `json:"priority"`
-		// Relative weight for load balancing between services with the same priority.
-		Weight int32 `json:"weight"`
-		// Network port exposed by the target service.
-		Port int32 `json:"port"`
-		// Target hostname providing the service.
-		Target string `json:"target"`
-	}
-
-	varSRVRecordWithoutEmbeddedStruct := SRVRecordWithoutEmbeddedStruct{}
-
-	err = json.Unmarshal(data, &varSRVRecordWithoutEmbeddedStruct)
-	if err == nil {
-		varSRVRecord := _SRVRecord{}
-		varSRVRecord.Priority = varSRVRecordWithoutEmbeddedStruct.Priority
-		varSRVRecord.Weight = varSRVRecordWithoutEmbeddedStruct.Weight
-		varSRVRecord.Port = varSRVRecordWithoutEmbeddedStruct.Port
-		varSRVRecord.Target = varSRVRecordWithoutEmbeddedStruct.Target
-		*o = SRVRecord(varSRVRecord)
-	} else {
-		return err
-	}
-
 	varSRVRecord := _SRVRecord{}
 
 	err = json.Unmarshal(data, &varSRVRecord)
-	if err == nil {
-		o.Record = varSRVRecord.Record
-	} else {
+
+	if err != nil {
 		return err
 	}
+
+	*o = SRVRecord(varSRVRecord)
 
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "type")
+		delete(additionalProperties, "name")
 		delete(additionalProperties, "priority")
 		delete(additionalProperties, "weight")
 		delete(additionalProperties, "port")
 		delete(additionalProperties, "target")
-
-		// remove fields from embedded structs
-		reflectRecord := reflect.ValueOf(o.Record)
-		for i := 0; i < reflectRecord.Type().NumField(); i++ {
-			t := reflectRecord.Type().Field(i)
-
-			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
-				fieldName := ""
-				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
-					fieldName = jsonTag[:commaIdx]
-				} else {
-					fieldName = jsonTag
-				}
-				if fieldName != "AdditionalProperties" {
-					delete(additionalProperties, fieldName)
-				}
-			}
-		}
-
 		o.AdditionalProperties = additionalProperties
 	}
 

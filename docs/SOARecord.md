@@ -4,6 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
+**Ttl** | Pointer to **int32** | DNS Time To Live in seconds. | [optional] 
+**Type** | **string** | DNS record type discriminator. | 
 **MName** | **string** | Primary master nameserver for the zone. | 
 **RName** | **string** | Responsible party email (encoded format). | 
 **Serial** | **int32** |  | 
@@ -16,7 +19,7 @@ Name | Type | Description | Notes
 
 ### NewSOARecord
 
-`func NewSOARecord(mName string, rName string, serial int32, refresh int32, retry int32, expire int32, minimum int32, ) *SOARecord`
+`func NewSOARecord(type_ string, mName string, rName string, serial int32, refresh int32, retry int32, expire int32, minimum int32, ) *SOARecord`
 
 NewSOARecord instantiates a new SOARecord object
 This constructor will assign default values to properties that have it defined,
@@ -30,6 +33,76 @@ will change when the set of required properties is changed
 NewSOARecordWithDefaults instantiates a new SOARecord object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
+
+### GetId
+
+`func (o *SOARecord) GetId() string`
+
+GetId returns the Id field if non-nil, zero value otherwise.
+
+### GetIdOk
+
+`func (o *SOARecord) GetIdOk() (*string, bool)`
+
+GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetId
+
+`func (o *SOARecord) SetId(v string)`
+
+SetId sets Id field to given value.
+
+### HasId
+
+`func (o *SOARecord) HasId() bool`
+
+HasId returns a boolean if a field has been set.
+
+### GetTtl
+
+`func (o *SOARecord) GetTtl() int32`
+
+GetTtl returns the Ttl field if non-nil, zero value otherwise.
+
+### GetTtlOk
+
+`func (o *SOARecord) GetTtlOk() (*int32, bool)`
+
+GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTtl
+
+`func (o *SOARecord) SetTtl(v int32)`
+
+SetTtl sets Ttl field to given value.
+
+### HasTtl
+
+`func (o *SOARecord) HasTtl() bool`
+
+HasTtl returns a boolean if a field has been set.
+
+### GetType
+
+`func (o *SOARecord) GetType() string`
+
+GetType returns the Type field if non-nil, zero value otherwise.
+
+### GetTypeOk
+
+`func (o *SOARecord) GetTypeOk() (*string, bool)`
+
+GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetType
+
+`func (o *SOARecord) SetType(v string)`
+
+SetType sets Type field to given value.
+
 
 ### GetMName
 

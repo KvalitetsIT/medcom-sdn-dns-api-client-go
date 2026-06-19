@@ -14,8 +14,6 @@ package dnsclient
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
-	"strings"
 )
 
 // checks if the PTRRecord type satisfies the MappedNullable interface at compile time
@@ -23,7 +21,14 @@ var _ MappedNullable = &PTRRecord{}
 
 // PTRRecord DNS PTR record used for reverse DNS lookups from IP addresses to hostnames.
 type PTRRecord struct {
-	Record
+	// UUID v4 associated with the DNS record.
+	Id *string `json:"id,omitempty"`
+	// DNS Time To Live in seconds.
+	Ttl *int32 `json:"ttl,omitempty"`
+	// DNS record type discriminator.
+	Type string `json:"type"`
+	// key/name.
+	Name string `json:"name"`
 	// Reverse DNS hostname target.
 	Pointer string `json:"pointer"`
 	AdditionalProperties map[string]interface{}
@@ -35,9 +40,10 @@ type _PTRRecord PTRRecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPTRRecord(pointer string, type_ string) *PTRRecord {
+func NewPTRRecord(type_ string, name string, pointer string) *PTRRecord {
 	this := PTRRecord{}
 	this.Type = type_
+	this.Name = name
 	this.Pointer = pointer
 	return &this
 }
@@ -48,6 +54,118 @@ func NewPTRRecord(pointer string, type_ string) *PTRRecord {
 func NewPTRRecordWithDefaults() *PTRRecord {
 	this := PTRRecord{}
 	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *PTRRecord) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PTRRecord) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *PTRRecord) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *PTRRecord) SetId(v string) {
+	o.Id = &v
+}
+
+// GetTtl returns the Ttl field value if set, zero value otherwise.
+func (o *PTRRecord) GetTtl() int32 {
+	if o == nil || IsNil(o.Ttl) {
+		var ret int32
+		return ret
+	}
+	return *o.Ttl
+}
+
+// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PTRRecord) GetTtlOk() (*int32, bool) {
+	if o == nil || IsNil(o.Ttl) {
+		return nil, false
+	}
+	return o.Ttl, true
+}
+
+// HasTtl returns a boolean if a field has been set.
+func (o *PTRRecord) HasTtl() bool {
+	if o != nil && !IsNil(o.Ttl) {
+		return true
+	}
+
+	return false
+}
+
+// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
+func (o *PTRRecord) SetTtl(v int32) {
+	o.Ttl = &v
+}
+
+// GetType returns the Type field value
+func (o *PTRRecord) GetType() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *PTRRecord) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *PTRRecord) SetType(v string) {
+	o.Type = v
+}
+
+// GetName returns the Name field value
+func (o *PTRRecord) GetName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+func (o *PTRRecord) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Name, true
+}
+
+// SetName sets field value
+func (o *PTRRecord) SetName(v string) {
+	o.Name = v
 }
 
 // GetPointer returns the Pointer field value
@@ -84,14 +202,14 @@ func (o PTRRecord) MarshalJSON() ([]byte, error) {
 
 func (o PTRRecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	serializedRecord, errRecord := json.Marshal(o.Record)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
 	}
-	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Ttl) {
+		toSerialize["ttl"] = o.Ttl
 	}
+	toSerialize["type"] = o.Type
+	toSerialize["name"] = o.Name
 	toSerialize["pointer"] = o.Pointer
 
 	for key, value := range o.AdditionalProperties {
@@ -106,8 +224,9 @@ func (o *PTRRecord) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"pointer",
 		"type",
+		"name",
+		"pointer",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -124,54 +243,24 @@ func (o *PTRRecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	type PTRRecordWithoutEmbeddedStruct struct {
-		// Reverse DNS hostname target.
-		Pointer string `json:"pointer"`
-	}
-
-	varPTRRecordWithoutEmbeddedStruct := PTRRecordWithoutEmbeddedStruct{}
-
-	err = json.Unmarshal(data, &varPTRRecordWithoutEmbeddedStruct)
-	if err == nil {
-		varPTRRecord := _PTRRecord{}
-		varPTRRecord.Pointer = varPTRRecordWithoutEmbeddedStruct.Pointer
-		*o = PTRRecord(varPTRRecord)
-	} else {
-		return err
-	}
-
 	varPTRRecord := _PTRRecord{}
 
 	err = json.Unmarshal(data, &varPTRRecord)
-	if err == nil {
-		o.Record = varPTRRecord.Record
-	} else {
+
+	if err != nil {
 		return err
 	}
+
+	*o = PTRRecord(varPTRRecord)
 
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "type")
+		delete(additionalProperties, "name")
 		delete(additionalProperties, "pointer")
-
-		// remove fields from embedded structs
-		reflectRecord := reflect.ValueOf(o.Record)
-		for i := 0; i < reflectRecord.Type().NumField(); i++ {
-			t := reflectRecord.Type().Field(i)
-
-			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
-				fieldName := ""
-				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
-					fieldName = jsonTag[:commaIdx]
-				} else {
-					fieldName = jsonTag
-				}
-				if fieldName != "AdditionalProperties" {
-					delete(additionalProperties, fieldName)
-				}
-			}
-		}
-
 		o.AdditionalProperties = additionalProperties
 	}
 

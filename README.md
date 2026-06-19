@@ -89,6 +89,7 @@ Class | Method | HTTP request | Description
  - [NSRecord](docs/NSRecord.md)
  - [PTRRecord](docs/PTRRecord.md)
  - [Record](docs/Record.md)
+ - [RecordBase](docs/RecordBase.md)
  - [RecordCollection](docs/RecordCollection.md)
  - [SOARecord](docs/SOARecord.md)
  - [SRVRecord](docs/SRVRecord.md)

@@ -14,8 +14,6 @@ package dnsclient
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
-	"strings"
 )
 
 // checks if the ARecord type satisfies the MappedNullable interface at compile time
@@ -23,7 +21,12 @@ var _ MappedNullable = &ARecord{}
 
 // ARecord DNS A record mapping a hostname to an IPv4 address.
 type ARecord struct {
-	Record
+	// UUID v4 associated with the DNS record.
+	Id *string `json:"id,omitempty"`
+	// DNS Time To Live in seconds.
+	Ttl *int32 `json:"ttl,omitempty"`
+	// DNS record type discriminator.
+	Type string `json:"type"`
 	// the host associated with the ipv4.
 	Host string `json:"host"`
 	// IPv4 address assigned to the hostname.
@@ -37,7 +40,7 @@ type _ARecord ARecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewARecord(host string, ipv4 string, type_ string) *ARecord {
+func NewARecord(type_ string, host string, ipv4 string) *ARecord {
 	this := ARecord{}
 	this.Type = type_
 	this.Host = host
@@ -51,6 +54,94 @@ func NewARecord(host string, ipv4 string, type_ string) *ARecord {
 func NewARecordWithDefaults() *ARecord {
 	this := ARecord{}
 	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *ARecord) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ARecord) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *ARecord) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *ARecord) SetId(v string) {
+	o.Id = &v
+}
+
+// GetTtl returns the Ttl field value if set, zero value otherwise.
+func (o *ARecord) GetTtl() int32 {
+	if o == nil || IsNil(o.Ttl) {
+		var ret int32
+		return ret
+	}
+	return *o.Ttl
+}
+
+// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ARecord) GetTtlOk() (*int32, bool) {
+	if o == nil || IsNil(o.Ttl) {
+		return nil, false
+	}
+	return o.Ttl, true
+}
+
+// HasTtl returns a boolean if a field has been set.
+func (o *ARecord) HasTtl() bool {
+	if o != nil && !IsNil(o.Ttl) {
+		return true
+	}
+
+	return false
+}
+
+// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
+func (o *ARecord) SetTtl(v int32) {
+	o.Ttl = &v
+}
+
+// GetType returns the Type field value
+func (o *ARecord) GetType() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *ARecord) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *ARecord) SetType(v string) {
+	o.Type = v
 }
 
 // GetHost returns the Host field value
@@ -111,14 +202,13 @@ func (o ARecord) MarshalJSON() ([]byte, error) {
 
 func (o ARecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	serializedRecord, errRecord := json.Marshal(o.Record)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
 	}
-	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Ttl) {
+		toSerialize["ttl"] = o.Ttl
 	}
+	toSerialize["type"] = o.Type
 	toSerialize["host"] = o.Host
 	toSerialize["ipv4"] = o.Ipv4
 
@@ -134,9 +224,9 @@ func (o *ARecord) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"type",
 		"host",
 		"ipv4",
-		"type",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -153,58 +243,24 @@ func (o *ARecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	type ARecordWithoutEmbeddedStruct struct {
-		// the host associated with the ipv4.
-		Host string `json:"host"`
-		// IPv4 address assigned to the hostname.
-		Ipv4 string `json:"ipv4"`
-	}
-
-	varARecordWithoutEmbeddedStruct := ARecordWithoutEmbeddedStruct{}
-
-	err = json.Unmarshal(data, &varARecordWithoutEmbeddedStruct)
-	if err == nil {
-		varARecord := _ARecord{}
-		varARecord.Host = varARecordWithoutEmbeddedStruct.Host
-		varARecord.Ipv4 = varARecordWithoutEmbeddedStruct.Ipv4
-		*o = ARecord(varARecord)
-	} else {
-		return err
-	}
-
 	varARecord := _ARecord{}
 
 	err = json.Unmarshal(data, &varARecord)
-	if err == nil {
-		o.Record = varARecord.Record
-	} else {
+
+	if err != nil {
 		return err
 	}
+
+	*o = ARecord(varARecord)
 
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "type")
 		delete(additionalProperties, "host")
 		delete(additionalProperties, "ipv4")
-
-		// remove fields from embedded structs
-		reflectRecord := reflect.ValueOf(o.Record)
-		for i := 0; i < reflectRecord.Type().NumField(); i++ {
-			t := reflectRecord.Type().Field(i)
-
-			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
-				fieldName := ""
-				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
-					fieldName = jsonTag[:commaIdx]
-				} else {
-					fieldName = jsonTag
-				}
-				if fieldName != "AdditionalProperties" {
-					delete(additionalProperties, fieldName)
-				}
-			}
-		}
-
 		o.AdditionalProperties = additionalProperties
 	}
 

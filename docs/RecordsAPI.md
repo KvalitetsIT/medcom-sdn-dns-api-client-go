@@ -104,7 +104,7 @@ import (
 )
 
 func main() {
-	recordCollection := *openapiclient.NewRecordCollection([]openapiclient.Record{*openapiclient.NewRecord("TXT")}) // RecordCollection | The new organisation.
+	recordCollection := *openapiclient.NewRecordCollection([]openapiclient.Record{openapiclient.Record{AAAARecord: openapiclient.NewAAAARecord("Type_example", "example.com.", "2001:db8::10")}}) // RecordCollection | The new organisation.
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)

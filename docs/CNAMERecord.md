@@ -4,6 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
+**Ttl** | Pointer to **int32** | DNS Time To Live in seconds. | [optional] 
+**Type** | **string** | DNS record type discriminator. | 
 **Host** | **string** | Alias hostname | 
 **CanonicalName** | **string** | Canonical hostname target. | 
 
@@ -11,7 +14,7 @@ Name | Type | Description | Notes
 
 ### NewCNAMERecord
 
-`func NewCNAMERecord(host string, canonicalName string, ) *CNAMERecord`
+`func NewCNAMERecord(type_ string, host string, canonicalName string, ) *CNAMERecord`
 
 NewCNAMERecord instantiates a new CNAMERecord object
 This constructor will assign default values to properties that have it defined,
@@ -25,6 +28,76 @@ will change when the set of required properties is changed
 NewCNAMERecordWithDefaults instantiates a new CNAMERecord object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
+
+### GetId
+
+`func (o *CNAMERecord) GetId() string`
+
+GetId returns the Id field if non-nil, zero value otherwise.
+
+### GetIdOk
+
+`func (o *CNAMERecord) GetIdOk() (*string, bool)`
+
+GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetId
+
+`func (o *CNAMERecord) SetId(v string)`
+
+SetId sets Id field to given value.
+
+### HasId
+
+`func (o *CNAMERecord) HasId() bool`
+
+HasId returns a boolean if a field has been set.
+
+### GetTtl
+
+`func (o *CNAMERecord) GetTtl() int32`
+
+GetTtl returns the Ttl field if non-nil, zero value otherwise.
+
+### GetTtlOk
+
+`func (o *CNAMERecord) GetTtlOk() (*int32, bool)`
+
+GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTtl
+
+`func (o *CNAMERecord) SetTtl(v int32)`
+
+SetTtl sets Ttl field to given value.
+
+### HasTtl
+
+`func (o *CNAMERecord) HasTtl() bool`
+
+HasTtl returns a boolean if a field has been set.
+
+### GetType
+
+`func (o *CNAMERecord) GetType() string`
+
+GetType returns the Type field if non-nil, zero value otherwise.
+
+### GetTypeOk
+
+`func (o *CNAMERecord) GetTypeOk() (*string, bool)`
+
+GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetType
+
+`func (o *CNAMERecord) SetType(v string)`
+
+SetType sets Type field to given value.
+
 
 ### GetHost
 

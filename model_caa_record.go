@@ -14,8 +14,6 @@ package dnsclient
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
-	"strings"
 )
 
 // checks if the CAARecord type satisfies the MappedNullable interface at compile time
@@ -23,7 +21,14 @@ var _ MappedNullable = &CAARecord{}
 
 // CAARecord DNS CAA record restricting which certificate authorities may issue TLS certificates for a domain.
 type CAARecord struct {
-	Record
+	// UUID v4 associated with the DNS record.
+	Id *string `json:"id,omitempty"`
+	// DNS Time To Live in seconds.
+	Ttl *int32 `json:"ttl,omitempty"`
+	// DNS record type discriminator.
+	Type string `json:"type"`
+	// key/name.
+	Name string `json:"name"`
 	// Flags controlling record interpretation.
 	Flags int32 `json:"flags"`
 	// CAA property tag defining the authorization behavior.
@@ -39,9 +44,10 @@ type _CAARecord CAARecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCAARecord(flags int32, tag string, value string, type_ string) *CAARecord {
+func NewCAARecord(type_ string, name string, flags int32, tag string, value string) *CAARecord {
 	this := CAARecord{}
 	this.Type = type_
+	this.Name = name
 	this.Flags = flags
 	this.Tag = tag
 	this.Value = value
@@ -54,6 +60,118 @@ func NewCAARecord(flags int32, tag string, value string, type_ string) *CAARecor
 func NewCAARecordWithDefaults() *CAARecord {
 	this := CAARecord{}
 	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *CAARecord) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CAARecord) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *CAARecord) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *CAARecord) SetId(v string) {
+	o.Id = &v
+}
+
+// GetTtl returns the Ttl field value if set, zero value otherwise.
+func (o *CAARecord) GetTtl() int32 {
+	if o == nil || IsNil(o.Ttl) {
+		var ret int32
+		return ret
+	}
+	return *o.Ttl
+}
+
+// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CAARecord) GetTtlOk() (*int32, bool) {
+	if o == nil || IsNil(o.Ttl) {
+		return nil, false
+	}
+	return o.Ttl, true
+}
+
+// HasTtl returns a boolean if a field has been set.
+func (o *CAARecord) HasTtl() bool {
+	if o != nil && !IsNil(o.Ttl) {
+		return true
+	}
+
+	return false
+}
+
+// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
+func (o *CAARecord) SetTtl(v int32) {
+	o.Ttl = &v
+}
+
+// GetType returns the Type field value
+func (o *CAARecord) GetType() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *CAARecord) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *CAARecord) SetType(v string) {
+	o.Type = v
+}
+
+// GetName returns the Name field value
+func (o *CAARecord) GetName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+func (o *CAARecord) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Name, true
+}
+
+// SetName sets field value
+func (o *CAARecord) SetName(v string) {
+	o.Name = v
 }
 
 // GetFlags returns the Flags field value
@@ -138,14 +256,14 @@ func (o CAARecord) MarshalJSON() ([]byte, error) {
 
 func (o CAARecord) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	serializedRecord, errRecord := json.Marshal(o.Record)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
 	}
-	errRecord = json.Unmarshal([]byte(serializedRecord), &toSerialize)
-	if errRecord != nil {
-		return map[string]interface{}{}, errRecord
+	if !IsNil(o.Ttl) {
+		toSerialize["ttl"] = o.Ttl
 	}
+	toSerialize["type"] = o.Type
+	toSerialize["name"] = o.Name
 	toSerialize["flags"] = o.Flags
 	toSerialize["tag"] = o.Tag
 	toSerialize["value"] = o.Value
@@ -162,10 +280,11 @@ func (o *CAARecord) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"type",
+		"name",
 		"flags",
 		"tag",
 		"value",
-		"type",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -182,62 +301,26 @@ func (o *CAARecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	type CAARecordWithoutEmbeddedStruct struct {
-		// Flags controlling record interpretation.
-		Flags int32 `json:"flags"`
-		// CAA property tag defining the authorization behavior.
-		Tag string `json:"tag"`
-		// Certificate authority authorization value.
-		Value string `json:"value"`
-	}
-
-	varCAARecordWithoutEmbeddedStruct := CAARecordWithoutEmbeddedStruct{}
-
-	err = json.Unmarshal(data, &varCAARecordWithoutEmbeddedStruct)
-	if err == nil {
-		varCAARecord := _CAARecord{}
-		varCAARecord.Flags = varCAARecordWithoutEmbeddedStruct.Flags
-		varCAARecord.Tag = varCAARecordWithoutEmbeddedStruct.Tag
-		varCAARecord.Value = varCAARecordWithoutEmbeddedStruct.Value
-		*o = CAARecord(varCAARecord)
-	} else {
-		return err
-	}
-
 	varCAARecord := _CAARecord{}
 
 	err = json.Unmarshal(data, &varCAARecord)
-	if err == nil {
-		o.Record = varCAARecord.Record
-	} else {
+
+	if err != nil {
 		return err
 	}
+
+	*o = CAARecord(varCAARecord)
 
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "type")
+		delete(additionalProperties, "name")
 		delete(additionalProperties, "flags")
 		delete(additionalProperties, "tag")
 		delete(additionalProperties, "value")
-
-		// remove fields from embedded structs
-		reflectRecord := reflect.ValueOf(o.Record)
-		for i := 0; i < reflectRecord.Type().NumField(); i++ {
-			t := reflectRecord.Type().Field(i)
-
-			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
-				fieldName := ""
-				if commaIdx := strings.Index(jsonTag, ","); commaIdx > 0 {
-					fieldName = jsonTag[:commaIdx]
-				} else {
-					fieldName = jsonTag
-				}
-				if fieldName != "AdditionalProperties" {
-					delete(additionalProperties, fieldName)
-				}
-			}
-		}
-
 		o.AdditionalProperties = additionalProperties
 	}
 

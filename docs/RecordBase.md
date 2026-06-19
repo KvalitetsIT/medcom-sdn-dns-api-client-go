@@ -1,4 +1,4 @@
-# TXTRecord
+# RecordBase
 
 ## Properties
 
@@ -7,136 +7,94 @@ Name | Type | Description | Notes
 **Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
 **Ttl** | Pointer to **int32** | DNS Time To Live in seconds. | [optional] 
 **Type** | **string** | DNS record type discriminator. | 
-**Key** | **string** | TXT record key. | 
-**Value** | **string** | TXT record value. | 
 
 ## Methods
 
-### NewTXTRecord
+### NewRecordBase
 
-`func NewTXTRecord(type_ string, key string, value string, ) *TXTRecord`
+`func NewRecordBase(type_ string, ) *RecordBase`
 
-NewTXTRecord instantiates a new TXTRecord object
+NewRecordBase instantiates a new RecordBase object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewTXTRecordWithDefaults
+### NewRecordBaseWithDefaults
 
-`func NewTXTRecordWithDefaults() *TXTRecord`
+`func NewRecordBaseWithDefaults() *RecordBase`
 
-NewTXTRecordWithDefaults instantiates a new TXTRecord object
+NewRecordBaseWithDefaults instantiates a new RecordBase object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetId
 
-`func (o *TXTRecord) GetId() string`
+`func (o *RecordBase) GetId() string`
 
 GetId returns the Id field if non-nil, zero value otherwise.
 
 ### GetIdOk
 
-`func (o *TXTRecord) GetIdOk() (*string, bool)`
+`func (o *RecordBase) GetIdOk() (*string, bool)`
 
 GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetId
 
-`func (o *TXTRecord) SetId(v string)`
+`func (o *RecordBase) SetId(v string)`
 
 SetId sets Id field to given value.
 
 ### HasId
 
-`func (o *TXTRecord) HasId() bool`
+`func (o *RecordBase) HasId() bool`
 
 HasId returns a boolean if a field has been set.
 
 ### GetTtl
 
-`func (o *TXTRecord) GetTtl() int32`
+`func (o *RecordBase) GetTtl() int32`
 
 GetTtl returns the Ttl field if non-nil, zero value otherwise.
 
 ### GetTtlOk
 
-`func (o *TXTRecord) GetTtlOk() (*int32, bool)`
+`func (o *RecordBase) GetTtlOk() (*int32, bool)`
 
 GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetTtl
 
-`func (o *TXTRecord) SetTtl(v int32)`
+`func (o *RecordBase) SetTtl(v int32)`
 
 SetTtl sets Ttl field to given value.
 
 ### HasTtl
 
-`func (o *TXTRecord) HasTtl() bool`
+`func (o *RecordBase) HasTtl() bool`
 
 HasTtl returns a boolean if a field has been set.
 
 ### GetType
 
-`func (o *TXTRecord) GetType() string`
+`func (o *RecordBase) GetType() string`
 
 GetType returns the Type field if non-nil, zero value otherwise.
 
 ### GetTypeOk
 
-`func (o *TXTRecord) GetTypeOk() (*string, bool)`
+`func (o *RecordBase) GetTypeOk() (*string, bool)`
 
 GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetType
 
-`func (o *TXTRecord) SetType(v string)`
+`func (o *RecordBase) SetType(v string)`
 
 SetType sets Type field to given value.
-
-
-### GetKey
-
-`func (o *TXTRecord) GetKey() string`
-
-GetKey returns the Key field if non-nil, zero value otherwise.
-
-### GetKeyOk
-
-`func (o *TXTRecord) GetKeyOk() (*string, bool)`
-
-GetKeyOk returns a tuple with the Key field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetKey
-
-`func (o *TXTRecord) SetKey(v string)`
-
-SetKey sets Key field to given value.
-
-
-### GetValue
-
-`func (o *TXTRecord) GetValue() string`
-
-GetValue returns the Value field if non-nil, zero value otherwise.
-
-### GetValueOk
-
-`func (o *TXTRecord) GetValueOk() (*string, bool)`
-
-GetValueOk returns a tuple with the Value field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetValue
-
-`func (o *TXTRecord) SetValue(v string)`
-
-SetValue sets Value field to given value.
 
 
 

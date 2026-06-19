@@ -16,48 +16,42 @@ import (
 	"fmt"
 )
 
-// checks if the TXTRecord type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &TXTRecord{}
+// checks if the RecordBase type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &RecordBase{}
 
-// TXTRecord DNS TXT record used for arbitrary text-based metadata such as SPF, DKIM, and domain verification.
-type TXTRecord struct {
+// RecordBase Base DNS record properties.
+type RecordBase struct {
 	// UUID v4 associated with the DNS record.
 	Id *string `json:"id,omitempty"`
 	// DNS Time To Live in seconds.
 	Ttl *int32 `json:"ttl,omitempty"`
 	// DNS record type discriminator.
 	Type string `json:"type"`
-	// TXT record key.
-	Key string `json:"key"`
-	// TXT record value.
-	Value string `json:"value"`
 	AdditionalProperties map[string]interface{}
 }
 
-type _TXTRecord TXTRecord
+type _RecordBase RecordBase
 
-// NewTXTRecord instantiates a new TXTRecord object
+// NewRecordBase instantiates a new RecordBase object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTXTRecord(type_ string, key string, value string) *TXTRecord {
-	this := TXTRecord{}
+func NewRecordBase(type_ string) *RecordBase {
+	this := RecordBase{}
 	this.Type = type_
-	this.Key = key
-	this.Value = value
 	return &this
 }
 
-// NewTXTRecordWithDefaults instantiates a new TXTRecord object
+// NewRecordBaseWithDefaults instantiates a new RecordBase object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewTXTRecordWithDefaults() *TXTRecord {
-	this := TXTRecord{}
+func NewRecordBaseWithDefaults() *RecordBase {
+	this := RecordBase{}
 	return &this
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *TXTRecord) GetId() string {
+func (o *RecordBase) GetId() string {
 	if o == nil || IsNil(o.Id) {
 		var ret string
 		return ret
@@ -67,7 +61,7 @@ func (o *TXTRecord) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TXTRecord) GetIdOk() (*string, bool) {
+func (o *RecordBase) GetIdOk() (*string, bool) {
 	if o == nil || IsNil(o.Id) {
 		return nil, false
 	}
@@ -75,7 +69,7 @@ func (o *TXTRecord) GetIdOk() (*string, bool) {
 }
 
 // HasId returns a boolean if a field has been set.
-func (o *TXTRecord) HasId() bool {
+func (o *RecordBase) HasId() bool {
 	if o != nil && !IsNil(o.Id) {
 		return true
 	}
@@ -84,12 +78,12 @@ func (o *TXTRecord) HasId() bool {
 }
 
 // SetId gets a reference to the given string and assigns it to the Id field.
-func (o *TXTRecord) SetId(v string) {
+func (o *RecordBase) SetId(v string) {
 	o.Id = &v
 }
 
 // GetTtl returns the Ttl field value if set, zero value otherwise.
-func (o *TXTRecord) GetTtl() int32 {
+func (o *RecordBase) GetTtl() int32 {
 	if o == nil || IsNil(o.Ttl) {
 		var ret int32
 		return ret
@@ -99,7 +93,7 @@ func (o *TXTRecord) GetTtl() int32 {
 
 // GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TXTRecord) GetTtlOk() (*int32, bool) {
+func (o *RecordBase) GetTtlOk() (*int32, bool) {
 	if o == nil || IsNil(o.Ttl) {
 		return nil, false
 	}
@@ -107,7 +101,7 @@ func (o *TXTRecord) GetTtlOk() (*int32, bool) {
 }
 
 // HasTtl returns a boolean if a field has been set.
-func (o *TXTRecord) HasTtl() bool {
+func (o *RecordBase) HasTtl() bool {
 	if o != nil && !IsNil(o.Ttl) {
 		return true
 	}
@@ -116,12 +110,12 @@ func (o *TXTRecord) HasTtl() bool {
 }
 
 // SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
-func (o *TXTRecord) SetTtl(v int32) {
+func (o *RecordBase) SetTtl(v int32) {
 	o.Ttl = &v
 }
 
 // GetType returns the Type field value
-func (o *TXTRecord) GetType() string {
+func (o *RecordBase) GetType() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -132,7 +126,7 @@ func (o *TXTRecord) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *TXTRecord) GetTypeOk() (*string, bool) {
+func (o *RecordBase) GetTypeOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -140,59 +134,11 @@ func (o *TXTRecord) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *TXTRecord) SetType(v string) {
+func (o *RecordBase) SetType(v string) {
 	o.Type = v
 }
 
-// GetKey returns the Key field value
-func (o *TXTRecord) GetKey() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Key
-}
-
-// GetKeyOk returns a tuple with the Key field value
-// and a boolean to check if the value has been set.
-func (o *TXTRecord) GetKeyOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Key, true
-}
-
-// SetKey sets field value
-func (o *TXTRecord) SetKey(v string) {
-	o.Key = v
-}
-
-// GetValue returns the Value field value
-func (o *TXTRecord) GetValue() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Value
-}
-
-// GetValueOk returns a tuple with the Value field value
-// and a boolean to check if the value has been set.
-func (o *TXTRecord) GetValueOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Value, true
-}
-
-// SetValue sets field value
-func (o *TXTRecord) SetValue(v string) {
-	o.Value = v
-}
-
-func (o TXTRecord) MarshalJSON() ([]byte, error) {
+func (o RecordBase) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -200,7 +146,7 @@ func (o TXTRecord) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o TXTRecord) ToMap() (map[string]interface{}, error) {
+func (o RecordBase) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
@@ -209,8 +155,6 @@ func (o TXTRecord) ToMap() (map[string]interface{}, error) {
 		toSerialize["ttl"] = o.Ttl
 	}
 	toSerialize["type"] = o.Type
-	toSerialize["key"] = o.Key
-	toSerialize["value"] = o.Value
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -219,14 +163,12 @@ func (o TXTRecord) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *TXTRecord) UnmarshalJSON(data []byte) (err error) {
+func (o *RecordBase) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"type",
-		"key",
-		"value",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -243,15 +185,15 @@ func (o *TXTRecord) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varTXTRecord := _TXTRecord{}
+	varRecordBase := _RecordBase{}
 
-	err = json.Unmarshal(data, &varTXTRecord)
+	err = json.Unmarshal(data, &varRecordBase)
 
 	if err != nil {
 		return err
 	}
 
-	*o = TXTRecord(varTXTRecord)
+	*o = RecordBase(varRecordBase)
 
 	additionalProperties := make(map[string]interface{})
 
@@ -259,46 +201,44 @@ func (o *TXTRecord) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "id")
 		delete(additionalProperties, "ttl")
 		delete(additionalProperties, "type")
-		delete(additionalProperties, "key")
-		delete(additionalProperties, "value")
 		o.AdditionalProperties = additionalProperties
 	}
 
 	return err
 }
 
-type NullableTXTRecord struct {
-	value *TXTRecord
+type NullableRecordBase struct {
+	value *RecordBase
 	isSet bool
 }
 
-func (v NullableTXTRecord) Get() *TXTRecord {
+func (v NullableRecordBase) Get() *RecordBase {
 	return v.value
 }
 
-func (v *NullableTXTRecord) Set(val *TXTRecord) {
+func (v *NullableRecordBase) Set(val *RecordBase) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableTXTRecord) IsSet() bool {
+func (v NullableRecordBase) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableTXTRecord) Unset() {
+func (v *NullableRecordBase) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableTXTRecord(val *TXTRecord) *NullableTXTRecord {
-	return &NullableTXTRecord{value: val, isSet: true}
+func NewNullableRecordBase(val *RecordBase) *NullableRecordBase {
+	return &NullableRecordBase{value: val, isSet: true}
 }
 
-func (v NullableTXTRecord) MarshalJSON() ([]byte, error) {
+func (v NullableRecordBase) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableTXTRecord) UnmarshalJSON(src []byte) error {
+func (v *NullableRecordBase) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

@@ -203,11 +203,15 @@ components:
     RecordCollection:
       example:
         records:
-        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
-          type: TXT
+        - ipv4: 192.168.1.10
+          host: example.com.
+          id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          type: type
           ttl: 3600
-        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
-          type: TXT
+        - ipv4: 192.168.1.10
+          host: example.com.
+          id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          type: type
           ttl: 3600
       properties:
         records:
@@ -218,7 +222,6 @@ components:
       - records
       type: object
     Record:
-      description: Base DNS record properties.
       discriminator:
         mapping:
           A: "#/components/schemas/ARecord"
@@ -232,10 +235,19 @@ components:
           PTR: "#/components/schemas/PTRRecord"
           CAA: "#/components/schemas/CAARecord"
         propertyName: type
-      example:
-        id: 66101ef0-3e34-470d-92ea-53b89ad036e7
-        type: TXT
-        ttl: 3600
+      oneOf:
+      - $ref: "#/components/schemas/ARecord"
+      - $ref: "#/components/schemas/AAAARecord"
+      - $ref: "#/components/schemas/CNAMERecord"
+      - $ref: "#/components/schemas/MXRecord"
+      - $ref: "#/components/schemas/TXTRecord"
+      - $ref: "#/components/schemas/NSRecord"
+      - $ref: "#/components/schemas/SOARecord"
+      - $ref: "#/components/schemas/SRVRecord"
+      - $ref: "#/components/schemas/PTRRecord"
+      - $ref: "#/components/schemas/CAARecord"
+    RecordBase:
+      description: Base DNS record properties.
       properties:
         id:
           description: UUID v4 associated with the DNS record.
@@ -249,14 +261,13 @@ components:
           type: integer
         type:
           description: DNS record type discriminator.
-          example: TXT
           type: string
       required:
       - type
       type: object
     ARecord:
       allOf:
-      - $ref: "#/components/schemas/Record"
+      - $ref: "#/components/schemas/RecordBase"
       - properties:
           host:
             description: the host associated with the ipv4.
@@ -272,9 +283,15 @@ components:
         - ipv4
         type: object
       description: DNS A record mapping a hostname to an IPv4 address.
+      example:
+        ipv4: 192.168.1.10
+        host: example.com.
+        id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+        type: type
+        ttl: 3600
     AAAARecord:
       allOf:
-      - $ref: "#/components/schemas/Record"
+      - $ref: "#/components/schemas/RecordBase"
       - properties:
           host:
             description: the host associated with the ipv4.
@@ -292,7 +309,7 @@ components:
       description: DNS AAAA record mapping a hostname to an IPv6 address.
     CNAMERecord:
       allOf:
-      - $ref: "#/components/schemas/Record"
+      - $ref: "#/components/schemas/RecordBase"
       - properties:
           host:
             description: Alias hostname
@@ -309,7 +326,7 @@ components:
       description: DNS CNAME record mapping an alias hostname to a canonical hostname.
     MXRecord:
       allOf:
-      - $ref: "#/components/schemas/Record"
+      - $ref: "#/components/schemas/RecordBase"
       - properties:
           priority:
             description: Mail server priority where lower values are preferred.
@@ -328,33 +345,43 @@ components:
         email delivery for a domain.
     TXTRecord:
       allOf:
-      - $ref: "#/components/schemas/Record"
+      - $ref: "#/components/schemas/RecordBase"
       - properties:
+          key:
+            description: TXT record key.
+            example: dsdn.dk.
+            type: string
           value:
             description: TXT record value.
             example: v=spf1 include:_spf.example.com ~all
             type: string
         required:
+        - key
         - value
         type: object
       description: "DNS TXT record used for arbitrary text-based metadata such as\
         \ SPF, DKIM, and domain verification."
     NSRecord:
       allOf:
-      - $ref: "#/components/schemas/Record"
+      - $ref: "#/components/schemas/RecordBase"
       - properties:
+          name:
+            description: key/name.
+            example: dsdn.dk.
+            type: string
           nameserver:
             description: Authoritative nameserver hostname.
             example: ns1.example.com
             type: string
         required:
+        - name
         - nameserver
         type: object
       description: DNS NS record delegating authority for a DNS zone to an authoritative
         nameserver.
     SOARecord:
       allOf:
-      - $ref: "#/components/schemas/Record"
+      - $ref: "#/components/schemas/RecordBase"
       - properties:
           mName:
             description: Primary master nameserver for the zone.
@@ -392,8 +419,12 @@ components:
         for a DNS zone.
     SRVRecord:
       allOf:
-      - $ref: "#/components/schemas/Record"
+      - $ref: "#/components/schemas/RecordBase"
       - properties:
+          name:
+            description: key/name.
+            example: dsdn.dk.
+            type: string
           priority:
             description: Service priority where lower values are preferred.
             example: 10
@@ -416,6 +447,7 @@ components:
             example: sip.example.com
             type: string
         required:
+        - name
         - port
         - priority
         - target
@@ -424,21 +456,30 @@ components:
       description: DNS SRV record defining the hostname and port for a specific service.
     PTRRecord:
       allOf:
-      - $ref: "#/components/schemas/Record"
+      - $ref: "#/components/schemas/RecordBase"
       - properties:
+          name:
+            description: key/name.
+            example: dsdn.dk.
+            type: string
           pointer:
             description: Reverse DNS hostname target.
             example: server.example.com
             type: string
         required:
+        - name
         - pointer
         type: object
       description: DNS PTR record used for reverse DNS lookups from IP addresses to
         hostnames.
     CAARecord:
       allOf:
-      - $ref: "#/components/schemas/Record"
+      - $ref: "#/components/schemas/RecordBase"
       - properties:
+          name:
+            description: key/name.
+            example: dsdn.dk.
+            type: string
           flags:
             description: Flags controlling record interpretation.
             example: 0
@@ -459,6 +500,7 @@ components:
             type: string
         required:
         - flags
+        - name
         - tag
         - value
         type: object
