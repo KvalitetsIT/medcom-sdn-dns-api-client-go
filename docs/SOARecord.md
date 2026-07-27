@@ -5,11 +5,12 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
-**Ttl** | Pointer to **int32** | DNS Time To Live in seconds. | [optional] 
+**Fqdn** | **string** | Fully qualified domain name | 
 **Type** | **string** | DNS record type discriminator. | 
+**Source** | **string** | Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier | 
 **MName** | **string** | Primary master nameserver for the zone. | 
 **RName** | **string** | Responsible party email (encoded format). | 
-**Serial** | **int32** |  | 
+**Serial** | **int64** |  | 
 **Refresh** | **int32** |  | 
 **Retry** | **int32** |  | 
 **Expire** | **int32** |  | 
@@ -19,7 +20,7 @@ Name | Type | Description | Notes
 
 ### NewSOARecord
 
-`func NewSOARecord(type_ string, mName string, rName string, serial int32, refresh int32, retry int32, expire int32, minimum int32, ) *SOARecord`
+`func NewSOARecord(fqdn string, type_ string, source string, mName string, rName string, serial int64, refresh int32, retry int32, expire int32, minimum int32, ) *SOARecord`
 
 NewSOARecord instantiates a new SOARecord object
 This constructor will assign default values to properties that have it defined,
@@ -59,30 +60,25 @@ SetId sets Id field to given value.
 
 HasId returns a boolean if a field has been set.
 
-### GetTtl
+### GetFqdn
 
-`func (o *SOARecord) GetTtl() int32`
+`func (o *SOARecord) GetFqdn() string`
 
-GetTtl returns the Ttl field if non-nil, zero value otherwise.
+GetFqdn returns the Fqdn field if non-nil, zero value otherwise.
 
-### GetTtlOk
+### GetFqdnOk
 
-`func (o *SOARecord) GetTtlOk() (*int32, bool)`
+`func (o *SOARecord) GetFqdnOk() (*string, bool)`
 
-GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+GetFqdnOk returns a tuple with the Fqdn field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetTtl
+### SetFqdn
 
-`func (o *SOARecord) SetTtl(v int32)`
+`func (o *SOARecord) SetFqdn(v string)`
 
-SetTtl sets Ttl field to given value.
+SetFqdn sets Fqdn field to given value.
 
-### HasTtl
-
-`func (o *SOARecord) HasTtl() bool`
-
-HasTtl returns a boolean if a field has been set.
 
 ### GetType
 
@@ -102,6 +98,26 @@ and a boolean to check if the value has been set.
 `func (o *SOARecord) SetType(v string)`
 
 SetType sets Type field to given value.
+
+
+### GetSource
+
+`func (o *SOARecord) GetSource() string`
+
+GetSource returns the Source field if non-nil, zero value otherwise.
+
+### GetSourceOk
+
+`func (o *SOARecord) GetSourceOk() (*string, bool)`
+
+GetSourceOk returns a tuple with the Source field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSource
+
+`func (o *SOARecord) SetSource(v string)`
+
+SetSource sets Source field to given value.
 
 
 ### GetMName
@@ -146,20 +162,20 @@ SetRName sets RName field to given value.
 
 ### GetSerial
 
-`func (o *SOARecord) GetSerial() int32`
+`func (o *SOARecord) GetSerial() int64`
 
 GetSerial returns the Serial field if non-nil, zero value otherwise.
 
 ### GetSerialOk
 
-`func (o *SOARecord) GetSerialOk() (*int32, bool)`
+`func (o *SOARecord) GetSerialOk() (*int64, bool)`
 
 GetSerialOk returns a tuple with the Serial field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSerial
 
-`func (o *SOARecord) SetSerial(v int32)`
+`func (o *SOARecord) SetSerial(v int64)`
 
 SetSerial sets Serial field to given value.
 

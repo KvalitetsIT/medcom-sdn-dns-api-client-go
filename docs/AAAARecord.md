@@ -5,16 +5,16 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
-**Ttl** | Pointer to **int32** | DNS Time To Live in seconds. | [optional] 
+**Fqdn** | **string** | Fully qualified domain name | 
 **Type** | **string** | DNS record type discriminator. | 
-**Host** | **string** | the host associated with the ipv4. | 
+**Source** | **string** | Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier | 
 **Ipv6** | **string** | IPv6 address assigned to the hostname. | 
 
 ## Methods
 
 ### NewAAAARecord
 
-`func NewAAAARecord(type_ string, host string, ipv6 string, ) *AAAARecord`
+`func NewAAAARecord(fqdn string, type_ string, source string, ipv6 string, ) *AAAARecord`
 
 NewAAAARecord instantiates a new AAAARecord object
 This constructor will assign default values to properties that have it defined,
@@ -54,30 +54,25 @@ SetId sets Id field to given value.
 
 HasId returns a boolean if a field has been set.
 
-### GetTtl
+### GetFqdn
 
-`func (o *AAAARecord) GetTtl() int32`
+`func (o *AAAARecord) GetFqdn() string`
 
-GetTtl returns the Ttl field if non-nil, zero value otherwise.
+GetFqdn returns the Fqdn field if non-nil, zero value otherwise.
 
-### GetTtlOk
+### GetFqdnOk
 
-`func (o *AAAARecord) GetTtlOk() (*int32, bool)`
+`func (o *AAAARecord) GetFqdnOk() (*string, bool)`
 
-GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+GetFqdnOk returns a tuple with the Fqdn field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetTtl
+### SetFqdn
 
-`func (o *AAAARecord) SetTtl(v int32)`
+`func (o *AAAARecord) SetFqdn(v string)`
 
-SetTtl sets Ttl field to given value.
+SetFqdn sets Fqdn field to given value.
 
-### HasTtl
-
-`func (o *AAAARecord) HasTtl() bool`
-
-HasTtl returns a boolean if a field has been set.
 
 ### GetType
 
@@ -99,24 +94,24 @@ and a boolean to check if the value has been set.
 SetType sets Type field to given value.
 
 
-### GetHost
+### GetSource
 
-`func (o *AAAARecord) GetHost() string`
+`func (o *AAAARecord) GetSource() string`
 
-GetHost returns the Host field if non-nil, zero value otherwise.
+GetSource returns the Source field if non-nil, zero value otherwise.
 
-### GetHostOk
+### GetSourceOk
 
-`func (o *AAAARecord) GetHostOk() (*string, bool)`
+`func (o *AAAARecord) GetSourceOk() (*string, bool)`
 
-GetHostOk returns a tuple with the Host field if it's non-nil, zero value otherwise
+GetSourceOk returns a tuple with the Source field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetHost
+### SetSource
 
-`func (o *AAAARecord) SetHost(v string)`
+`func (o *AAAARecord) SetSource(v string)`
 
-SetHost sets Host field to given value.
+SetSource sets Source field to given value.
 
 
 ### GetIpv6

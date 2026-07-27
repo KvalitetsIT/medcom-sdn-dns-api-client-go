@@ -23,10 +23,12 @@ var _ MappedNullable = &RecordBase{}
 type RecordBase struct {
 	// UUID v4 associated with the DNS record.
 	Id *string `json:"id,omitempty"`
-	// DNS Time To Live in seconds.
-	Ttl *int32 `json:"ttl,omitempty"`
+	// Fully qualified domain name
+	Fqdn string `json:"fqdn"`
 	// DNS record type discriminator.
 	Type string `json:"type"`
+	// Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier
+	Source string `json:"source"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -36,9 +38,11 @@ type _RecordBase RecordBase
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRecordBase(type_ string) *RecordBase {
+func NewRecordBase(fqdn string, type_ string, source string) *RecordBase {
 	this := RecordBase{}
+	this.Fqdn = fqdn
 	this.Type = type_
+	this.Source = source
 	return &this
 }
 
@@ -82,36 +86,28 @@ func (o *RecordBase) SetId(v string) {
 	o.Id = &v
 }
 
-// GetTtl returns the Ttl field value if set, zero value otherwise.
-func (o *RecordBase) GetTtl() int32 {
-	if o == nil || IsNil(o.Ttl) {
-		var ret int32
+// GetFqdn returns the Fqdn field value
+func (o *RecordBase) GetFqdn() string {
+	if o == nil {
+		var ret string
 		return ret
 	}
-	return *o.Ttl
+
+	return o.Fqdn
 }
 
-// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// GetFqdnOk returns a tuple with the Fqdn field value
 // and a boolean to check if the value has been set.
-func (o *RecordBase) GetTtlOk() (*int32, bool) {
-	if o == nil || IsNil(o.Ttl) {
+func (o *RecordBase) GetFqdnOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Ttl, true
+	return &o.Fqdn, true
 }
 
-// HasTtl returns a boolean if a field has been set.
-func (o *RecordBase) HasTtl() bool {
-	if o != nil && !IsNil(o.Ttl) {
-		return true
-	}
-
-	return false
-}
-
-// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
-func (o *RecordBase) SetTtl(v int32) {
-	o.Ttl = &v
+// SetFqdn sets field value
+func (o *RecordBase) SetFqdn(v string) {
+	o.Fqdn = v
 }
 
 // GetType returns the Type field value
@@ -138,6 +134,30 @@ func (o *RecordBase) SetType(v string) {
 	o.Type = v
 }
 
+// GetSource returns the Source field value
+func (o *RecordBase) GetSource() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value
+// and a boolean to check if the value has been set.
+func (o *RecordBase) GetSourceOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Source, true
+}
+
+// SetSource sets field value
+func (o *RecordBase) SetSource(v string) {
+	o.Source = v
+}
+
 func (o RecordBase) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -151,10 +171,9 @@ func (o RecordBase) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
-	if !IsNil(o.Ttl) {
-		toSerialize["ttl"] = o.Ttl
-	}
+	toSerialize["fqdn"] = o.Fqdn
 	toSerialize["type"] = o.Type
+	toSerialize["source"] = o.Source
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -168,7 +187,9 @@ func (o *RecordBase) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"fqdn",
 		"type",
+		"source",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -199,8 +220,9 @@ func (o *RecordBase) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "id")
-		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "fqdn")
 		delete(additionalProperties, "type")
+		delete(additionalProperties, "source")
 		o.AdditionalProperties = additionalProperties
 	}
 

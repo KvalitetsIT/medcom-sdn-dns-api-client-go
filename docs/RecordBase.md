@@ -5,14 +5,15 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
-**Ttl** | Pointer to **int32** | DNS Time To Live in seconds. | [optional] 
+**Fqdn** | **string** | Fully qualified domain name | 
 **Type** | **string** | DNS record type discriminator. | 
+**Source** | **string** | Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier | 
 
 ## Methods
 
 ### NewRecordBase
 
-`func NewRecordBase(type_ string, ) *RecordBase`
+`func NewRecordBase(fqdn string, type_ string, source string, ) *RecordBase`
 
 NewRecordBase instantiates a new RecordBase object
 This constructor will assign default values to properties that have it defined,
@@ -52,30 +53,25 @@ SetId sets Id field to given value.
 
 HasId returns a boolean if a field has been set.
 
-### GetTtl
+### GetFqdn
 
-`func (o *RecordBase) GetTtl() int32`
+`func (o *RecordBase) GetFqdn() string`
 
-GetTtl returns the Ttl field if non-nil, zero value otherwise.
+GetFqdn returns the Fqdn field if non-nil, zero value otherwise.
 
-### GetTtlOk
+### GetFqdnOk
 
-`func (o *RecordBase) GetTtlOk() (*int32, bool)`
+`func (o *RecordBase) GetFqdnOk() (*string, bool)`
 
-GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+GetFqdnOk returns a tuple with the Fqdn field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetTtl
+### SetFqdn
 
-`func (o *RecordBase) SetTtl(v int32)`
+`func (o *RecordBase) SetFqdn(v string)`
 
-SetTtl sets Ttl field to given value.
+SetFqdn sets Fqdn field to given value.
 
-### HasTtl
-
-`func (o *RecordBase) HasTtl() bool`
-
-HasTtl returns a boolean if a field has been set.
 
 ### GetType
 
@@ -95,6 +91,26 @@ and a boolean to check if the value has been set.
 `func (o *RecordBase) SetType(v string)`
 
 SetType sets Type field to given value.
+
+
+### GetSource
+
+`func (o *RecordBase) GetSource() string`
+
+GetSource returns the Source field if non-nil, zero value otherwise.
+
+### GetSourceOk
+
+`func (o *RecordBase) GetSourceOk() (*string, bool)`
+
+GetSourceOk returns a tuple with the Source field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSource
+
+`func (o *RecordBase) SetSource(v string)`
+
+SetSource sets Source field to given value.
 
 
 

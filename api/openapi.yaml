@@ -26,8 +26,40 @@ tags:
   name: Records
 paths:
   /records:
+    delete:
+      description: Deletes the dns records.
+      parameters:
+      - explode: false
+        in: header
+        name: record_ids
+        required: true
+        schema:
+          items:
+            format: uuid
+            type: string
+          type: array
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecordCollection"
+          description: Ok
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/basic_error"
+          description: "Bad Request. This could be because: * One of the required\
+            \ parameters/properties are missing or is empty <br> * Length of input\
+            \ is exceeding maximum length <br> (See a possible detailed error message\
+            \ in the in the response.)"
+      summary: Deletes the dns records.
+      tags:
+      - Records
     get:
-      description: Retrieves all records.
+      description: Retrieves all records matching the input query parameters.
       parameters:
       - description: Fully qualifies domain name
         explode: true
@@ -66,6 +98,14 @@ paths:
         schema:
           $ref: "#/components/schemas/DnsRecordType"
         style: form
+      - description: The source of the record
+        explode: true
+        in: query
+        name: source
+        required: false
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -77,13 +117,13 @@ paths:
       tags:
       - Records
     post:
-      description: Add record.
+      description: Add records.
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/RecordCollection"
-        description: The new organisation.
+        description: The new records.
         required: true
       responses:
         "200":
@@ -101,7 +141,7 @@ paths:
             \ parameters/properties are missing or is empty <br> * Length of input\
             \ is exceeding maximum length <br> (See a possible detailed error message\
             \ in the in the response.)"
-      summary: Add record.
+      summary: Add records.
       tags:
       - Records
   /records/{record_id}:
@@ -179,40 +219,20 @@ components:
       description: "Bad Request. This could be because: * One of the required parameters/properties\
         \ are missing or is empty <br> * Length of input is exceeding maximum length\
         \ <br> (See a possible detailed error message in the in the response.)"
-    "403":
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/basic_error"
-      description: "Forbidden. This could be because: <br> * The requested information\
-        \ does not belong the organisation of the user <br> * The calling user does\
-        \ not have the required roles"
-    "404":
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/basic_error"
-      description: Requested resource not found.
-    "409":
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/basic_error"
-      description: Resource in conflict.
   schemas:
     RecordCollection:
       example:
         records:
-        - ipv4: 192.168.1.10
-          host: example.com.
-          id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          fqdn: dsdn.dk
           type: type
-          ttl: 3600
-        - ipv4: 192.168.1.10
-          host: example.com.
-          id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          source: source
+          ipv4: 192.168.1.10
+        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          fqdn: dsdn.dk
           type: type
-          ttl: 3600
+          source: source
+          ipv4: 192.168.1.10
       properties:
         records:
           items:
@@ -254,56 +274,53 @@ components:
           example: 66101ef0-3e34-470d-92ea-53b89ad036e7
           format: uuid
           type: string
-        ttl:
-          description: DNS Time To Live in seconds.
-          example: 3600
-          minimum: 0
-          type: integer
+        fqdn:
+          description: Fully qualified domain name
+          example: dsdn.dk
+          type: string
         type:
           description: DNS record type discriminator.
           type: string
+        source:
+          description: "Identifies the system, service, or user that created the DNS\
+            \ record. This field is used for auditing, traceability, and ownership\
+            \ purposes. Typical values include the name of an automation system, application,\
+            \ integration, or a user identifier"
+          type: string
       required:
+      - fqdn
+      - source
       - type
       type: object
     ARecord:
       allOf:
       - $ref: "#/components/schemas/RecordBase"
       - properties:
-          host:
-            description: the host associated with the ipv4.
-            example: example.com.
-            type: string
           ipv4:
             description: IPv4 address assigned to the hostname.
             example: 192.168.1.10
             format: ipv4
             type: string
         required:
-        - host
         - ipv4
         type: object
       description: DNS A record mapping a hostname to an IPv4 address.
       example:
-        ipv4: 192.168.1.10
-        host: example.com.
         id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+        fqdn: dsdn.dk
         type: type
-        ttl: 3600
+        source: source
+        ipv4: 192.168.1.10
     AAAARecord:
       allOf:
       - $ref: "#/components/schemas/RecordBase"
       - properties:
-          host:
-            description: the host associated with the ipv4.
-            example: example.com.
-            type: string
           ipv6:
             description: IPv6 address assigned to the hostname.
             example: 2001:db8::10
             format: ipv6
             type: string
         required:
-        - host
         - ipv6
         type: object
       description: DNS AAAA record mapping a hostname to an IPv6 address.
@@ -311,17 +328,12 @@ components:
       allOf:
       - $ref: "#/components/schemas/RecordBase"
       - properties:
-          host:
-            description: Alias hostname
-            example: example.com
-            type: string
-          canonicalName:
+          target:
             description: Canonical hostname target.
             example: server.example.com
             type: string
         required:
-        - canonicalName
-        - host
+        - target
         type: object
       description: DNS CNAME record mapping an alias hostname to a canonical hostname.
     MXRecord:
@@ -347,16 +359,11 @@ components:
       allOf:
       - $ref: "#/components/schemas/RecordBase"
       - properties:
-          key:
-            description: TXT record key.
-            example: dsdn.dk.
-            type: string
           value:
             description: TXT record value.
             example: v=spf1 include:_spf.example.com ~all
             type: string
         required:
-        - key
         - value
         type: object
       description: "DNS TXT record used for arbitrary text-based metadata such as\
@@ -365,16 +372,11 @@ components:
       allOf:
       - $ref: "#/components/schemas/RecordBase"
       - properties:
-          name:
-            description: key/name.
-            example: dsdn.dk.
-            type: string
           nameserver:
             description: Authoritative nameserver hostname.
             example: ns1.example.com
             type: string
         required:
-        - name
         - nameserver
         type: object
       description: DNS NS record delegating authority for a DNS zone to an authoritative
@@ -393,6 +395,7 @@ components:
             type: string
           serial:
             example: 2026050101
+            format: int64
             type: integer
           refresh:
             example: 7200
@@ -421,10 +424,6 @@ components:
       allOf:
       - $ref: "#/components/schemas/RecordBase"
       - properties:
-          name:
-            description: key/name.
-            example: dsdn.dk.
-            type: string
           priority:
             description: Service priority where lower values are preferred.
             example: 10
@@ -447,7 +446,6 @@ components:
             example: sip.example.com
             type: string
         required:
-        - name
         - port
         - priority
         - target
@@ -458,16 +456,11 @@ components:
       allOf:
       - $ref: "#/components/schemas/RecordBase"
       - properties:
-          name:
-            description: key/name.
-            example: dsdn.dk.
-            type: string
           pointer:
             description: Reverse DNS hostname target.
             example: server.example.com
             type: string
         required:
-        - name
         - pointer
         type: object
       description: DNS PTR record used for reverse DNS lookups from IP addresses to
@@ -476,10 +469,6 @@ components:
       allOf:
       - $ref: "#/components/schemas/RecordBase"
       - properties:
-          name:
-            description: key/name.
-            example: dsdn.dk.
-            type: string
           flags:
             description: Flags controlling record interpretation.
             example: 0
@@ -500,7 +489,6 @@ components:
             type: string
         required:
         - flags
-        - name
         - tag
         - value
         type: object
@@ -509,11 +497,11 @@ components:
     basic_error:
       description: Standard API error response returned when a request fails.
       example:
-        path: path
         error_code: 0
-        status_text: status_text
         error: error
+        path: path
         status: 6
+        status_text: status_text
         timestamp: 2000-01-23T04:56:07.000+00:00
       properties:
         error_code:

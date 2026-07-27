@@ -23,15 +23,17 @@ var _ MappedNullable = &SOARecord{}
 type SOARecord struct {
 	// UUID v4 associated with the DNS record.
 	Id *string `json:"id,omitempty"`
-	// DNS Time To Live in seconds.
-	Ttl *int32 `json:"ttl,omitempty"`
+	// Fully qualified domain name
+	Fqdn string `json:"fqdn"`
 	// DNS record type discriminator.
 	Type string `json:"type"`
+	// Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier
+	Source string `json:"source"`
 	// Primary master nameserver for the zone.
 	MName string `json:"mName"`
 	// Responsible party email (encoded format).
 	RName string `json:"rName"`
-	Serial int32 `json:"serial"`
+	Serial int64 `json:"serial"`
 	Refresh int32 `json:"refresh"`
 	Retry int32 `json:"retry"`
 	Expire int32 `json:"expire"`
@@ -45,9 +47,11 @@ type _SOARecord SOARecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSOARecord(type_ string, mName string, rName string, serial int32, refresh int32, retry int32, expire int32, minimum int32) *SOARecord {
+func NewSOARecord(fqdn string, type_ string, source string, mName string, rName string, serial int64, refresh int32, retry int32, expire int32, minimum int32) *SOARecord {
 	this := SOARecord{}
+	this.Fqdn = fqdn
 	this.Type = type_
+	this.Source = source
 	this.MName = mName
 	this.RName = rName
 	this.Serial = serial
@@ -98,36 +102,28 @@ func (o *SOARecord) SetId(v string) {
 	o.Id = &v
 }
 
-// GetTtl returns the Ttl field value if set, zero value otherwise.
-func (o *SOARecord) GetTtl() int32 {
-	if o == nil || IsNil(o.Ttl) {
-		var ret int32
+// GetFqdn returns the Fqdn field value
+func (o *SOARecord) GetFqdn() string {
+	if o == nil {
+		var ret string
 		return ret
 	}
-	return *o.Ttl
+
+	return o.Fqdn
 }
 
-// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// GetFqdnOk returns a tuple with the Fqdn field value
 // and a boolean to check if the value has been set.
-func (o *SOARecord) GetTtlOk() (*int32, bool) {
-	if o == nil || IsNil(o.Ttl) {
+func (o *SOARecord) GetFqdnOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Ttl, true
+	return &o.Fqdn, true
 }
 
-// HasTtl returns a boolean if a field has been set.
-func (o *SOARecord) HasTtl() bool {
-	if o != nil && !IsNil(o.Ttl) {
-		return true
-	}
-
-	return false
-}
-
-// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
-func (o *SOARecord) SetTtl(v int32) {
-	o.Ttl = &v
+// SetFqdn sets field value
+func (o *SOARecord) SetFqdn(v string) {
+	o.Fqdn = v
 }
 
 // GetType returns the Type field value
@@ -152,6 +148,30 @@ func (o *SOARecord) GetTypeOk() (*string, bool) {
 // SetType sets field value
 func (o *SOARecord) SetType(v string) {
 	o.Type = v
+}
+
+// GetSource returns the Source field value
+func (o *SOARecord) GetSource() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value
+// and a boolean to check if the value has been set.
+func (o *SOARecord) GetSourceOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Source, true
+}
+
+// SetSource sets field value
+func (o *SOARecord) SetSource(v string) {
+	o.Source = v
 }
 
 // GetMName returns the MName field value
@@ -203,9 +223,9 @@ func (o *SOARecord) SetRName(v string) {
 }
 
 // GetSerial returns the Serial field value
-func (o *SOARecord) GetSerial() int32 {
+func (o *SOARecord) GetSerial() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -214,7 +234,7 @@ func (o *SOARecord) GetSerial() int32 {
 
 // GetSerialOk returns a tuple with the Serial field value
 // and a boolean to check if the value has been set.
-func (o *SOARecord) GetSerialOk() (*int32, bool) {
+func (o *SOARecord) GetSerialOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -222,7 +242,7 @@ func (o *SOARecord) GetSerialOk() (*int32, bool) {
 }
 
 // SetSerial sets field value
-func (o *SOARecord) SetSerial(v int32) {
+func (o *SOARecord) SetSerial(v int64) {
 	o.Serial = v
 }
 
@@ -335,10 +355,9 @@ func (o SOARecord) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
-	if !IsNil(o.Ttl) {
-		toSerialize["ttl"] = o.Ttl
-	}
+	toSerialize["fqdn"] = o.Fqdn
 	toSerialize["type"] = o.Type
+	toSerialize["source"] = o.Source
 	toSerialize["mName"] = o.MName
 	toSerialize["rName"] = o.RName
 	toSerialize["serial"] = o.Serial
@@ -359,7 +378,9 @@ func (o *SOARecord) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"fqdn",
 		"type",
+		"source",
 		"mName",
 		"rName",
 		"serial",
@@ -397,8 +418,9 @@ func (o *SOARecord) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "id")
-		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "fqdn")
 		delete(additionalProperties, "type")
+		delete(additionalProperties, "source")
 		delete(additionalProperties, "mName")
 		delete(additionalProperties, "rName")
 		delete(additionalProperties, "serial")

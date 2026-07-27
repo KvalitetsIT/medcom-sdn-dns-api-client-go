@@ -5,28 +5,25 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
-**Ttl** | Pointer to **int32** | DNS Time To Live in seconds. | [optional] 
+**Fqdn** | **string** | Fully qualified domain name | 
 **Type** | **string** | DNS record type discriminator. | 
-**Host** | **string** | Alias hostname | 
+**Source** | **string** | Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier | 
 **Ipv4** | **string** | IPv4 address assigned to the hostname. | 
 **Ipv6** | **string** | IPv6 address assigned to the hostname. | 
-**CanonicalName** | **string** | Canonical hostname target. | 
+**Target** | **string** | Target hostname providing the service. | 
 **Priority** | **int32** | Service priority where lower values are preferred. | 
 **Exchange** | **string** | Mail server hostname. | 
-**Key** | **string** | TXT record key. | 
 **Value** | **string** | Certificate authority authorization value. | 
-**Name** | **string** | key/name. | 
 **Nameserver** | **string** | Authoritative nameserver hostname. | 
 **MName** | **string** | Primary master nameserver for the zone. | 
 **RName** | **string** | Responsible party email (encoded format). | 
-**Serial** | **int32** |  | 
+**Serial** | **int64** |  | 
 **Refresh** | **int32** |  | 
 **Retry** | **int32** |  | 
 **Expire** | **int32** |  | 
 **Minimum** | **int32** |  | 
 **Weight** | **int32** | Relative weight for load balancing between services with the same priority. | 
 **Port** | **int32** | Network port exposed by the target service. | 
-**Target** | **string** | Target hostname providing the service. | 
 **Pointer** | **string** | Reverse DNS hostname target. | 
 **Flags** | **int32** | Flags controlling record interpretation. | 
 **Tag** | **string** | CAA property tag defining the authorization behavior. | 
@@ -35,7 +32,7 @@ Name | Type | Description | Notes
 
 ### NewRecord
 
-`func NewRecord(type_ string, host string, ipv4 string, ipv6 string, canonicalName string, priority int32, exchange string, key string, value string, name string, nameserver string, mName string, rName string, serial int32, refresh int32, retry int32, expire int32, minimum int32, weight int32, port int32, target string, pointer string, flags int32, tag string, ) *Record`
+`func NewRecord(fqdn string, type_ string, source string, ipv4 string, ipv6 string, target string, priority int32, exchange string, value string, nameserver string, mName string, rName string, serial int64, refresh int32, retry int32, expire int32, minimum int32, weight int32, port int32, pointer string, flags int32, tag string, ) *Record`
 
 NewRecord instantiates a new Record object
 This constructor will assign default values to properties that have it defined,
@@ -75,30 +72,25 @@ SetId sets Id field to given value.
 
 HasId returns a boolean if a field has been set.
 
-### GetTtl
+### GetFqdn
 
-`func (o *Record) GetTtl() int32`
+`func (o *Record) GetFqdn() string`
 
-GetTtl returns the Ttl field if non-nil, zero value otherwise.
+GetFqdn returns the Fqdn field if non-nil, zero value otherwise.
 
-### GetTtlOk
+### GetFqdnOk
 
-`func (o *Record) GetTtlOk() (*int32, bool)`
+`func (o *Record) GetFqdnOk() (*string, bool)`
 
-GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+GetFqdnOk returns a tuple with the Fqdn field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetTtl
+### SetFqdn
 
-`func (o *Record) SetTtl(v int32)`
+`func (o *Record) SetFqdn(v string)`
 
-SetTtl sets Ttl field to given value.
+SetFqdn sets Fqdn field to given value.
 
-### HasTtl
-
-`func (o *Record) HasTtl() bool`
-
-HasTtl returns a boolean if a field has been set.
 
 ### GetType
 
@@ -120,24 +112,24 @@ and a boolean to check if the value has been set.
 SetType sets Type field to given value.
 
 
-### GetHost
+### GetSource
 
-`func (o *Record) GetHost() string`
+`func (o *Record) GetSource() string`
 
-GetHost returns the Host field if non-nil, zero value otherwise.
+GetSource returns the Source field if non-nil, zero value otherwise.
 
-### GetHostOk
+### GetSourceOk
 
-`func (o *Record) GetHostOk() (*string, bool)`
+`func (o *Record) GetSourceOk() (*string, bool)`
 
-GetHostOk returns a tuple with the Host field if it's non-nil, zero value otherwise
+GetSourceOk returns a tuple with the Source field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetHost
+### SetSource
 
-`func (o *Record) SetHost(v string)`
+`func (o *Record) SetSource(v string)`
 
-SetHost sets Host field to given value.
+SetSource sets Source field to given value.
 
 
 ### GetIpv4
@@ -180,24 +172,24 @@ and a boolean to check if the value has been set.
 SetIpv6 sets Ipv6 field to given value.
 
 
-### GetCanonicalName
+### GetTarget
 
-`func (o *Record) GetCanonicalName() string`
+`func (o *Record) GetTarget() string`
 
-GetCanonicalName returns the CanonicalName field if non-nil, zero value otherwise.
+GetTarget returns the Target field if non-nil, zero value otherwise.
 
-### GetCanonicalNameOk
+### GetTargetOk
 
-`func (o *Record) GetCanonicalNameOk() (*string, bool)`
+`func (o *Record) GetTargetOk() (*string, bool)`
 
-GetCanonicalNameOk returns a tuple with the CanonicalName field if it's non-nil, zero value otherwise
+GetTargetOk returns a tuple with the Target field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetCanonicalName
+### SetTarget
 
-`func (o *Record) SetCanonicalName(v string)`
+`func (o *Record) SetTarget(v string)`
 
-SetCanonicalName sets CanonicalName field to given value.
+SetTarget sets Target field to given value.
 
 
 ### GetPriority
@@ -240,26 +232,6 @@ and a boolean to check if the value has been set.
 SetExchange sets Exchange field to given value.
 
 
-### GetKey
-
-`func (o *Record) GetKey() string`
-
-GetKey returns the Key field if non-nil, zero value otherwise.
-
-### GetKeyOk
-
-`func (o *Record) GetKeyOk() (*string, bool)`
-
-GetKeyOk returns a tuple with the Key field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetKey
-
-`func (o *Record) SetKey(v string)`
-
-SetKey sets Key field to given value.
-
-
 ### GetValue
 
 `func (o *Record) GetValue() string`
@@ -278,26 +250,6 @@ and a boolean to check if the value has been set.
 `func (o *Record) SetValue(v string)`
 
 SetValue sets Value field to given value.
-
-
-### GetName
-
-`func (o *Record) GetName() string`
-
-GetName returns the Name field if non-nil, zero value otherwise.
-
-### GetNameOk
-
-`func (o *Record) GetNameOk() (*string, bool)`
-
-GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetName
-
-`func (o *Record) SetName(v string)`
-
-SetName sets Name field to given value.
 
 
 ### GetNameserver
@@ -362,20 +314,20 @@ SetRName sets RName field to given value.
 
 ### GetSerial
 
-`func (o *Record) GetSerial() int32`
+`func (o *Record) GetSerial() int64`
 
 GetSerial returns the Serial field if non-nil, zero value otherwise.
 
 ### GetSerialOk
 
-`func (o *Record) GetSerialOk() (*int32, bool)`
+`func (o *Record) GetSerialOk() (*int64, bool)`
 
 GetSerialOk returns a tuple with the Serial field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSerial
 
-`func (o *Record) SetSerial(v int32)`
+`func (o *Record) SetSerial(v int64)`
 
 SetSerial sets Serial field to given value.
 
@@ -498,26 +450,6 @@ and a boolean to check if the value has been set.
 `func (o *Record) SetPort(v int32)`
 
 SetPort sets Port field to given value.
-
-
-### GetTarget
-
-`func (o *Record) GetTarget() string`
-
-GetTarget returns the Target field if non-nil, zero value otherwise.
-
-### GetTargetOk
-
-`func (o *Record) GetTargetOk() (*string, bool)`
-
-GetTargetOk returns a tuple with the Target field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetTarget
-
-`func (o *Record) SetTarget(v string)`
-
-SetTarget sets Target field to given value.
 
 
 ### GetPointer

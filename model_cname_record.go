@@ -23,14 +23,14 @@ var _ MappedNullable = &CNAMERecord{}
 type CNAMERecord struct {
 	// UUID v4 associated with the DNS record.
 	Id *string `json:"id,omitempty"`
-	// DNS Time To Live in seconds.
-	Ttl *int32 `json:"ttl,omitempty"`
+	// Fully qualified domain name
+	Fqdn string `json:"fqdn"`
 	// DNS record type discriminator.
 	Type string `json:"type"`
-	// Alias hostname
-	Host string `json:"host"`
+	// Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier
+	Source string `json:"source"`
 	// Canonical hostname target.
-	CanonicalName string `json:"canonicalName"`
+	Target string `json:"target"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -40,11 +40,12 @@ type _CNAMERecord CNAMERecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCNAMERecord(type_ string, host string, canonicalName string) *CNAMERecord {
+func NewCNAMERecord(fqdn string, type_ string, source string, target string) *CNAMERecord {
 	this := CNAMERecord{}
+	this.Fqdn = fqdn
 	this.Type = type_
-	this.Host = host
-	this.CanonicalName = canonicalName
+	this.Source = source
+	this.Target = target
 	return &this
 }
 
@@ -88,36 +89,28 @@ func (o *CNAMERecord) SetId(v string) {
 	o.Id = &v
 }
 
-// GetTtl returns the Ttl field value if set, zero value otherwise.
-func (o *CNAMERecord) GetTtl() int32 {
-	if o == nil || IsNil(o.Ttl) {
-		var ret int32
+// GetFqdn returns the Fqdn field value
+func (o *CNAMERecord) GetFqdn() string {
+	if o == nil {
+		var ret string
 		return ret
 	}
-	return *o.Ttl
+
+	return o.Fqdn
 }
 
-// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// GetFqdnOk returns a tuple with the Fqdn field value
 // and a boolean to check if the value has been set.
-func (o *CNAMERecord) GetTtlOk() (*int32, bool) {
-	if o == nil || IsNil(o.Ttl) {
+func (o *CNAMERecord) GetFqdnOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Ttl, true
+	return &o.Fqdn, true
 }
 
-// HasTtl returns a boolean if a field has been set.
-func (o *CNAMERecord) HasTtl() bool {
-	if o != nil && !IsNil(o.Ttl) {
-		return true
-	}
-
-	return false
-}
-
-// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
-func (o *CNAMERecord) SetTtl(v int32) {
-	o.Ttl = &v
+// SetFqdn sets field value
+func (o *CNAMERecord) SetFqdn(v string) {
+	o.Fqdn = v
 }
 
 // GetType returns the Type field value
@@ -144,52 +137,52 @@ func (o *CNAMERecord) SetType(v string) {
 	o.Type = v
 }
 
-// GetHost returns the Host field value
-func (o *CNAMERecord) GetHost() string {
+// GetSource returns the Source field value
+func (o *CNAMERecord) GetSource() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.Host
+	return o.Source
 }
 
-// GetHostOk returns a tuple with the Host field value
+// GetSourceOk returns a tuple with the Source field value
 // and a boolean to check if the value has been set.
-func (o *CNAMERecord) GetHostOk() (*string, bool) {
+func (o *CNAMERecord) GetSourceOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Host, true
+	return &o.Source, true
 }
 
-// SetHost sets field value
-func (o *CNAMERecord) SetHost(v string) {
-	o.Host = v
+// SetSource sets field value
+func (o *CNAMERecord) SetSource(v string) {
+	o.Source = v
 }
 
-// GetCanonicalName returns the CanonicalName field value
-func (o *CNAMERecord) GetCanonicalName() string {
+// GetTarget returns the Target field value
+func (o *CNAMERecord) GetTarget() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.CanonicalName
+	return o.Target
 }
 
-// GetCanonicalNameOk returns a tuple with the CanonicalName field value
+// GetTargetOk returns a tuple with the Target field value
 // and a boolean to check if the value has been set.
-func (o *CNAMERecord) GetCanonicalNameOk() (*string, bool) {
+func (o *CNAMERecord) GetTargetOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.CanonicalName, true
+	return &o.Target, true
 }
 
-// SetCanonicalName sets field value
-func (o *CNAMERecord) SetCanonicalName(v string) {
-	o.CanonicalName = v
+// SetTarget sets field value
+func (o *CNAMERecord) SetTarget(v string) {
+	o.Target = v
 }
 
 func (o CNAMERecord) MarshalJSON() ([]byte, error) {
@@ -205,12 +198,10 @@ func (o CNAMERecord) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
-	if !IsNil(o.Ttl) {
-		toSerialize["ttl"] = o.Ttl
-	}
+	toSerialize["fqdn"] = o.Fqdn
 	toSerialize["type"] = o.Type
-	toSerialize["host"] = o.Host
-	toSerialize["canonicalName"] = o.CanonicalName
+	toSerialize["source"] = o.Source
+	toSerialize["target"] = o.Target
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -224,9 +215,10 @@ func (o *CNAMERecord) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"fqdn",
 		"type",
-		"host",
-		"canonicalName",
+		"source",
+		"target",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -257,10 +249,10 @@ func (o *CNAMERecord) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "id")
-		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "fqdn")
 		delete(additionalProperties, "type")
-		delete(additionalProperties, "host")
-		delete(additionalProperties, "canonicalName")
+		delete(additionalProperties, "source")
+		delete(additionalProperties, "target")
 		o.AdditionalProperties = additionalProperties
 	}
 

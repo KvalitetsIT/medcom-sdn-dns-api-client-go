@@ -5,16 +5,16 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
-**Ttl** | Pointer to **int32** | DNS Time To Live in seconds. | [optional] 
+**Fqdn** | **string** | Fully qualified domain name | 
 **Type** | **string** | DNS record type discriminator. | 
-**Key** | **string** | TXT record key. | 
+**Source** | **string** | Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier | 
 **Value** | **string** | TXT record value. | 
 
 ## Methods
 
 ### NewTXTRecord
 
-`func NewTXTRecord(type_ string, key string, value string, ) *TXTRecord`
+`func NewTXTRecord(fqdn string, type_ string, source string, value string, ) *TXTRecord`
 
 NewTXTRecord instantiates a new TXTRecord object
 This constructor will assign default values to properties that have it defined,
@@ -54,30 +54,25 @@ SetId sets Id field to given value.
 
 HasId returns a boolean if a field has been set.
 
-### GetTtl
+### GetFqdn
 
-`func (o *TXTRecord) GetTtl() int32`
+`func (o *TXTRecord) GetFqdn() string`
 
-GetTtl returns the Ttl field if non-nil, zero value otherwise.
+GetFqdn returns the Fqdn field if non-nil, zero value otherwise.
 
-### GetTtlOk
+### GetFqdnOk
 
-`func (o *TXTRecord) GetTtlOk() (*int32, bool)`
+`func (o *TXTRecord) GetFqdnOk() (*string, bool)`
 
-GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+GetFqdnOk returns a tuple with the Fqdn field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetTtl
+### SetFqdn
 
-`func (o *TXTRecord) SetTtl(v int32)`
+`func (o *TXTRecord) SetFqdn(v string)`
 
-SetTtl sets Ttl field to given value.
+SetFqdn sets Fqdn field to given value.
 
-### HasTtl
-
-`func (o *TXTRecord) HasTtl() bool`
-
-HasTtl returns a boolean if a field has been set.
 
 ### GetType
 
@@ -99,24 +94,24 @@ and a boolean to check if the value has been set.
 SetType sets Type field to given value.
 
 
-### GetKey
+### GetSource
 
-`func (o *TXTRecord) GetKey() string`
+`func (o *TXTRecord) GetSource() string`
 
-GetKey returns the Key field if non-nil, zero value otherwise.
+GetSource returns the Source field if non-nil, zero value otherwise.
 
-### GetKeyOk
+### GetSourceOk
 
-`func (o *TXTRecord) GetKeyOk() (*string, bool)`
+`func (o *TXTRecord) GetSourceOk() (*string, bool)`
 
-GetKeyOk returns a tuple with the Key field if it's non-nil, zero value otherwise
+GetSourceOk returns a tuple with the Source field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetKey
+### SetSource
 
-`func (o *TXTRecord) SetKey(v string)`
+`func (o *TXTRecord) SetSource(v string)`
 
-SetKey sets Key field to given value.
+SetSource sets Source field to given value.
 
 
 ### GetValue

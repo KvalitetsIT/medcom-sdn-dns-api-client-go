@@ -23,12 +23,12 @@ var _ MappedNullable = &ARecord{}
 type ARecord struct {
 	// UUID v4 associated with the DNS record.
 	Id *string `json:"id,omitempty"`
-	// DNS Time To Live in seconds.
-	Ttl *int32 `json:"ttl,omitempty"`
+	// Fully qualified domain name
+	Fqdn string `json:"fqdn"`
 	// DNS record type discriminator.
 	Type string `json:"type"`
-	// the host associated with the ipv4.
-	Host string `json:"host"`
+	// Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier
+	Source string `json:"source"`
 	// IPv4 address assigned to the hostname.
 	Ipv4 string `json:"ipv4"`
 	AdditionalProperties map[string]interface{}
@@ -40,10 +40,11 @@ type _ARecord ARecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewARecord(type_ string, host string, ipv4 string) *ARecord {
+func NewARecord(fqdn string, type_ string, source string, ipv4 string) *ARecord {
 	this := ARecord{}
+	this.Fqdn = fqdn
 	this.Type = type_
-	this.Host = host
+	this.Source = source
 	this.Ipv4 = ipv4
 	return &this
 }
@@ -88,36 +89,28 @@ func (o *ARecord) SetId(v string) {
 	o.Id = &v
 }
 
-// GetTtl returns the Ttl field value if set, zero value otherwise.
-func (o *ARecord) GetTtl() int32 {
-	if o == nil || IsNil(o.Ttl) {
-		var ret int32
+// GetFqdn returns the Fqdn field value
+func (o *ARecord) GetFqdn() string {
+	if o == nil {
+		var ret string
 		return ret
 	}
-	return *o.Ttl
+
+	return o.Fqdn
 }
 
-// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// GetFqdnOk returns a tuple with the Fqdn field value
 // and a boolean to check if the value has been set.
-func (o *ARecord) GetTtlOk() (*int32, bool) {
-	if o == nil || IsNil(o.Ttl) {
+func (o *ARecord) GetFqdnOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Ttl, true
+	return &o.Fqdn, true
 }
 
-// HasTtl returns a boolean if a field has been set.
-func (o *ARecord) HasTtl() bool {
-	if o != nil && !IsNil(o.Ttl) {
-		return true
-	}
-
-	return false
-}
-
-// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
-func (o *ARecord) SetTtl(v int32) {
-	o.Ttl = &v
+// SetFqdn sets field value
+func (o *ARecord) SetFqdn(v string) {
+	o.Fqdn = v
 }
 
 // GetType returns the Type field value
@@ -144,28 +137,28 @@ func (o *ARecord) SetType(v string) {
 	o.Type = v
 }
 
-// GetHost returns the Host field value
-func (o *ARecord) GetHost() string {
+// GetSource returns the Source field value
+func (o *ARecord) GetSource() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.Host
+	return o.Source
 }
 
-// GetHostOk returns a tuple with the Host field value
+// GetSourceOk returns a tuple with the Source field value
 // and a boolean to check if the value has been set.
-func (o *ARecord) GetHostOk() (*string, bool) {
+func (o *ARecord) GetSourceOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Host, true
+	return &o.Source, true
 }
 
-// SetHost sets field value
-func (o *ARecord) SetHost(v string) {
-	o.Host = v
+// SetSource sets field value
+func (o *ARecord) SetSource(v string) {
+	o.Source = v
 }
 
 // GetIpv4 returns the Ipv4 field value
@@ -205,11 +198,9 @@ func (o ARecord) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
-	if !IsNil(o.Ttl) {
-		toSerialize["ttl"] = o.Ttl
-	}
+	toSerialize["fqdn"] = o.Fqdn
 	toSerialize["type"] = o.Type
-	toSerialize["host"] = o.Host
+	toSerialize["source"] = o.Source
 	toSerialize["ipv4"] = o.Ipv4
 
 	for key, value := range o.AdditionalProperties {
@@ -224,8 +215,9 @@ func (o *ARecord) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"fqdn",
 		"type",
-		"host",
+		"source",
 		"ipv4",
 	}
 
@@ -257,9 +249,9 @@ func (o *ARecord) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "id")
-		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "fqdn")
 		delete(additionalProperties, "type")
-		delete(additionalProperties, "host")
+		delete(additionalProperties, "source")
 		delete(additionalProperties, "ipv4")
 		o.AdditionalProperties = additionalProperties
 	}

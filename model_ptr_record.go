@@ -23,12 +23,12 @@ var _ MappedNullable = &PTRRecord{}
 type PTRRecord struct {
 	// UUID v4 associated with the DNS record.
 	Id *string `json:"id,omitempty"`
-	// DNS Time To Live in seconds.
-	Ttl *int32 `json:"ttl,omitempty"`
+	// Fully qualified domain name
+	Fqdn string `json:"fqdn"`
 	// DNS record type discriminator.
 	Type string `json:"type"`
-	// key/name.
-	Name string `json:"name"`
+	// Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier
+	Source string `json:"source"`
 	// Reverse DNS hostname target.
 	Pointer string `json:"pointer"`
 	AdditionalProperties map[string]interface{}
@@ -40,10 +40,11 @@ type _PTRRecord PTRRecord
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPTRRecord(type_ string, name string, pointer string) *PTRRecord {
+func NewPTRRecord(fqdn string, type_ string, source string, pointer string) *PTRRecord {
 	this := PTRRecord{}
+	this.Fqdn = fqdn
 	this.Type = type_
-	this.Name = name
+	this.Source = source
 	this.Pointer = pointer
 	return &this
 }
@@ -88,36 +89,28 @@ func (o *PTRRecord) SetId(v string) {
 	o.Id = &v
 }
 
-// GetTtl returns the Ttl field value if set, zero value otherwise.
-func (o *PTRRecord) GetTtl() int32 {
-	if o == nil || IsNil(o.Ttl) {
-		var ret int32
+// GetFqdn returns the Fqdn field value
+func (o *PTRRecord) GetFqdn() string {
+	if o == nil {
+		var ret string
 		return ret
 	}
-	return *o.Ttl
+
+	return o.Fqdn
 }
 
-// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// GetFqdnOk returns a tuple with the Fqdn field value
 // and a boolean to check if the value has been set.
-func (o *PTRRecord) GetTtlOk() (*int32, bool) {
-	if o == nil || IsNil(o.Ttl) {
+func (o *PTRRecord) GetFqdnOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Ttl, true
+	return &o.Fqdn, true
 }
 
-// HasTtl returns a boolean if a field has been set.
-func (o *PTRRecord) HasTtl() bool {
-	if o != nil && !IsNil(o.Ttl) {
-		return true
-	}
-
-	return false
-}
-
-// SetTtl gets a reference to the given int32 and assigns it to the Ttl field.
-func (o *PTRRecord) SetTtl(v int32) {
-	o.Ttl = &v
+// SetFqdn sets field value
+func (o *PTRRecord) SetFqdn(v string) {
+	o.Fqdn = v
 }
 
 // GetType returns the Type field value
@@ -144,28 +137,28 @@ func (o *PTRRecord) SetType(v string) {
 	o.Type = v
 }
 
-// GetName returns the Name field value
-func (o *PTRRecord) GetName() string {
+// GetSource returns the Source field value
+func (o *PTRRecord) GetSource() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.Name
+	return o.Source
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetSourceOk returns a tuple with the Source field value
 // and a boolean to check if the value has been set.
-func (o *PTRRecord) GetNameOk() (*string, bool) {
+func (o *PTRRecord) GetSourceOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Name, true
+	return &o.Source, true
 }
 
-// SetName sets field value
-func (o *PTRRecord) SetName(v string) {
-	o.Name = v
+// SetSource sets field value
+func (o *PTRRecord) SetSource(v string) {
+	o.Source = v
 }
 
 // GetPointer returns the Pointer field value
@@ -205,11 +198,9 @@ func (o PTRRecord) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
-	if !IsNil(o.Ttl) {
-		toSerialize["ttl"] = o.Ttl
-	}
+	toSerialize["fqdn"] = o.Fqdn
 	toSerialize["type"] = o.Type
-	toSerialize["name"] = o.Name
+	toSerialize["source"] = o.Source
 	toSerialize["pointer"] = o.Pointer
 
 	for key, value := range o.AdditionalProperties {
@@ -224,8 +215,9 @@ func (o *PTRRecord) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"fqdn",
 		"type",
-		"name",
+		"source",
 		"pointer",
 	}
 
@@ -257,9 +249,9 @@ func (o *PTRRecord) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "id")
-		delete(additionalProperties, "ttl")
+		delete(additionalProperties, "fqdn")
 		delete(additionalProperties, "type")
-		delete(additionalProperties, "name")
+		delete(additionalProperties, "source")
 		delete(additionalProperties, "pointer")
 		o.AdditionalProperties = additionalProperties
 	}

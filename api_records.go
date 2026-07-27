@@ -24,9 +24,23 @@ import (
 type RecordsAPI interface {
 
 	/*
+	RecordsDelete Deletes the dns records.
+
+	Deletes the dns records.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRecordsDeleteRequest
+	*/
+	RecordsDelete(ctx context.Context) ApiRecordsDeleteRequest
+
+	// RecordsDeleteExecute executes the request
+	//  @return RecordCollection
+	RecordsDeleteExecute(r ApiRecordsDeleteRequest) (*RecordCollection, *http.Response, error)
+
+	/*
 	RecordsGet Retrieves all records.
 
-	Retrieves all records.
+	Retrieves all records matching the input query parameters.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiRecordsGetRequest
@@ -38,9 +52,9 @@ type RecordsAPI interface {
 	RecordsGetExecute(r ApiRecordsGetRequest) (*RecordCollection, *http.Response, error)
 
 	/*
-	RecordsPost Add record.
+	RecordsPost Add records.
 
-	Add record.
+	Add records.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiRecordsPostRequest
@@ -85,6 +99,125 @@ type RecordsAPI interface {
 // RecordsAPIService RecordsAPI service
 type RecordsAPIService service
 
+type ApiRecordsDeleteRequest struct {
+	ctx context.Context
+	ApiService RecordsAPI
+	recordIds *[]string
+}
+
+func (r ApiRecordsDeleteRequest) RecordIds(recordIds []string) ApiRecordsDeleteRequest {
+	r.recordIds = &recordIds
+	return r
+}
+
+func (r ApiRecordsDeleteRequest) Execute() (*RecordCollection, *http.Response, error) {
+	return r.ApiService.RecordsDeleteExecute(r)
+}
+
+/*
+RecordsDelete Deletes the dns records.
+
+Deletes the dns records.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiRecordsDeleteRequest
+*/
+func (a *RecordsAPIService) RecordsDelete(ctx context.Context) ApiRecordsDeleteRequest {
+	return ApiRecordsDeleteRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return RecordCollection
+func (a *RecordsAPIService) RecordsDeleteExecute(r ApiRecordsDeleteRequest) (*RecordCollection, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodDelete
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *RecordCollection
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.RecordsDelete")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/records"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.recordIds == nil {
+		return localVarReturnValue, nil, reportError("recordIds is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "record_ids", r.recordIds, "simple", "csv")
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v BasicError
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiRecordsGetRequest struct {
 	ctx context.Context
 	ApiService RecordsAPI
@@ -92,6 +225,7 @@ type ApiRecordsGetRequest struct {
 	offset *int32
 	limit *int32
 	type_ *DnsRecordType
+	source *string
 }
 
 // Fully qualifies domain name
@@ -116,6 +250,12 @@ func (r ApiRecordsGetRequest) Type_(type_ DnsRecordType) ApiRecordsGetRequest {
 	return r
 }
 
+// The source of the record
+func (r ApiRecordsGetRequest) Source(source string) ApiRecordsGetRequest {
+	r.source = &source
+	return r
+}
+
 func (r ApiRecordsGetRequest) Execute() (*RecordCollection, *http.Response, error) {
 	return r.ApiService.RecordsGetExecute(r)
 }
@@ -123,7 +263,7 @@ func (r ApiRecordsGetRequest) Execute() (*RecordCollection, *http.Response, erro
 /*
 RecordsGet Retrieves all records.
 
-Retrieves all records.
+Retrieves all records matching the input query parameters.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiRecordsGetRequest
@@ -175,6 +315,9 @@ func (a *RecordsAPIService) RecordsGetExecute(r ApiRecordsGetRequest) (*RecordCo
 	}
 	if r.type_ != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "type", r.type_, "form", "")
+	}
+	if r.source != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "source", r.source, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -236,7 +379,7 @@ type ApiRecordsPostRequest struct {
 	recordCollection *RecordCollection
 }
 
-// The new organisation.
+// The new records.
 func (r ApiRecordsPostRequest) RecordCollection(recordCollection RecordCollection) ApiRecordsPostRequest {
 	r.recordCollection = &recordCollection
 	return r
@@ -247,9 +390,9 @@ func (r ApiRecordsPostRequest) Execute() (*RecordCollection, *http.Response, err
 }
 
 /*
-RecordsPost Add record.
+RecordsPost Add records.
 
-Add record.
+Add records.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiRecordsPostRequest

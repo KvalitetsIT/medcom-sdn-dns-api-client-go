@@ -5,16 +5,16 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
-**Ttl** | Pointer to **int32** | DNS Time To Live in seconds. | [optional] 
+**Fqdn** | **string** | Fully qualified domain name | 
 **Type** | **string** | DNS record type discriminator. | 
-**Name** | **string** | key/name. | 
+**Source** | **string** | Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier | 
 **Nameserver** | **string** | Authoritative nameserver hostname. | 
 
 ## Methods
 
 ### NewNSRecord
 
-`func NewNSRecord(type_ string, name string, nameserver string, ) *NSRecord`
+`func NewNSRecord(fqdn string, type_ string, source string, nameserver string, ) *NSRecord`
 
 NewNSRecord instantiates a new NSRecord object
 This constructor will assign default values to properties that have it defined,
@@ -54,30 +54,25 @@ SetId sets Id field to given value.
 
 HasId returns a boolean if a field has been set.
 
-### GetTtl
+### GetFqdn
 
-`func (o *NSRecord) GetTtl() int32`
+`func (o *NSRecord) GetFqdn() string`
 
-GetTtl returns the Ttl field if non-nil, zero value otherwise.
+GetFqdn returns the Fqdn field if non-nil, zero value otherwise.
 
-### GetTtlOk
+### GetFqdnOk
 
-`func (o *NSRecord) GetTtlOk() (*int32, bool)`
+`func (o *NSRecord) GetFqdnOk() (*string, bool)`
 
-GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+GetFqdnOk returns a tuple with the Fqdn field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetTtl
+### SetFqdn
 
-`func (o *NSRecord) SetTtl(v int32)`
+`func (o *NSRecord) SetFqdn(v string)`
 
-SetTtl sets Ttl field to given value.
+SetFqdn sets Fqdn field to given value.
 
-### HasTtl
-
-`func (o *NSRecord) HasTtl() bool`
-
-HasTtl returns a boolean if a field has been set.
 
 ### GetType
 
@@ -99,24 +94,24 @@ and a boolean to check if the value has been set.
 SetType sets Type field to given value.
 
 
-### GetName
+### GetSource
 
-`func (o *NSRecord) GetName() string`
+`func (o *NSRecord) GetSource() string`
 
-GetName returns the Name field if non-nil, zero value otherwise.
+GetSource returns the Source field if non-nil, zero value otherwise.
 
-### GetNameOk
+### GetSourceOk
 
-`func (o *NSRecord) GetNameOk() (*string, bool)`
+`func (o *NSRecord) GetSourceOk() (*string, bool)`
 
-GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
+GetSourceOk returns a tuple with the Source field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetName
+### SetSource
 
-`func (o *NSRecord) SetName(v string)`
+`func (o *NSRecord) SetSource(v string)`
 
-SetName sets Name field to given value.
+SetSource sets Source field to given value.
 
 
 ### GetNameserver

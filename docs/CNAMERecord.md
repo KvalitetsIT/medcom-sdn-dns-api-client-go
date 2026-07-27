@@ -5,16 +5,16 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
-**Ttl** | Pointer to **int32** | DNS Time To Live in seconds. | [optional] 
+**Fqdn** | **string** | Fully qualified domain name | 
 **Type** | **string** | DNS record type discriminator. | 
-**Host** | **string** | Alias hostname | 
-**CanonicalName** | **string** | Canonical hostname target. | 
+**Source** | **string** | Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier | 
+**Target** | **string** | Canonical hostname target. | 
 
 ## Methods
 
 ### NewCNAMERecord
 
-`func NewCNAMERecord(type_ string, host string, canonicalName string, ) *CNAMERecord`
+`func NewCNAMERecord(fqdn string, type_ string, source string, target string, ) *CNAMERecord`
 
 NewCNAMERecord instantiates a new CNAMERecord object
 This constructor will assign default values to properties that have it defined,
@@ -54,30 +54,25 @@ SetId sets Id field to given value.
 
 HasId returns a boolean if a field has been set.
 
-### GetTtl
+### GetFqdn
 
-`func (o *CNAMERecord) GetTtl() int32`
+`func (o *CNAMERecord) GetFqdn() string`
 
-GetTtl returns the Ttl field if non-nil, zero value otherwise.
+GetFqdn returns the Fqdn field if non-nil, zero value otherwise.
 
-### GetTtlOk
+### GetFqdnOk
 
-`func (o *CNAMERecord) GetTtlOk() (*int32, bool)`
+`func (o *CNAMERecord) GetFqdnOk() (*string, bool)`
 
-GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+GetFqdnOk returns a tuple with the Fqdn field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetTtl
+### SetFqdn
 
-`func (o *CNAMERecord) SetTtl(v int32)`
+`func (o *CNAMERecord) SetFqdn(v string)`
 
-SetTtl sets Ttl field to given value.
+SetFqdn sets Fqdn field to given value.
 
-### HasTtl
-
-`func (o *CNAMERecord) HasTtl() bool`
-
-HasTtl returns a boolean if a field has been set.
 
 ### GetType
 
@@ -99,44 +94,44 @@ and a boolean to check if the value has been set.
 SetType sets Type field to given value.
 
 
-### GetHost
+### GetSource
 
-`func (o *CNAMERecord) GetHost() string`
+`func (o *CNAMERecord) GetSource() string`
 
-GetHost returns the Host field if non-nil, zero value otherwise.
+GetSource returns the Source field if non-nil, zero value otherwise.
 
-### GetHostOk
+### GetSourceOk
 
-`func (o *CNAMERecord) GetHostOk() (*string, bool)`
+`func (o *CNAMERecord) GetSourceOk() (*string, bool)`
 
-GetHostOk returns a tuple with the Host field if it's non-nil, zero value otherwise
+GetSourceOk returns a tuple with the Source field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetHost
+### SetSource
 
-`func (o *CNAMERecord) SetHost(v string)`
+`func (o *CNAMERecord) SetSource(v string)`
 
-SetHost sets Host field to given value.
+SetSource sets Source field to given value.
 
 
-### GetCanonicalName
+### GetTarget
 
-`func (o *CNAMERecord) GetCanonicalName() string`
+`func (o *CNAMERecord) GetTarget() string`
 
-GetCanonicalName returns the CanonicalName field if non-nil, zero value otherwise.
+GetTarget returns the Target field if non-nil, zero value otherwise.
 
-### GetCanonicalNameOk
+### GetTargetOk
 
-`func (o *CNAMERecord) GetCanonicalNameOk() (*string, bool)`
+`func (o *CNAMERecord) GetTargetOk() (*string, bool)`
 
-GetCanonicalNameOk returns a tuple with the CanonicalName field if it's non-nil, zero value otherwise
+GetTargetOk returns a tuple with the Target field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetCanonicalName
+### SetTarget
 
-`func (o *CNAMERecord) SetCanonicalName(v string)`
+`func (o *CNAMERecord) SetTarget(v string)`
 
-SetCanonicalName sets CanonicalName field to given value.
+SetTarget sets Target field to given value.
 
 
 
