@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 ## RecordsDelete
 
-> RecordCollection RecordsDelete(ctx).RecordIds(recordIds).Execute()
+> RecordCollection RecordsDelete(ctx).RequestBody(requestBody).Execute()
 
 Deletes the dns records.
 
@@ -33,11 +33,11 @@ import (
 )
 
 func main() {
-	recordIds := []string{"Inner_example"} // []string | 
+	requestBody := []string{"Property_example"} // []string | The new records.
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.RecordsAPI.RecordsDelete(context.Background()).RecordIds(recordIds).Execute()
+	resp, r, err := apiClient.RecordsAPI.RecordsDelete(context.Background()).RequestBody(requestBody).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsDelete``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -58,7 +58,7 @@ Other parameters are passed through a pointer to a apiRecordsDeleteRequest struc
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **recordIds** | **[]string** |  | 
+ **requestBody** | **[]string** | The new records. | 
 
 ### Return type
 
@@ -70,7 +70,7 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)

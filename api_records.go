@@ -102,11 +102,12 @@ type RecordsAPIService service
 type ApiRecordsDeleteRequest struct {
 	ctx context.Context
 	ApiService RecordsAPI
-	recordIds *[]string
+	requestBody *[]string
 }
 
-func (r ApiRecordsDeleteRequest) RecordIds(recordIds []string) ApiRecordsDeleteRequest {
-	r.recordIds = &recordIds
+// The new records.
+func (r ApiRecordsDeleteRequest) RequestBody(requestBody []string) ApiRecordsDeleteRequest {
+	r.requestBody = &requestBody
 	return r
 }
 
@@ -149,12 +150,12 @@ func (a *RecordsAPIService) RecordsDeleteExecute(r ApiRecordsDeleteRequest) (*Re
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.recordIds == nil {
-		return localVarReturnValue, nil, reportError("recordIds is required and must be specified")
+	if r.requestBody == nil {
+		return localVarReturnValue, nil, reportError("requestBody is required and must be specified")
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -170,7 +171,8 @@ func (a *RecordsAPIService) RecordsDeleteExecute(r ApiRecordsDeleteRequest) (*Re
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarHeaderParams, "record_ids", r.recordIds, "simple", "csv")
+	// body params
+	localVarPostBody = r.requestBody
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

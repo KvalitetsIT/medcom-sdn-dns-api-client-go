@@ -28,17 +28,16 @@ paths:
   /records:
     delete:
       description: Deletes the dns records.
-      parameters:
-      - explode: false
-        in: header
-        name: record_ids
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                format: uuid
+                type: string
+              type: array
+        description: The new records.
         required: true
-        schema:
-          items:
-            format: uuid
-            type: string
-          type: array
-        style: simple
       responses:
         "200":
           content:
