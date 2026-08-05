@@ -101,7 +101,7 @@ import (
 func main() {
 	fqdn := "fqdn_example" // string | Fully qualifies domain name (optional)
 	offset := int32(0) // int32 | Number of items to skip (optional) (default to 0)
-	limit := int32(20) // int32 |  (optional) (default to 20)
+	limit := int32(20) // int32 |  (optional)
 	type_ := openapiclient.DnsRecordType("A") // DnsRecordType |  (optional)
 	source := "source_example" // string | The source of the record (optional)
 
@@ -130,7 +130,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **fqdn** | **string** | Fully qualifies domain name | 
  **offset** | **int32** | Number of items to skip | [default to 0]
- **limit** | **int32** |  | [default to 20]
+ **limit** | **int32** |  | 
  **type_** | [**DnsRecordType**](DnsRecordType.md) |  | 
  **source** | **string** | The source of the record | 
 
