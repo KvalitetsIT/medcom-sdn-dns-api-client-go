@@ -43,7 +43,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RecordCollection"
+                $ref: "#/components/schemas/RecordCollectionOutput"
           description: Ok
         "400":
           content:
@@ -109,7 +109,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RecordCollection"
+                $ref: "#/components/schemas/RecordCollectionOutput"
           description: Ok
       summary: Retrieves all records.
       tags:
@@ -120,7 +120,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RecordCollection"
+              $ref: "#/components/schemas/RecordCollectionInput"
         description: The new records.
         required: true
       responses:
@@ -128,7 +128,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RecordCollection"
+                $ref: "#/components/schemas/RecordCollectionOutput"
           description: Ok
         "400":
           content:
@@ -160,7 +160,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Record"
+                $ref: "#/components/schemas/RecordOutput"
           description: Ok
         "400":
           content:
@@ -191,7 +191,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Record"
+                $ref: "#/components/schemas/RecordOutput"
           description: Ok
         "400":
           content:
@@ -218,7 +218,7 @@ components:
         \ are missing or is empty <br> * Length of input is exceeding maximum length\
         \ <br> (See a possible detailed error message in the in the response.)"
   schemas:
-    RecordCollection:
+    RecordCollectionOutput:
       example:
         records:
         - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
@@ -234,12 +234,33 @@ components:
       properties:
         records:
           items:
-            $ref: "#/components/schemas/Record"
+            $ref: "#/components/schemas/RecordOutput"
           type: array
       required:
       - records
       type: object
-    Record:
+    RecordCollectionInput:
+      example:
+        records:
+        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          fqdn: dsdn.dk
+          type: type
+          source: source
+          ipv4: 192.168.1.10
+        - id: 66101ef0-3e34-470d-92ea-53b89ad036e7
+          fqdn: dsdn.dk
+          type: type
+          source: source
+          ipv4: 192.168.1.10
+      properties:
+        records:
+          items:
+            $ref: "#/components/schemas/RecordInput"
+          type: array
+      required:
+      - records
+      type: object
+    RecordOutput:
       discriminator:
         mapping:
           A: "#/components/schemas/ARecord"
@@ -261,6 +282,29 @@ components:
       - $ref: "#/components/schemas/TXTRecord"
       - $ref: "#/components/schemas/NSRecord"
       - $ref: "#/components/schemas/SOARecord"
+      - $ref: "#/components/schemas/SRVRecord"
+      - $ref: "#/components/schemas/PTRRecord"
+      - $ref: "#/components/schemas/CAARecord"
+    RecordInput:
+      discriminator:
+        mapping:
+          A: "#/components/schemas/ARecord"
+          AAAA: "#/components/schemas/AAAARecord"
+          CNAME: "#/components/schemas/CNAMERecord"
+          MX: "#/components/schemas/MXRecord"
+          TXT: "#/components/schemas/TXTRecord"
+          NS: "#/components/schemas/NSRecord"
+          SRV: "#/components/schemas/SRVRecord"
+          PTR: "#/components/schemas/PTRRecord"
+          CAA: "#/components/schemas/CAARecord"
+        propertyName: type
+      oneOf:
+      - $ref: "#/components/schemas/ARecord"
+      - $ref: "#/components/schemas/AAAARecord"
+      - $ref: "#/components/schemas/CNAMERecord"
+      - $ref: "#/components/schemas/MXRecord"
+      - $ref: "#/components/schemas/TXTRecord"
+      - $ref: "#/components/schemas/NSRecord"
       - $ref: "#/components/schemas/SRVRecord"
       - $ref: "#/components/schemas/PTRRecord"
       - $ref: "#/components/schemas/CAARecord"

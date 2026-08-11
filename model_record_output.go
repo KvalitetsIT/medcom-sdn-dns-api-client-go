@@ -16,8 +16,8 @@ import (
 	"fmt"
 )
 
-// Record - struct for Record
-type Record struct {
+// RecordOutput - struct for RecordOutput
+type RecordOutput struct {
 	AAAARecord *AAAARecord
 	ARecord *ARecord
 	CAARecord *CAARecord
@@ -30,79 +30,79 @@ type Record struct {
 	TXTRecord *TXTRecord
 }
 
-// AAAARecordAsRecord is a convenience function that returns AAAARecord wrapped in Record
-func AAAARecordAsRecord(v *AAAARecord) Record {
-	return Record{
+// AAAARecordAsRecordOutput is a convenience function that returns AAAARecord wrapped in RecordOutput
+func AAAARecordAsRecordOutput(v *AAAARecord) RecordOutput {
+	return RecordOutput{
 		AAAARecord: v,
 	}
 }
 
-// ARecordAsRecord is a convenience function that returns ARecord wrapped in Record
-func ARecordAsRecord(v *ARecord) Record {
-	return Record{
+// ARecordAsRecordOutput is a convenience function that returns ARecord wrapped in RecordOutput
+func ARecordAsRecordOutput(v *ARecord) RecordOutput {
+	return RecordOutput{
 		ARecord: v,
 	}
 }
 
-// CAARecordAsRecord is a convenience function that returns CAARecord wrapped in Record
-func CAARecordAsRecord(v *CAARecord) Record {
-	return Record{
+// CAARecordAsRecordOutput is a convenience function that returns CAARecord wrapped in RecordOutput
+func CAARecordAsRecordOutput(v *CAARecord) RecordOutput {
+	return RecordOutput{
 		CAARecord: v,
 	}
 }
 
-// CNAMERecordAsRecord is a convenience function that returns CNAMERecord wrapped in Record
-func CNAMERecordAsRecord(v *CNAMERecord) Record {
-	return Record{
+// CNAMERecordAsRecordOutput is a convenience function that returns CNAMERecord wrapped in RecordOutput
+func CNAMERecordAsRecordOutput(v *CNAMERecord) RecordOutput {
+	return RecordOutput{
 		CNAMERecord: v,
 	}
 }
 
-// MXRecordAsRecord is a convenience function that returns MXRecord wrapped in Record
-func MXRecordAsRecord(v *MXRecord) Record {
-	return Record{
+// MXRecordAsRecordOutput is a convenience function that returns MXRecord wrapped in RecordOutput
+func MXRecordAsRecordOutput(v *MXRecord) RecordOutput {
+	return RecordOutput{
 		MXRecord: v,
 	}
 }
 
-// NSRecordAsRecord is a convenience function that returns NSRecord wrapped in Record
-func NSRecordAsRecord(v *NSRecord) Record {
-	return Record{
+// NSRecordAsRecordOutput is a convenience function that returns NSRecord wrapped in RecordOutput
+func NSRecordAsRecordOutput(v *NSRecord) RecordOutput {
+	return RecordOutput{
 		NSRecord: v,
 	}
 }
 
-// PTRRecordAsRecord is a convenience function that returns PTRRecord wrapped in Record
-func PTRRecordAsRecord(v *PTRRecord) Record {
-	return Record{
+// PTRRecordAsRecordOutput is a convenience function that returns PTRRecord wrapped in RecordOutput
+func PTRRecordAsRecordOutput(v *PTRRecord) RecordOutput {
+	return RecordOutput{
 		PTRRecord: v,
 	}
 }
 
-// SOARecordAsRecord is a convenience function that returns SOARecord wrapped in Record
-func SOARecordAsRecord(v *SOARecord) Record {
-	return Record{
+// SOARecordAsRecordOutput is a convenience function that returns SOARecord wrapped in RecordOutput
+func SOARecordAsRecordOutput(v *SOARecord) RecordOutput {
+	return RecordOutput{
 		SOARecord: v,
 	}
 }
 
-// SRVRecordAsRecord is a convenience function that returns SRVRecord wrapped in Record
-func SRVRecordAsRecord(v *SRVRecord) Record {
-	return Record{
+// SRVRecordAsRecordOutput is a convenience function that returns SRVRecord wrapped in RecordOutput
+func SRVRecordAsRecordOutput(v *SRVRecord) RecordOutput {
+	return RecordOutput{
 		SRVRecord: v,
 	}
 }
 
-// TXTRecordAsRecord is a convenience function that returns TXTRecord wrapped in Record
-func TXTRecordAsRecord(v *TXTRecord) Record {
-	return Record{
+// TXTRecordAsRecordOutput is a convenience function that returns TXTRecord wrapped in RecordOutput
+func TXTRecordAsRecordOutput(v *TXTRecord) RecordOutput {
+	return RecordOutput{
 		TXTRecord: v,
 	}
 }
 
 
 // Unmarshal JSON data into one of the pointers in the struct
-func (dst *Record) UnmarshalJSON(data []byte) error {
+func (dst *RecordOutput) UnmarshalJSON(data []byte) error {
 	var err error
 	// use discriminator value to speed up the lookup
 	var jsonDict map[string]interface{}
@@ -119,7 +119,7 @@ func (dst *Record) UnmarshalJSON(data []byte) error {
 			return nil // data stored in dst.ARecord, return on the first match
 		} else {
 			dst.ARecord = nil
-			return fmt.Errorf("failed to unmarshal Record as ARecord: %s", err.Error())
+			return fmt.Errorf("failed to unmarshal RecordOutput as ARecord: %s", err.Error())
 		}
 	}
 
@@ -131,7 +131,7 @@ func (dst *Record) UnmarshalJSON(data []byte) error {
 			return nil // data stored in dst.AAAARecord, return on the first match
 		} else {
 			dst.AAAARecord = nil
-			return fmt.Errorf("failed to unmarshal Record as AAAARecord: %s", err.Error())
+			return fmt.Errorf("failed to unmarshal RecordOutput as AAAARecord: %s", err.Error())
 		}
 	}
 
@@ -143,7 +143,7 @@ func (dst *Record) UnmarshalJSON(data []byte) error {
 			return nil // data stored in dst.CAARecord, return on the first match
 		} else {
 			dst.CAARecord = nil
-			return fmt.Errorf("failed to unmarshal Record as CAARecord: %s", err.Error())
+			return fmt.Errorf("failed to unmarshal RecordOutput as CAARecord: %s", err.Error())
 		}
 	}
 
@@ -155,7 +155,7 @@ func (dst *Record) UnmarshalJSON(data []byte) error {
 			return nil // data stored in dst.CNAMERecord, return on the first match
 		} else {
 			dst.CNAMERecord = nil
-			return fmt.Errorf("failed to unmarshal Record as CNAMERecord: %s", err.Error())
+			return fmt.Errorf("failed to unmarshal RecordOutput as CNAMERecord: %s", err.Error())
 		}
 	}
 
@@ -167,7 +167,7 @@ func (dst *Record) UnmarshalJSON(data []byte) error {
 			return nil // data stored in dst.MXRecord, return on the first match
 		} else {
 			dst.MXRecord = nil
-			return fmt.Errorf("failed to unmarshal Record as MXRecord: %s", err.Error())
+			return fmt.Errorf("failed to unmarshal RecordOutput as MXRecord: %s", err.Error())
 		}
 	}
 
@@ -179,7 +179,7 @@ func (dst *Record) UnmarshalJSON(data []byte) error {
 			return nil // data stored in dst.NSRecord, return on the first match
 		} else {
 			dst.NSRecord = nil
-			return fmt.Errorf("failed to unmarshal Record as NSRecord: %s", err.Error())
+			return fmt.Errorf("failed to unmarshal RecordOutput as NSRecord: %s", err.Error())
 		}
 	}
 
@@ -191,7 +191,7 @@ func (dst *Record) UnmarshalJSON(data []byte) error {
 			return nil // data stored in dst.PTRRecord, return on the first match
 		} else {
 			dst.PTRRecord = nil
-			return fmt.Errorf("failed to unmarshal Record as PTRRecord: %s", err.Error())
+			return fmt.Errorf("failed to unmarshal RecordOutput as PTRRecord: %s", err.Error())
 		}
 	}
 
@@ -203,7 +203,7 @@ func (dst *Record) UnmarshalJSON(data []byte) error {
 			return nil // data stored in dst.SOARecord, return on the first match
 		} else {
 			dst.SOARecord = nil
-			return fmt.Errorf("failed to unmarshal Record as SOARecord: %s", err.Error())
+			return fmt.Errorf("failed to unmarshal RecordOutput as SOARecord: %s", err.Error())
 		}
 	}
 
@@ -215,7 +215,7 @@ func (dst *Record) UnmarshalJSON(data []byte) error {
 			return nil // data stored in dst.SRVRecord, return on the first match
 		} else {
 			dst.SRVRecord = nil
-			return fmt.Errorf("failed to unmarshal Record as SRVRecord: %s", err.Error())
+			return fmt.Errorf("failed to unmarshal RecordOutput as SRVRecord: %s", err.Error())
 		}
 	}
 
@@ -227,7 +227,7 @@ func (dst *Record) UnmarshalJSON(data []byte) error {
 			return nil // data stored in dst.TXTRecord, return on the first match
 		} else {
 			dst.TXTRecord = nil
-			return fmt.Errorf("failed to unmarshal Record as TXTRecord: %s", err.Error())
+			return fmt.Errorf("failed to unmarshal RecordOutput as TXTRecord: %s", err.Error())
 		}
 	}
 
@@ -235,7 +235,7 @@ func (dst *Record) UnmarshalJSON(data []byte) error {
 }
 
 // Marshal data from the first non-nil pointers in the struct to JSON
-func (src Record) MarshalJSON() ([]byte, error) {
+func (src RecordOutput) MarshalJSON() ([]byte, error) {
 	if src.AAAARecord != nil {
 		return json.Marshal(&src.AAAARecord)
 	}
@@ -280,7 +280,7 @@ func (src Record) MarshalJSON() ([]byte, error) {
 }
 
 // Get the actual instance
-func (obj *Record) GetActualInstance() (interface{}) {
+func (obj *RecordOutput) GetActualInstance() (interface{}) {
 	if obj == nil {
 		return nil
 	}
@@ -329,7 +329,7 @@ func (obj *Record) GetActualInstance() (interface{}) {
 }
 
 // Get the actual instance value
-func (obj Record) GetActualInstanceValue() (interface{}) {
+func (obj RecordOutput) GetActualInstanceValue() (interface{}) {
 	if obj.AAAARecord != nil {
 		return *obj.AAAARecord
 	}
@@ -374,38 +374,38 @@ func (obj Record) GetActualInstanceValue() (interface{}) {
 	return nil
 }
 
-type NullableRecord struct {
-	value *Record
+type NullableRecordOutput struct {
+	value *RecordOutput
 	isSet bool
 }
 
-func (v NullableRecord) Get() *Record {
+func (v NullableRecordOutput) Get() *RecordOutput {
 	return v.value
 }
 
-func (v *NullableRecord) Set(val *Record) {
+func (v *NullableRecordOutput) Set(val *RecordOutput) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableRecord) IsSet() bool {
+func (v NullableRecordOutput) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableRecord) Unset() {
+func (v *NullableRecordOutput) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableRecord(val *Record) *NullableRecord {
-	return &NullableRecord{value: val, isSet: true}
+func NewNullableRecordOutput(val *RecordOutput) *NullableRecordOutput {
+	return &NullableRecordOutput{value: val, isSet: true}
 }
 
-func (v NullableRecord) MarshalJSON() ([]byte, error) {
+func (v NullableRecordOutput) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableRecord) UnmarshalJSON(src []byte) error {
+func (v *NullableRecordOutput) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

@@ -34,8 +34,8 @@ type RecordsAPI interface {
 	RecordsDelete(ctx context.Context) ApiRecordsDeleteRequest
 
 	// RecordsDeleteExecute executes the request
-	//  @return RecordCollection
-	RecordsDeleteExecute(r ApiRecordsDeleteRequest) (*RecordCollection, *http.Response, error)
+	//  @return RecordCollectionOutput
+	RecordsDeleteExecute(r ApiRecordsDeleteRequest) (*RecordCollectionOutput, *http.Response, error)
 
 	/*
 	RecordsGet Retrieves all records.
@@ -48,8 +48,8 @@ type RecordsAPI interface {
 	RecordsGet(ctx context.Context) ApiRecordsGetRequest
 
 	// RecordsGetExecute executes the request
-	//  @return RecordCollection
-	RecordsGetExecute(r ApiRecordsGetRequest) (*RecordCollection, *http.Response, error)
+	//  @return RecordCollectionOutput
+	RecordsGetExecute(r ApiRecordsGetRequest) (*RecordCollectionOutput, *http.Response, error)
 
 	/*
 	RecordsPost Add records.
@@ -62,8 +62,8 @@ type RecordsAPI interface {
 	RecordsPost(ctx context.Context) ApiRecordsPostRequest
 
 	// RecordsPostExecute executes the request
-	//  @return RecordCollection
-	RecordsPostExecute(r ApiRecordsPostRequest) (*RecordCollection, *http.Response, error)
+	//  @return RecordCollectionOutput
+	RecordsPostExecute(r ApiRecordsPostRequest) (*RecordCollectionOutput, *http.Response, error)
 
 	/*
 	RecordsRecordIdDelete Deletes the dns record.
@@ -77,8 +77,8 @@ type RecordsAPI interface {
 	RecordsRecordIdDelete(ctx context.Context, recordId string) ApiRecordsRecordIdDeleteRequest
 
 	// RecordsRecordIdDeleteExecute executes the request
-	//  @return Record
-	RecordsRecordIdDeleteExecute(r ApiRecordsRecordIdDeleteRequest) (*Record, *http.Response, error)
+	//  @return RecordOutput
+	RecordsRecordIdDeleteExecute(r ApiRecordsRecordIdDeleteRequest) (*RecordOutput, *http.Response, error)
 
 	/*
 	RecordsRecordIdGet Get DNS record.
@@ -92,8 +92,8 @@ type RecordsAPI interface {
 	RecordsRecordIdGet(ctx context.Context, recordId string) ApiRecordsRecordIdGetRequest
 
 	// RecordsRecordIdGetExecute executes the request
-	//  @return Record
-	RecordsRecordIdGetExecute(r ApiRecordsRecordIdGetRequest) (*Record, *http.Response, error)
+	//  @return RecordOutput
+	RecordsRecordIdGetExecute(r ApiRecordsRecordIdGetRequest) (*RecordOutput, *http.Response, error)
 }
 
 // RecordsAPIService RecordsAPI service
@@ -111,7 +111,7 @@ func (r ApiRecordsDeleteRequest) RequestBody(requestBody []string) ApiRecordsDel
 	return r
 }
 
-func (r ApiRecordsDeleteRequest) Execute() (*RecordCollection, *http.Response, error) {
+func (r ApiRecordsDeleteRequest) Execute() (*RecordCollectionOutput, *http.Response, error) {
 	return r.ApiService.RecordsDeleteExecute(r)
 }
 
@@ -131,13 +131,13 @@ func (a *RecordsAPIService) RecordsDelete(ctx context.Context) ApiRecordsDeleteR
 }
 
 // Execute executes the request
-//  @return RecordCollection
-func (a *RecordsAPIService) RecordsDeleteExecute(r ApiRecordsDeleteRequest) (*RecordCollection, *http.Response, error) {
+//  @return RecordCollectionOutput
+func (a *RecordsAPIService) RecordsDeleteExecute(r ApiRecordsDeleteRequest) (*RecordCollectionOutput, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *RecordCollection
+		localVarReturnValue  *RecordCollectionOutput
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.RecordsDelete")
@@ -258,7 +258,7 @@ func (r ApiRecordsGetRequest) Source(source string) ApiRecordsGetRequest {
 	return r
 }
 
-func (r ApiRecordsGetRequest) Execute() (*RecordCollection, *http.Response, error) {
+func (r ApiRecordsGetRequest) Execute() (*RecordCollectionOutput, *http.Response, error) {
 	return r.ApiService.RecordsGetExecute(r)
 }
 
@@ -278,13 +278,13 @@ func (a *RecordsAPIService) RecordsGet(ctx context.Context) ApiRecordsGetRequest
 }
 
 // Execute executes the request
-//  @return RecordCollection
-func (a *RecordsAPIService) RecordsGetExecute(r ApiRecordsGetRequest) (*RecordCollection, *http.Response, error) {
+//  @return RecordCollectionOutput
+func (a *RecordsAPIService) RecordsGetExecute(r ApiRecordsGetRequest) (*RecordCollectionOutput, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *RecordCollection
+		localVarReturnValue  *RecordCollectionOutput
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.RecordsGet")
@@ -374,16 +374,16 @@ func (a *RecordsAPIService) RecordsGetExecute(r ApiRecordsGetRequest) (*RecordCo
 type ApiRecordsPostRequest struct {
 	ctx context.Context
 	ApiService RecordsAPI
-	recordCollection *RecordCollection
+	recordCollectionInput *RecordCollectionInput
 }
 
 // The new records.
-func (r ApiRecordsPostRequest) RecordCollection(recordCollection RecordCollection) ApiRecordsPostRequest {
-	r.recordCollection = &recordCollection
+func (r ApiRecordsPostRequest) RecordCollectionInput(recordCollectionInput RecordCollectionInput) ApiRecordsPostRequest {
+	r.recordCollectionInput = &recordCollectionInput
 	return r
 }
 
-func (r ApiRecordsPostRequest) Execute() (*RecordCollection, *http.Response, error) {
+func (r ApiRecordsPostRequest) Execute() (*RecordCollectionOutput, *http.Response, error) {
 	return r.ApiService.RecordsPostExecute(r)
 }
 
@@ -403,13 +403,13 @@ func (a *RecordsAPIService) RecordsPost(ctx context.Context) ApiRecordsPostReque
 }
 
 // Execute executes the request
-//  @return RecordCollection
-func (a *RecordsAPIService) RecordsPostExecute(r ApiRecordsPostRequest) (*RecordCollection, *http.Response, error) {
+//  @return RecordCollectionOutput
+func (a *RecordsAPIService) RecordsPostExecute(r ApiRecordsPostRequest) (*RecordCollectionOutput, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *RecordCollection
+		localVarReturnValue  *RecordCollectionOutput
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.RecordsPost")
@@ -422,8 +422,8 @@ func (a *RecordsAPIService) RecordsPostExecute(r ApiRecordsPostRequest) (*Record
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.recordCollection == nil {
-		return localVarReturnValue, nil, reportError("recordCollection is required and must be specified")
+	if r.recordCollectionInput == nil {
+		return localVarReturnValue, nil, reportError("recordCollectionInput is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -444,7 +444,7 @@ func (a *RecordsAPIService) RecordsPostExecute(r ApiRecordsPostRequest) (*Record
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.recordCollection
+	localVarPostBody = r.recordCollectionInput
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -498,7 +498,7 @@ type ApiRecordsRecordIdDeleteRequest struct {
 	recordId string
 }
 
-func (r ApiRecordsRecordIdDeleteRequest) Execute() (*Record, *http.Response, error) {
+func (r ApiRecordsRecordIdDeleteRequest) Execute() (*RecordOutput, *http.Response, error) {
 	return r.ApiService.RecordsRecordIdDeleteExecute(r)
 }
 
@@ -520,13 +520,13 @@ func (a *RecordsAPIService) RecordsRecordIdDelete(ctx context.Context, recordId 
 }
 
 // Execute executes the request
-//  @return Record
-func (a *RecordsAPIService) RecordsRecordIdDeleteExecute(r ApiRecordsRecordIdDeleteRequest) (*Record, *http.Response, error) {
+//  @return RecordOutput
+func (a *RecordsAPIService) RecordsRecordIdDeleteExecute(r ApiRecordsRecordIdDeleteRequest) (*RecordOutput, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *Record
+		localVarReturnValue  *RecordOutput
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.RecordsRecordIdDelete")
@@ -611,7 +611,7 @@ type ApiRecordsRecordIdGetRequest struct {
 	recordId string
 }
 
-func (r ApiRecordsRecordIdGetRequest) Execute() (*Record, *http.Response, error) {
+func (r ApiRecordsRecordIdGetRequest) Execute() (*RecordOutput, *http.Response, error) {
 	return r.ApiService.RecordsRecordIdGetExecute(r)
 }
 
@@ -633,13 +633,13 @@ func (a *RecordsAPIService) RecordsRecordIdGet(ctx context.Context, recordId str
 }
 
 // Execute executes the request
-//  @return Record
-func (a *RecordsAPIService) RecordsRecordIdGetExecute(r ApiRecordsRecordIdGetRequest) (*Record, *http.Response, error) {
+//  @return RecordOutput
+func (a *RecordsAPIService) RecordsRecordIdGetExecute(r ApiRecordsRecordIdGetRequest) (*RecordOutput, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *Record
+		localVarReturnValue  *RecordOutput
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RecordsAPIService.RecordsRecordIdGet")

@@ -16,39 +16,39 @@ import (
 	"fmt"
 )
 
-// checks if the RecordCollection type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &RecordCollection{}
+// checks if the RecordCollectionInput type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &RecordCollectionInput{}
 
-// RecordCollection struct for RecordCollection
-type RecordCollection struct {
-	Records []Record `json:"records"`
+// RecordCollectionInput struct for RecordCollectionInput
+type RecordCollectionInput struct {
+	Records []RecordInput `json:"records"`
 	AdditionalProperties map[string]interface{}
 }
 
-type _RecordCollection RecordCollection
+type _RecordCollectionInput RecordCollectionInput
 
-// NewRecordCollection instantiates a new RecordCollection object
+// NewRecordCollectionInput instantiates a new RecordCollectionInput object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRecordCollection(records []Record) *RecordCollection {
-	this := RecordCollection{}
+func NewRecordCollectionInput(records []RecordInput) *RecordCollectionInput {
+	this := RecordCollectionInput{}
 	this.Records = records
 	return &this
 }
 
-// NewRecordCollectionWithDefaults instantiates a new RecordCollection object
+// NewRecordCollectionInputWithDefaults instantiates a new RecordCollectionInput object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewRecordCollectionWithDefaults() *RecordCollection {
-	this := RecordCollection{}
+func NewRecordCollectionInputWithDefaults() *RecordCollectionInput {
+	this := RecordCollectionInput{}
 	return &this
 }
 
 // GetRecords returns the Records field value
-func (o *RecordCollection) GetRecords() []Record {
+func (o *RecordCollectionInput) GetRecords() []RecordInput {
 	if o == nil {
-		var ret []Record
+		var ret []RecordInput
 		return ret
 	}
 
@@ -57,7 +57,7 @@ func (o *RecordCollection) GetRecords() []Record {
 
 // GetRecordsOk returns a tuple with the Records field value
 // and a boolean to check if the value has been set.
-func (o *RecordCollection) GetRecordsOk() ([]Record, bool) {
+func (o *RecordCollectionInput) GetRecordsOk() ([]RecordInput, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -65,11 +65,11 @@ func (o *RecordCollection) GetRecordsOk() ([]Record, bool) {
 }
 
 // SetRecords sets field value
-func (o *RecordCollection) SetRecords(v []Record) {
+func (o *RecordCollectionInput) SetRecords(v []RecordInput) {
 	o.Records = v
 }
 
-func (o RecordCollection) MarshalJSON() ([]byte, error) {
+func (o RecordCollectionInput) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -77,7 +77,7 @@ func (o RecordCollection) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o RecordCollection) ToMap() (map[string]interface{}, error) {
+func (o RecordCollectionInput) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["records"] = o.Records
 
@@ -88,7 +88,7 @@ func (o RecordCollection) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *RecordCollection) UnmarshalJSON(data []byte) (err error) {
+func (o *RecordCollectionInput) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -110,15 +110,15 @@ func (o *RecordCollection) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varRecordCollection := _RecordCollection{}
+	varRecordCollectionInput := _RecordCollectionInput{}
 
-	err = json.Unmarshal(data, &varRecordCollection)
+	err = json.Unmarshal(data, &varRecordCollectionInput)
 
 	if err != nil {
 		return err
 	}
 
-	*o = RecordCollection(varRecordCollection)
+	*o = RecordCollectionInput(varRecordCollectionInput)
 
 	additionalProperties := make(map[string]interface{})
 
@@ -130,38 +130,38 @@ func (o *RecordCollection) UnmarshalJSON(data []byte) (err error) {
 	return err
 }
 
-type NullableRecordCollection struct {
-	value *RecordCollection
+type NullableRecordCollectionInput struct {
+	value *RecordCollectionInput
 	isSet bool
 }
 
-func (v NullableRecordCollection) Get() *RecordCollection {
+func (v NullableRecordCollectionInput) Get() *RecordCollectionInput {
 	return v.value
 }
 
-func (v *NullableRecordCollection) Set(val *RecordCollection) {
+func (v *NullableRecordCollectionInput) Set(val *RecordCollectionInput) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableRecordCollection) IsSet() bool {
+func (v NullableRecordCollectionInput) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableRecordCollection) Unset() {
+func (v *NullableRecordCollectionInput) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableRecordCollection(val *RecordCollection) *NullableRecordCollection {
-	return &NullableRecordCollection{value: val, isSet: true}
+func NewNullableRecordCollectionInput(val *RecordCollectionInput) *NullableRecordCollectionInput {
+	return &NullableRecordCollectionInput{value: val, isSet: true}
 }
 
-func (v NullableRecordCollection) MarshalJSON() ([]byte, error) {
+func (v NullableRecordCollectionInput) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableRecordCollection) UnmarshalJSON(src []byte) error {
+func (v *NullableRecordCollectionInput) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

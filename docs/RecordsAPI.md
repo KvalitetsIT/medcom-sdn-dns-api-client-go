@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 ## RecordsDelete
 
-> RecordCollection RecordsDelete(ctx).RequestBody(requestBody).Execute()
+> RecordCollectionOutput RecordsDelete(ctx).RequestBody(requestBody).Execute()
 
 Deletes the dns records.
 
@@ -42,7 +42,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsDelete``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `RecordsDelete`: RecordCollection
+	// response from `RecordsDelete`: RecordCollectionOutput
 	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.RecordsDelete`: %v\n", resp)
 }
 ```
@@ -62,7 +62,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**RecordCollection**](RecordCollection.md)
+[**RecordCollectionOutput**](RecordCollectionOutput.md)
 
 ### Authorization
 
@@ -80,7 +80,7 @@ No authorization required
 
 ## RecordsGet
 
-> RecordCollection RecordsGet(ctx).Fqdn(fqdn).Offset(offset).Limit(limit).Type_(type_).Source(source).Execute()
+> RecordCollectionOutput RecordsGet(ctx).Fqdn(fqdn).Offset(offset).Limit(limit).Type_(type_).Source(source).Execute()
 
 Retrieves all records.
 
@@ -112,7 +112,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `RecordsGet`: RecordCollection
+	// response from `RecordsGet`: RecordCollectionOutput
 	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.RecordsGet`: %v\n", resp)
 }
 ```
@@ -136,7 +136,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**RecordCollection**](RecordCollection.md)
+[**RecordCollectionOutput**](RecordCollectionOutput.md)
 
 ### Authorization
 
@@ -154,7 +154,7 @@ No authorization required
 
 ## RecordsPost
 
-> RecordCollection RecordsPost(ctx).RecordCollection(recordCollection).Execute()
+> RecordCollectionOutput RecordsPost(ctx).RecordCollectionInput(recordCollectionInput).Execute()
 
 Add records.
 
@@ -173,16 +173,16 @@ import (
 )
 
 func main() {
-	recordCollection := *openapiclient.NewRecordCollection([]openapiclient.Record{openapiclient.Record{AAAARecord: openapiclient.NewAAAARecord("dsdn.dk", "Type_example", "Source_example", "2001:db8::10")}}) // RecordCollection | The new records.
+	recordCollectionInput := *openapiclient.NewRecordCollectionInput([]openapiclient.RecordInput{openapiclient.RecordInput{AAAARecord: openapiclient.NewAAAARecord("dsdn.dk", "Type_example", "Source_example", "2001:db8::10")}}) // RecordCollectionInput | The new records.
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.RecordsAPI.RecordsPost(context.Background()).RecordCollection(recordCollection).Execute()
+	resp, r, err := apiClient.RecordsAPI.RecordsPost(context.Background()).RecordCollectionInput(recordCollectionInput).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsPost``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `RecordsPost`: RecordCollection
+	// response from `RecordsPost`: RecordCollectionOutput
 	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.RecordsPost`: %v\n", resp)
 }
 ```
@@ -198,11 +198,11 @@ Other parameters are passed through a pointer to a apiRecordsPostRequest struct 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **recordCollection** | [**RecordCollection**](RecordCollection.md) | The new records. | 
+ **recordCollectionInput** | [**RecordCollectionInput**](RecordCollectionInput.md) | The new records. | 
 
 ### Return type
 
-[**RecordCollection**](RecordCollection.md)
+[**RecordCollectionOutput**](RecordCollectionOutput.md)
 
 ### Authorization
 
@@ -220,7 +220,7 @@ No authorization required
 
 ## RecordsRecordIdDelete
 
-> Record RecordsRecordIdDelete(ctx, recordId).Execute()
+> RecordOutput RecordsRecordIdDelete(ctx, recordId).Execute()
 
 Deletes the dns record.
 
@@ -248,7 +248,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsRecordIdDelete``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `RecordsRecordIdDelete`: Record
+	// response from `RecordsRecordIdDelete`: RecordOutput
 	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.RecordsRecordIdDelete`: %v\n", resp)
 }
 ```
@@ -272,7 +272,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Record**](Record.md)
+[**RecordOutput**](RecordOutput.md)
 
 ### Authorization
 
@@ -290,7 +290,7 @@ No authorization required
 
 ## RecordsRecordIdGet
 
-> Record RecordsRecordIdGet(ctx, recordId).Execute()
+> RecordOutput RecordsRecordIdGet(ctx, recordId).Execute()
 
 Get DNS record.
 
@@ -318,7 +318,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsRecordIdGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `RecordsRecordIdGet`: Record
+	// response from `RecordsRecordIdGet`: RecordOutput
 	fmt.Fprintf(os.Stdout, "Response from `RecordsAPI.RecordsRecordIdGet`: %v\n", resp)
 }
 ```
@@ -342,7 +342,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Record**](Record.md)
+[**RecordOutput**](RecordOutput.md)
 
 ### Authorization
 
