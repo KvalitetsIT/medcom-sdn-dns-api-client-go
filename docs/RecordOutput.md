@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
 **Fqdn** | **string** | Fully qualified domain name | 
-**Type** | **string** | DNS record type discriminator. | 
+**Type** | **string** |  | [default to "CAA"]
 **Source** | **string** | Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier | 
 **Ipv4** | **string** | IPv4 address assigned to the hostname. | 
 **Ipv6** | **string** | IPv6 address assigned to the hostname. | 
@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **Priority** | **int32** | Service priority where lower values are preferred. | 
 **Exchange** | **string** | Mail server hostname. | 
 **Value** | **string** | Certificate authority authorization value. | 
+**Ttl** | Pointer to **int64** | the time to live indicates how many seconds the record is expected to &#39;live&#39; before getting erased. | [optional] [default to 2592000]
 **Nameserver** | **string** | Authoritative nameserver hostname. | 
 **MName** | **string** | Primary master nameserver for the zone. | 
 **RName** | **string** | Responsible party email (encoded format). | 
@@ -251,6 +252,31 @@ and a boolean to check if the value has been set.
 
 SetValue sets Value field to given value.
 
+
+### GetTtl
+
+`func (o *RecordOutput) GetTtl() int64`
+
+GetTtl returns the Ttl field if non-nil, zero value otherwise.
+
+### GetTtlOk
+
+`func (o *RecordOutput) GetTtlOk() (*int64, bool)`
+
+GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTtl
+
+`func (o *RecordOutput) SetTtl(v int64)`
+
+SetTtl sets Ttl field to given value.
+
+### HasTtl
+
+`func (o *RecordOutput) HasTtl() bool`
+
+HasTtl returns a boolean if a field has been set.
 
 ### GetNameserver
 

@@ -154,7 +154,7 @@ No authorization required
 
 ## RecordsPost
 
-> RecordCollectionOutput RecordsPost(ctx).RecordCollectionInput(recordCollectionInput).Execute()
+> RecordCollectionOutput RecordsPost(ctx).RecordCollectionInput(recordCollectionInput).Author(author).Execute()
 
 Add records.
 
@@ -174,10 +174,11 @@ import (
 
 func main() {
 	recordCollectionInput := *openapiclient.NewRecordCollectionInput([]openapiclient.RecordInput{openapiclient.RecordInput{AAAARecord: openapiclient.NewAAAARecord("dsdn.dk", "Type_example", "Source_example", "2001:db8::10")}}) // RecordCollectionInput | The new records.
+	author := "author_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.RecordsAPI.RecordsPost(context.Background()).RecordCollectionInput(recordCollectionInput).Execute()
+	resp, r, err := apiClient.RecordsAPI.RecordsPost(context.Background()).RecordCollectionInput(recordCollectionInput).Author(author).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsPost``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -199,6 +200,7 @@ Other parameters are passed through a pointer to a apiRecordsPostRequest struct 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **recordCollectionInput** | [**RecordCollectionInput**](RecordCollectionInput.md) | The new records. | 
+ **author** | **string** |  | 
 
 ### Return type
 
@@ -220,7 +222,7 @@ No authorization required
 
 ## RecordsRecordIdDelete
 
-> RecordOutput RecordsRecordIdDelete(ctx, recordId).Execute()
+> RecordOutput RecordsRecordIdDelete(ctx, recordId).Author(author).Execute()
 
 Deletes the dns record.
 
@@ -240,10 +242,11 @@ import (
 
 func main() {
 	recordId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | Fully qualifies domain name
+	author := "author_example" // string | 
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.RecordsAPI.RecordsRecordIdDelete(context.Background(), recordId).Execute()
+	resp, r, err := apiClient.RecordsAPI.RecordsRecordIdDelete(context.Background(), recordId).Author(author).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `RecordsAPI.RecordsRecordIdDelete``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -269,6 +272,7 @@ Other parameters are passed through a pointer to a apiRecordsRecordIdDeleteReque
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 
+ **author** | **string** |  | 
 
 ### Return type
 

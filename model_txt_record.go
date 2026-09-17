@@ -25,12 +25,13 @@ type TXTRecord struct {
 	Id *string `json:"id,omitempty"`
 	// Fully qualified domain name
 	Fqdn string `json:"fqdn"`
-	// DNS record type discriminator.
 	Type string `json:"type"`
 	// Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier
 	Source string `json:"source"`
 	// TXT record value.
 	Value string `json:"value"`
+	// the time to live indicates how many seconds the record is expected to 'live' before getting erased.
+	Ttl *int64 `json:"ttl,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -46,6 +47,8 @@ func NewTXTRecord(fqdn string, type_ string, source string, value string) *TXTRe
 	this.Type = type_
 	this.Source = source
 	this.Value = value
+	var ttl int64 = 2592000
+	this.Ttl = &ttl
 	return &this
 }
 
@@ -54,6 +57,10 @@ func NewTXTRecord(fqdn string, type_ string, source string, value string) *TXTRe
 // but it doesn't guarantee that properties required by API are set
 func NewTXTRecordWithDefaults() *TXTRecord {
 	this := TXTRecord{}
+	var type_ string = "TXT"
+	this.Type = type_
+	var ttl int64 = 2592000
+	this.Ttl = &ttl
 	return &this
 }
 
@@ -185,6 +192,38 @@ func (o *TXTRecord) SetValue(v string) {
 	o.Value = v
 }
 
+// GetTtl returns the Ttl field value if set, zero value otherwise.
+func (o *TXTRecord) GetTtl() int64 {
+	if o == nil || IsNil(o.Ttl) {
+		var ret int64
+		return ret
+	}
+	return *o.Ttl
+}
+
+// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TXTRecord) GetTtlOk() (*int64, bool) {
+	if o == nil || IsNil(o.Ttl) {
+		return nil, false
+	}
+	return o.Ttl, true
+}
+
+// HasTtl returns a boolean if a field has been set.
+func (o *TXTRecord) HasTtl() bool {
+	if o != nil && !IsNil(o.Ttl) {
+		return true
+	}
+
+	return false
+}
+
+// SetTtl gets a reference to the given int64 and assigns it to the Ttl field.
+func (o *TXTRecord) SetTtl(v int64) {
+	o.Ttl = &v
+}
+
 func (o TXTRecord) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -202,6 +241,9 @@ func (o TXTRecord) ToMap() (map[string]interface{}, error) {
 	toSerialize["type"] = o.Type
 	toSerialize["source"] = o.Source
 	toSerialize["value"] = o.Value
+	if !IsNil(o.Ttl) {
+		toSerialize["ttl"] = o.Ttl
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -253,6 +295,7 @@ func (o *TXTRecord) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "type")
 		delete(additionalProperties, "source")
 		delete(additionalProperties, "value")
+		delete(additionalProperties, "ttl")
 		o.AdditionalProperties = additionalProperties
 	}
 
