@@ -374,17 +374,11 @@ type ApiRecordsPostRequest struct {
 	ctx context.Context
 	ApiService RecordsAPI
 	recordCollectionInput *RecordCollectionInput
-	author *string
 }
 
 // The new records.
 func (r ApiRecordsPostRequest) RecordCollectionInput(recordCollectionInput RecordCollectionInput) ApiRecordsPostRequest {
 	r.recordCollectionInput = &recordCollectionInput
-	return r
-}
-
-func (r ApiRecordsPostRequest) Author(author string) ApiRecordsPostRequest {
-	r.author = &author
 	return r
 }
 
@@ -448,9 +442,6 @@ func (a *RecordsAPIService) RecordsPostExecute(r ApiRecordsPostRequest) (*Record
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	if r.author != nil {
-		parameterAddToHeaderOrQuery(localVarHeaderParams, "author", r.author, "")
-	}
 	// body params
 	localVarPostBody = r.recordCollectionInput
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -504,12 +495,6 @@ type ApiRecordsRecordIdDeleteRequest struct {
 	ctx context.Context
 	ApiService RecordsAPI
 	recordId string
-	author *string
-}
-
-func (r ApiRecordsRecordIdDeleteRequest) Author(author string) ApiRecordsRecordIdDeleteRequest {
-	r.author = &author
-	return r
 }
 
 func (r ApiRecordsRecordIdDeleteRequest) Execute() (*RecordOutput, *http.Response, error) {
@@ -554,9 +539,6 @@ func (a *RecordsAPIService) RecordsRecordIdDeleteExecute(r ApiRecordsRecordIdDel
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.author == nil {
-		return localVarReturnValue, nil, reportError("author is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -575,7 +557,6 @@ func (a *RecordsAPIService) RecordsRecordIdDeleteExecute(r ApiRecordsRecordIdDel
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarHeaderParams, "author", r.author, "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

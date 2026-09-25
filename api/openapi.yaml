@@ -116,14 +116,6 @@ paths:
       - Records
     post:
       description: Add records.
-      parameters:
-      - explode: false
-        in: header
-        name: author
-        required: false
-        schema:
-          type: string
-        style: simple
       requestBody:
         content:
           application/json:
@@ -161,13 +153,6 @@ paths:
         required: true
         schema:
           format: uuid
-          type: string
-        style: simple
-      - explode: false
-        in: header
-        name: author
-        required: true
-        schema:
           type: string
         style: simple
       responses:
