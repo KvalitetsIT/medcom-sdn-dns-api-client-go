@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
 **Fqdn** | **string** | Fully qualified domain name | 
-**Type** | **string** | DNS record type discriminator. | 
+**Type** | **string** |  | [default to "TXT"]
 **Source** | **string** | Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier | 
 **Value** | **string** | TXT record value. | 
 **Ttl** | Pointer to **int64** | the time to live indicates how many seconds the record is expected to &#39;live&#39; before getting erased. | [optional] [default to 2592000]

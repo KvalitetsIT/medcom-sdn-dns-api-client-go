@@ -299,23 +299,22 @@ func (a *RecordsAPIService) RecordsGetExecute(r ApiRecordsGetRequest) (*RecordCo
 	localVarFormParams := url.Values{}
 
 	if r.fqdn != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "fqdn", r.fqdn, "form", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fqdn", r.fqdn, "")
 	}
 	if r.offset != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "offset", r.offset, "form", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "offset", r.offset, "")
 	} else {
 		var defaultValue int32 = 0
-		parameterAddToHeaderOrQuery(localVarQueryParams, "offset", defaultValue, "form", "")
 		r.offset = &defaultValue
 	}
 	if r.limit != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "")
 	}
 	if r.type_ != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "type", r.type_, "form", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "type", r.type_, "")
 	}
 	if r.source != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "source", r.source, "form", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "source", r.source, "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

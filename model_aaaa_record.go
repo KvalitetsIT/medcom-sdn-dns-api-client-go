@@ -25,7 +25,6 @@ type AAAARecord struct {
 	Id *string `json:"id,omitempty"`
 	// Fully qualified domain name
 	Fqdn string `json:"fqdn"`
-	// DNS record type discriminator.
 	Type string `json:"type"`
 	// Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier
 	Source string `json:"source"`
@@ -54,6 +53,8 @@ func NewAAAARecord(fqdn string, type_ string, source string, ipv6 string) *AAAAR
 // but it doesn't guarantee that properties required by API are set
 func NewAAAARecordWithDefaults() *AAAARecord {
 	this := AAAARecord{}
+	var type_ string = "AAAA"
+	this.Type = type_
 	return &this
 }
 

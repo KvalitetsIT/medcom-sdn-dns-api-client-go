@@ -231,6 +231,126 @@ func (dst *RecordOutput) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	// check if the discriminator value is 'AAAARecord'
+	if jsonDict["type"] == "AAAARecord" {
+		// try to unmarshal JSON data into AAAARecord
+		err = json.Unmarshal(data, &dst.AAAARecord)
+		if err == nil {
+			return nil // data stored in dst.AAAARecord, return on the first match
+		} else {
+			dst.AAAARecord = nil
+			return fmt.Errorf("failed to unmarshal RecordOutput as AAAARecord: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'ARecord'
+	if jsonDict["type"] == "ARecord" {
+		// try to unmarshal JSON data into ARecord
+		err = json.Unmarshal(data, &dst.ARecord)
+		if err == nil {
+			return nil // data stored in dst.ARecord, return on the first match
+		} else {
+			dst.ARecord = nil
+			return fmt.Errorf("failed to unmarshal RecordOutput as ARecord: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'CAARecord'
+	if jsonDict["type"] == "CAARecord" {
+		// try to unmarshal JSON data into CAARecord
+		err = json.Unmarshal(data, &dst.CAARecord)
+		if err == nil {
+			return nil // data stored in dst.CAARecord, return on the first match
+		} else {
+			dst.CAARecord = nil
+			return fmt.Errorf("failed to unmarshal RecordOutput as CAARecord: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'CNAMERecord'
+	if jsonDict["type"] == "CNAMERecord" {
+		// try to unmarshal JSON data into CNAMERecord
+		err = json.Unmarshal(data, &dst.CNAMERecord)
+		if err == nil {
+			return nil // data stored in dst.CNAMERecord, return on the first match
+		} else {
+			dst.CNAMERecord = nil
+			return fmt.Errorf("failed to unmarshal RecordOutput as CNAMERecord: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'MXRecord'
+	if jsonDict["type"] == "MXRecord" {
+		// try to unmarshal JSON data into MXRecord
+		err = json.Unmarshal(data, &dst.MXRecord)
+		if err == nil {
+			return nil // data stored in dst.MXRecord, return on the first match
+		} else {
+			dst.MXRecord = nil
+			return fmt.Errorf("failed to unmarshal RecordOutput as MXRecord: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'NSRecord'
+	if jsonDict["type"] == "NSRecord" {
+		// try to unmarshal JSON data into NSRecord
+		err = json.Unmarshal(data, &dst.NSRecord)
+		if err == nil {
+			return nil // data stored in dst.NSRecord, return on the first match
+		} else {
+			dst.NSRecord = nil
+			return fmt.Errorf("failed to unmarshal RecordOutput as NSRecord: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'PTRRecord'
+	if jsonDict["type"] == "PTRRecord" {
+		// try to unmarshal JSON data into PTRRecord
+		err = json.Unmarshal(data, &dst.PTRRecord)
+		if err == nil {
+			return nil // data stored in dst.PTRRecord, return on the first match
+		} else {
+			dst.PTRRecord = nil
+			return fmt.Errorf("failed to unmarshal RecordOutput as PTRRecord: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'SOARecord'
+	if jsonDict["type"] == "SOARecord" {
+		// try to unmarshal JSON data into SOARecord
+		err = json.Unmarshal(data, &dst.SOARecord)
+		if err == nil {
+			return nil // data stored in dst.SOARecord, return on the first match
+		} else {
+			dst.SOARecord = nil
+			return fmt.Errorf("failed to unmarshal RecordOutput as SOARecord: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'SRVRecord'
+	if jsonDict["type"] == "SRVRecord" {
+		// try to unmarshal JSON data into SRVRecord
+		err = json.Unmarshal(data, &dst.SRVRecord)
+		if err == nil {
+			return nil // data stored in dst.SRVRecord, return on the first match
+		} else {
+			dst.SRVRecord = nil
+			return fmt.Errorf("failed to unmarshal RecordOutput as SRVRecord: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'TXTRecord'
+	if jsonDict["type"] == "TXTRecord" {
+		// try to unmarshal JSON data into TXTRecord
+		err = json.Unmarshal(data, &dst.TXTRecord)
+		if err == nil {
+			return nil // data stored in dst.TXTRecord, return on the first match
+		} else {
+			dst.TXTRecord = nil
+			return fmt.Errorf("failed to unmarshal RecordOutput as TXTRecord: %s", err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -322,52 +442,6 @@ func (obj *RecordOutput) GetActualInstance() (interface{}) {
 
 	if obj.TXTRecord != nil {
 		return obj.TXTRecord
-	}
-
-	// all schemas are nil
-	return nil
-}
-
-// Get the actual instance value
-func (obj RecordOutput) GetActualInstanceValue() (interface{}) {
-	if obj.AAAARecord != nil {
-		return *obj.AAAARecord
-	}
-
-	if obj.ARecord != nil {
-		return *obj.ARecord
-	}
-
-	if obj.CAARecord != nil {
-		return *obj.CAARecord
-	}
-
-	if obj.CNAMERecord != nil {
-		return *obj.CNAMERecord
-	}
-
-	if obj.MXRecord != nil {
-		return *obj.MXRecord
-	}
-
-	if obj.NSRecord != nil {
-		return *obj.NSRecord
-	}
-
-	if obj.PTRRecord != nil {
-		return *obj.PTRRecord
-	}
-
-	if obj.SOARecord != nil {
-		return *obj.SOARecord
-	}
-
-	if obj.SRVRecord != nil {
-		return *obj.SRVRecord
-	}
-
-	if obj.TXTRecord != nil {
-		return *obj.TXTRecord
 	}
 
 	// all schemas are nil
