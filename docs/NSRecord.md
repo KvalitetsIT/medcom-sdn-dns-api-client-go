@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | Pointer to **string** | UUID v4 associated with the DNS record. | [optional] 
 **Fqdn** | **string** | Fully qualified domain name | 
-**Type** | **string** |  | [default to "NS"]
+**Type** | **string** | DNS record type discriminator. | 
 **Source** | **string** | Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier | 
 **Nameserver** | **string** | Authoritative nameserver hostname. | 
 

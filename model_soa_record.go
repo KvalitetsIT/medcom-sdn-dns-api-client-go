@@ -25,6 +25,7 @@ type SOARecord struct {
 	Id *string `json:"id,omitempty"`
 	// Fully qualified domain name
 	Fqdn string `json:"fqdn"`
+	// DNS record type discriminator.
 	Type string `json:"type"`
 	// Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier
 	Source string `json:"source"`
@@ -66,8 +67,6 @@ func NewSOARecord(fqdn string, type_ string, source string, mName string, rName 
 // but it doesn't guarantee that properties required by API are set
 func NewSOARecordWithDefaults() *SOARecord {
 	this := SOARecord{}
-	var type_ string = "SOA"
-	this.Type = type_
 	return &this
 }
 

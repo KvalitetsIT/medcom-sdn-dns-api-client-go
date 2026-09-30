@@ -25,6 +25,7 @@ type MXRecord struct {
 	Id *string `json:"id,omitempty"`
 	// Fully qualified domain name
 	Fqdn string `json:"fqdn"`
+	// DNS record type discriminator.
 	Type string `json:"type"`
 	// Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier
 	Source string `json:"source"`
@@ -56,8 +57,6 @@ func NewMXRecord(fqdn string, type_ string, source string, priority int32, excha
 // but it doesn't guarantee that properties required by API are set
 func NewMXRecordWithDefaults() *MXRecord {
 	this := MXRecord{}
-	var type_ string = "MX"
-	this.Type = type_
 	return &this
 }
 

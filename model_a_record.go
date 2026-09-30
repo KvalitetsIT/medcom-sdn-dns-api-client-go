@@ -25,6 +25,7 @@ type ARecord struct {
 	Id *string `json:"id,omitempty"`
 	// Fully qualified domain name
 	Fqdn string `json:"fqdn"`
+	// DNS record type discriminator.
 	Type string `json:"type"`
 	// Identifies the system, service, or user that created the DNS record. This field is used for auditing, traceability, and ownership purposes. Typical values include the name of an automation system, application, integration, or a user identifier
 	Source string `json:"source"`
@@ -53,8 +54,6 @@ func NewARecord(fqdn string, type_ string, source string, ipv4 string) *ARecord 
 // but it doesn't guarantee that properties required by API are set
 func NewARecordWithDefaults() *ARecord {
 	this := ARecord{}
-	var type_ string = "A"
-	this.Type = type_
 	return &this
 }
 
